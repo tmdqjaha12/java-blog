@@ -5,6 +5,8 @@
 <%@ include file="/jsp/part/head.jspf"%>
 <%
 	List<Article> articles = (List<Article>) request.getAttribute("articles");
+	int totalPage = (int) request.getAttribute("totalPage");
+	int paramPage = (int) request.getAttribute("page");
 %>
 <!-- 하이라이트 라이브러리 추가, 토스트 UI 에디터에서 사용됨 -->
 <script
@@ -42,6 +44,26 @@
 <link rel="stylesheet"
 	href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 
+<style>
+.page-box>ul>li>a {
+	padding: 0 10px;
+	text-decoration: underline;
+	color: #787878;
+}
+
+.page-box>ul>li:hover>a {
+	color: black;
+}
+
+.page-box>ul>li.current>a {
+	color: red;
+}
+</style>
+
+<div class="con">
+	총 게시물 수 : ${totalCount}
+</div>
+
 <div class="con">
 	<ul>
 		<%
@@ -49,6 +71,18 @@
 		%>
 		<li><a href="./detail?id=<%=article.getId()%>"><%=article.getId()%>,
 				<%=article.getCateItemId()%>, <%=article.getTitle()%></a></li>
+		<%
+			}
+		%>
+	</ul>
+</div>
+
+<div class="con page-box">
+	<ul class="flex flex-jc-c">
+		<%
+			for (int i = 1; i <= totalPage; i++) {
+		%>
+		<li class="<%=i == paramPage ? "current" : ""%>"><a href="?cateItemId=${param.cateItemId}&page=<%=i%>" class="block"><%=i%></a></li>
 		<%
 			}
 		%>

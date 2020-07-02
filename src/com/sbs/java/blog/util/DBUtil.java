@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 public class DBUtil {
-	public static Map<String, Object> selectRow(Connection connection, String sql) {
-		List<Map<String, Object>> rows = selectRows(connection, sql);
+	public static Map<String, Object> selectRow(Connection dbConn, String sql) {
+		List<Map<String, Object>> rows = selectRows(dbConn, sql);
 
 		if (rows.size() == 0) {
 			return new HashMap<>();
@@ -22,14 +22,14 @@ public class DBUtil {
 		return rows.get(0);
 	}
 
-	public static List<Map<String, Object>> selectRows(Connection connection, String sql) {
+	public static List<Map<String, Object>> selectRows(Connection dbConn, String sql) {
 		List<Map<String, Object>> rows = new ArrayList<>();
 
 		Statement stmt = null;
 		ResultSet rs = null;
 
 		try {
-			stmt = connection.createStatement();
+			stmt = dbConn.createStatement();
 			rs = stmt.executeQuery(sql);
 			ResultSetMetaData metaData = rs.getMetaData();
 			int columnSize = metaData.getColumnCount();
@@ -79,5 +79,35 @@ public class DBUtil {
 		}
 
 		return rows;
+	}
+
+	public static int selectRowIntValue(Connection dbConn, String sql) {
+		Map<String, Object> row = selectRow(dbConn, sql);
+
+		for (String key : row.keySet()) {
+			return (int) row.get(key);
+		}
+
+		return -1;
+	}
+
+	public static String selectRowStringValue(Connection dbConn, String sql) {
+		Map<String, Object> row = selectRow(dbConn, sql);
+
+		for (String key : row.keySet()) {
+			return (String) row.get(key);
+		}
+
+		return "";
+	}
+
+	public static Boolean selectRowBooleanValue(Connection dbConn, String sql) {
+		Map<String, Object> row = selectRow(dbConn, sql);
+
+		for (String key : row.keySet()) {
+			return ((int) row.get(key)) == 1;
+		}
+
+		return false;
 	}
 }

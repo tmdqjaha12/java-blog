@@ -1,10 +1,8 @@
 package com.sbs.java.blog.controller;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,13 +30,21 @@ public class ArticleController extends Controller {
 		if (req.getParameter("cateItemId") != null) {
 			cateItemId = Integer.parseInt(req.getParameter("cateItemId"));
 		}
-		
+
 		int page = 1;
 		if (req.getParameter("page") != null) {
 			page = Integer.parseInt(req.getParameter("page"));
 		}
 
-		List<Article> articles = articleService.getForPrintListArticles(page, cateItemId);
+		int itemsInAPage = 10;
+		int totalCount = articleService.getForPrintListArticlesCount(cateItemId);
+		int totalPage = (int) Math.ceil(totalCount / (double) itemsInAPage);
+
+		req.setAttribute("totalCount", totalCount);
+		req.setAttribute("totalPage", totalPage);
+		req.setAttribute("page", page);
+
+		List<Article> articles = articleService.getForPrintListArticles(page, itemsInAPage, cateItemId);
 		req.setAttribute("articles", articles);
 		return "article/list";
 	}

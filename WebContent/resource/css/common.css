@@ -275,6 +275,10 @@ label[for] {
     justify-content: flex-start;
 }
 
+*>.flex-jc-c {
+    justify-content: center;
+}
+
 *>.flex-jc-e {
     justify-content: flex-end;
 }
