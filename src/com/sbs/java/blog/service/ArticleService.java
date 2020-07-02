@@ -22,4 +22,8 @@ public class ArticleService {
 		return articleDao.getForPrintListArticlesCount(cateItemId);
 	}
 
+	public Article getForPrintArticle(int id) {
+		return articleDao.getForPrintArticle(id);
+	}
+
 }

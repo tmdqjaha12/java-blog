@@ -13,8 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.sbs.java.blog.controller.ArticleController;
 import com.sbs.java.blog.controller.Controller;
+import com.sbs.java.blog.controller.HomeController;
 import com.sbs.java.blog.controller.MemberController;
-import com.sbs.java.blog.dto.Article;
+import com.sbs.java.blog.util.Util;
 
 @WebServlet("/s/*")
 public class DispatcherServlet extends HttpServlet {
@@ -34,7 +35,7 @@ public class DispatcherServlet extends HttpServlet {
 		// DB 커넥터 로딩 성공
 
 		// DB 접속 시작
-		String url = "jdbc:mysql://site41.iu.gy:3306/site41?serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true";
+		String url = "jdbc:mysql://site41.iu.gy:3306/site41?serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeBehavior=convertToNull";
 		String user = "site41";
 		String password = "sbs123414";
 
@@ -53,7 +54,7 @@ public class DispatcherServlet extends HttpServlet {
 			String actionMethodName = actionStrBits[1];
 
 			Controller controller = null;
-
+			
 			switch (controllerName) {
 			case "article":
 				controller = new ArticleController(dbConn);
@@ -61,33 +62,36 @@ public class DispatcherServlet extends HttpServlet {
 			case "member":
 				controller = new MemberController();
 				break;
+			case "home":
+				controller = new HomeController();
+				break;
 			}
 
 			if (controller != null) {
-				String viewPath = controller.doAction(actionMethodName, req, resp);
-				if (viewPath.equals("")) {
+				String actionResult = controller.doAction(actionMethodName, req, resp);
+				if (actionResult.equals("")) {
 					resp.getWriter().append("ERROR, CODE 1");
+				} else if (actionResult.endsWith(".jsp")) {
+					String viewPath = "/jsp/" + actionResult;
+					req.getRequestDispatcher(viewPath).forward(req, resp);
+				} else if (actionResult.startsWith("plain:")) {
+					resp.getWriter().append(actionResult.substring(6));
+				} else {
+					
 				}
-				viewPath = "/jsp/" + viewPath + ".jsp";
-				req.getRequestDispatcher(viewPath).forward(req, resp);
 			} else {
 				resp.getWriter().append("존재하지 않는 페이지 입니다.");
 			}
 		} catch (SQLException e) {
-			System.err.printf("[SQLException 예외, %s]\n", e.getMessage());
-			resp.getWriter().append("DB연결 실패");
-			return;
+			Util.printEx("SQL 예외(커넥션 열기)", resp, e);
 		} catch (Exception e) {
-			System.err.printf("[기타Exception 예외, %s]\n", e.getMessage());
-			resp.getWriter().append("기타 실패");
-			return;
+			Util.printEx("기타 예외", resp, e);
 		} finally {
 			if (dbConn != null) {
 				try {
 					dbConn.close();
 				} catch (SQLException e) {
-					System.err.printf("[SQLException 예외, %s]\n", e.getMessage());
-					resp.getWriter().append("DB연결닫기 실패");
+					Util.printEx("SQL 예외(커넥션 닫기)", resp, e);
 				}
 			}
 		}

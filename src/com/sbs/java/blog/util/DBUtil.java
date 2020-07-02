@@ -52,6 +52,8 @@ public class DBUtil {
 						row.put(columnName, value);
 					}
 				}
+				
+				System.out.println(row);
 
 				rows.add(row);
 			}
