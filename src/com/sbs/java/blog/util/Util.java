@@ -68,4 +68,8 @@ public class Util {
 			e1.printStackTrace();
 		}
 	}
+
+	public static String getString(HttpServletRequest req, String paramName) {
+		return req.getParameter(paramName);
+	}
 }
