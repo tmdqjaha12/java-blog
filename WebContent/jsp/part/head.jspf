@@ -36,13 +36,16 @@
 <script
 	src="${pageContext.request.contextPath}/resource/js/home/main.js"></script>
 
-<title>장희성 블로그</title>
+<title>하승범 블로그</title>
 </head>
 
 <body>
+
+	<!-- 모바일 바 -->
+
 	<div class="mobile-top-bar visible-on-sm-down flex">
-		<a href="#" class="btn-toggle-mobile-side-bar flex flex-ai-c"> <i
-			class="fas fa-bars"></i> <i class="fas fa-times"></i>
+		<a href="#" class="btn-toggle-mobile-side-bar flex flex-ai-c"> 
+			<img src="${pageContext.request.contextPath}/resource/img/meloporn_banner.png" alt="" />
 		</a> <a href="${pageContext.request.contextPath}/s/home/main"
 			class="logo absolute-center absolute-middle flex flex-ai-c"> <i
 			class="fas fa-award"></i>
@@ -74,25 +77,32 @@
 					class="block">AboutMe</a></li>
 				<li><a href="#" class="block">SNS</a>
 					<ul>
-						<li><a href="https://github.com/jhs512" target="_blank"
+						<li><a href="#" target="_blank"
 							class="block">GITHUB</a></li>
-						<li><a href="https://github.com/jhs512" target="_blank"
+						<li><a href="#" target="_blank"
 							class="block">INSTA</a></li>
 					</ul></li>
 			</ul>
 		</nav>
 	</div>
+	
+	<!-- 탑 바 -->
+	
 	<div class="top-bar visible-on-md-up">
-		<div class="con flex flex-jc-sb height-100p">
-			<a href="${pageContext.request.contextPath}/s/home/main"
-				class="logo flex flex-ai-c"> <i class="fas fa-award"></i>
-			</a>
+		<div class="con flex flex-jc-sb flex-column-nowrap"><!-- style="background-color:pink;" -->
+			<div class="img-box top-bn-1 flex-as-c">
+				<a href="${pageContext.request.contextPath}/s/home/main"> 
+					<img src="${pageContext.request.contextPath}/resource/img/meloporn_banner.png" alt="" />
+				</a>
+			</div>
+			
 
-			<nav class="menu-box-1">
+			<nav class="menu-box-1 flex-as-c">
 				<ul class="flex height-100p">
 					<li><a href="${pageContext.request.contextPath}/s/home/main"
 						class="flex height-100p flex-ai-c">Home</a></li>
 					<li><a href="${pageContext.request.contextPath}/s/article/list" class="flex height-100p flex-ai-c">Articles</a>
+					<!-- 
 						<ul>
 							<%
 								for (CateItem cateItem : cateItems) {
@@ -103,18 +113,24 @@
 							<%
 								}
 							%>
-						</ul></li>
+						</ul> --></li>
 					<li><a
 						href="${pageContext.request.contextPath}/s/home/aboutMe"
 						class="flex height-100p flex-ai-c">AboutMe</a></li>
-					<li><a href="#" class="flex height-100p flex-ai-c">SNS</a>
+					<li style="z-index:1;"><a href="#" class="flex height-100p flex-ai-c">SNS</a>
 						<ul>
-							<li><a href="https://github.com/jhs512" target="_blank"
+							<li><a href="#" target="_blank"
 								class="block">GITHUB</a></li>
-							<li><a href="https://github.com/jhs512" target="_blank"
+							<li><a href="#" target="_blank"
 								class="block">INSTA</a></li>
 						</ul></li>
 				</ul>
 			</nav>
+			
+			
+			<div class="flex flex-as-c">
+				<img class="bg-img-1-java flex-ai-c" src="${pageContext.request.contextPath}/resource/img/java.jpg" alt="" />
+			</div>
+			
 		</div>
 	</div>

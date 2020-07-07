@@ -22,8 +22,7 @@ public class ArticleDao extends Dao {
 		dbUtil = new DBUtil(req, resp);
 	}
 
-	public List<Article> getForPrintListArticles(int page, int itemsInAPage, int cateItemId, String searchKeywordType,
-			String searchKeyword) {
+	public List<Article> getForPrintListArticles(int page, int itemsInAPage, int cateItemId, String searchKeywordType, String searchKeyword) {
 		String sql = "";
 
 		int limitFrom = (page - 1) * itemsInAPage;
@@ -108,5 +107,17 @@ public class ArticleDao extends Dao {
 		sql += String.format("AND id = %d ", cateItemId);
 
 		return new CateItem(dbUtil.selectRow(dbConn, sql));
+	}
+	
+	public void doWriteArticle(String title, String body, int cateItemId) {
+		String sql = "";
+		
+		sql += String.format("INSET INTO article ");
+		sql += String.format("SET regDate = NOW() ");
+		sql += String.format("updateDate = NOW() ");
+		sql += String.format("title = %s ", title);
+		sql += String.format("`body` = %s ", body);
+		sql += String.format("cateItemId = %d ,", cateItemId);
+		sql += String.format("INSET INTO article ");
 	}
 }

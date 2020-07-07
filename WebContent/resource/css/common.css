@@ -368,13 +368,21 @@ label[for] {
 /* 탑바 시작 */
 .top-bar {
 	height: 100px;
-	background-color: black;
-	color: white;
+	background-color: white;
+	color: #920855;
 }
 
-.top-bar .logo {
-	font-size: 3rem;
-	padding: 0 30px;
+.top-bar .top-bn-1 > a {
+	display:block;
+	padding: 100px;
+}
+
+.top-bar .top-bn-1 > a > img{
+	width: 120px;
+}
+
+.top-bar .menu-box-1 {
+	margin-top: 30px;
 }
 
 .top-bar .menu-box-1>ul>li>a {
@@ -394,13 +402,14 @@ label[for] {
 
 .top-bar .menu-box-1>ul ul {
 	display: none;
-	color: black;
-	background-color: white;
+	color: #920855;
+	background-color: #ffffff;
+    opacity: 0.7;
 	position: absolute;
 	top: 100%;
-	left: -10px;
+	left: -3px;
 	width: 100%;
-	border: 10px solid black;
+	border:3px solid #920855;
 	border-top-width: 0;
 }
 
@@ -415,8 +424,14 @@ label[for] {
 }
 
 .top-bar .menu-box-1>ul ul>li:hover>a {
-	background-color: black;
+	background-color: #920855;
 	color: white;
+}
+
+.top-bar .bg-img-1-java{
+	z-index:-1;
+	opacity: 0.2;
+	margin-top: 30px;
 }
 
 /* 탑바 끝 */
@@ -492,8 +507,36 @@ label[for] {
 	display: none;
 }
 
-.mobile-side-bar .menu-box-1 ul>li:hover>ul {
+.mobile-side-bar :;1 ul>li:hover>ul {
 	display: block;
 }
 
 /* 모바일 사이드바 끝 */
+
+/* bg-img-1-java */
+
+.bg-img-1-java {
+	width:1000px;
+	z-index:-1;
+}
+/**/
+/*list*/
+.article-list-1 {
+	background-color: white;
+	color: #920855;
+}
+
+.article-list-1 a {
+	display:block;
+	padding: 0 20px;
+	font-weight: bold;
+	padding: 50px;
+	font-size: 1.2rem;
+	white-space:nowrap;
+}
+
+.article-list-1 .cate-list-1 > ul > li {
+	background-color: pink;
+	opacity:0.4;
+}
+/*list*/

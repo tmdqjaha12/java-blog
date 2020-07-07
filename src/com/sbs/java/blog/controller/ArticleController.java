@@ -36,7 +36,37 @@ public class ArticleController extends Controller {
 	}
 
 	private String doActionDoWrite(HttpServletRequest req, HttpServletResponse resp) {
-		return null;
+		
+//		doWriteArticle(req, resp);
+		
+		return "article/doWrite.jsp";
+	}
+	
+	private String doWriteArticle(HttpServletRequest req, HttpServletResponse resp) {
+		if (Util.empty(req, "title")) {
+			return "html:title를 입력해주세요.";
+		}
+		
+		if (Util.empty(req, "body")) {
+			return "html:body를 입력해주세요.";
+		}
+		
+		if (Util.empty(req, "cateItemId")) {
+			return "html:cateItemId를 입력해주세요.";
+		}
+		
+		if (Util.isNum(req, "cateItemId") == false) {
+			return "html:id를 정수로 입력해주세요.";
+		}
+		
+		String title = Util.getString(req, "title");
+		String body = Util.getString(req, "body");
+		int cateItemId = Util.getInt(req, "cateItemId");
+		
+		
+		articleService.doWriteArticle(title, body, cateItemId);
+		
+		return "";
 	}
 
 	private String doActionDetail(HttpServletRequest req, HttpServletResponse resp) {
@@ -99,8 +129,7 @@ public class ArticleController extends Controller {
 		req.setAttribute("totalPage", totalPage);
 		req.setAttribute("page", page);
 
-		List<Article> articles = articleService.getForPrintListArticles(page, itemsInAPage, cateItemId,
-				searchKeywordType, searchKeyword);
+		List<Article> articles = articleService.getForPrintListArticles(page, itemsInAPage, cateItemId, searchKeywordType, searchKeyword);
 		req.setAttribute("articles", articles);
 		return "article/list.jsp";
 	}

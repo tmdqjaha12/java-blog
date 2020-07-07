@@ -5,9 +5,9 @@
 <%@ include file="/jsp/part/head.jspf"%>
 <%
 	List<Article> articles = (List<Article>) request.getAttribute("articles");
-	int totalPage = (int) request.getAttribute("totalPage");
-	int paramPage = (int) request.getAttribute("page");
-	String cateItemName = (String)request.getAttribute("cateItemName");
+int totalPage = (int) request.getAttribute("totalPage");
+int paramPage = (int) request.getAttribute("page");
+String cateItemName = (String) request.getAttribute("cateItemName");
 %>
 <!-- 하이라이트 라이브러리 추가, 토스트 UI 에디터에서 사용됨 -->
 <script
@@ -46,6 +46,11 @@
 	href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 
 <style>
+.page-box {
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+
 .page-box>ul>li>a {
 	padding: 0 10px;
 	text-decoration: underline;
@@ -59,50 +64,138 @@
 .page-box>ul>li.current>a {
 	color: red;
 }
+
+.article-list-1 .cate-list-1 > ul > li.currentCateItemName {
+	opacity:1;
+}
+.articlesItem{
+	border:2px solid pink;
+	width:100%;
+	background-color: pink;
+}
+
+.articlesItem a {
+	display:block;
+	padding:20px;
+}
+
+.articlesItem > ul > li {
+	background-color:white;
+}
+
+.articlesItem > ul > li:hover{
+	background-color: #ffffff;
+	opacity:0.5;
+}
+.txt_line {
+	width:200px;
+	padding:0 5px; 
+	overflow:hidden; 
+	text-overflow:ellipsis; 
+	white-space:nowrap;
+}
+.title-bg-1{
+	height:200px;
+	top:0;
+	left:auto;
+	right:0;	
+}
 </style>
+	
+<div class="article-list-1" style="margin-top: 300px;">
+	<div class="con flex flex-jc-sb flex-column-nowrap">
 
-<h1 class="con">
-	<%=cateItemName%>
-</h1>
 
-<div class="con">총 게시물 수 : ${totalCount}</div>
+		<div class="cate-list-1 flex-as-c">
+			<ul class="flex">
+				<%
+					for (CateItem cateItem : cateItems) {
+				%>
+				<li class="<%=cateItem.getName().equals(cateItemName) ? "currentCateItemName" : ""%> flex flex-ai-c"><a
+					href="${pageContext.request.contextPath}/s/article/list?cateItemId=<%=cateItem.getId()%>"
+					class="flex flex-ai-c"><%=cateItem.getName()%></a></li>
+				<%
+					}
+				%>
+			</ul>
+		</div>
+<!-- 
+		<h1 class="con flex-as-c">
+			<cateItemName%>
+		</h1>
+ -->
+		<div class="con flex-as-c">총 게시물 수 : ${totalCount}</div>
 
-<div class="con">
-	<ul>
-		<%
-			for (Article article : articles) {
-		%>
-		<li><a href="./detail?id=<%=article.getId()%>"><%=article.getId()%>,
-				<%=article.getCateItemId()%>, <%=article.getTitle()%></a></li>
-		<%
-			}
-		%>
-	</ul>
+		<div class="con flex-as-c articlesItem">
+			<ul>
+				<%
+					for (Article article : articles) {
+				%>
+				<li style="margin-top:20px; text-align:right;">
+					<a href="./detail?id=<%=article.getId()%>">
+						<ul>
+							<li>No. <%=article.getId()%></li>
+							<li class="txt_line">※ <%=article.getTitle()%></li>
+						</ul>
+						<img class="title-bg-1" src="${pageContext.request.contextPath}/resource/img/java.jpg" alt="" />
+					</a>
+				</li>
+				<%
+					}
+				%>
+			</ul>
+		</div>
+
+		<div class="con page-box flex-as-c">
+			<ul class="flex flex-jc-c">
+				<%
+					for (int i = 1; i <= totalPage; i++) {
+				%>
+				<li class="<%=i == paramPage ? "current" : ""%>"><a
+					href="?cateItemId=${param.cateItemId}&searchKeywordType=${param.searchKeywordType}&searchKeyword=${param.searchKeyword}&page=<%=i%>"
+					class="block"><%=i%></a></li>
+				<%
+					}
+				%>
+			</ul>
+		</div>
+
+		<div class="con search-box flex flex-jc-c">
+
+			<form action="${pageContext.request.contextPath}/s/article/list" style="margin-bottom:50px;">
+				<input type="hidden" name="page" value="1" /> <input type="hidden"
+					name="cateItemId" value="${param.cateItemId}" /> <input
+					type="hidden" name="searchKeywordType" value="title" /> <input
+					type="text" name="searchKeyword" value="${param.searchKeyword}" />
+				<button type="submit">검색</button>
+			</form>
+
+		</div>
+	</div>
 </div>
 
-<div class="con page-box">
-	<ul class="flex flex-jc-c">
-		<%
-			for (int i = 1; i <= totalPage; i++) {
-		%>
-		<li class="<%=i == paramPage ? "current" : ""%>"><a
-			href="?cateItemId=${param.cateItemId}&searchKeywordType=${param.searchKeywordType}&searchKeyword=${param.searchKeyword}&page=<%=i%>" class="block"><%=i%></a></li>
-		<%
-			}
-		%>
-	</ul>
+<div style="position:fixed; top:200px; left:50px;">
+    <button type="button" class="upBtn">▲</button><br /><br />
+    <button type="button" class="downBtn">▼</button>  
+	<div class="doWrite" style="margin-top: 20px; border:1px solid black; background-color:#f9c6cf; margin-left:6px;">
+		<a href="${pageContext.request.contextPath}/s/article/doWrite">글쓰기</a>
+	</div>
+
+    <script>
+    $(".upBtn").click(function(){
+        $('html, body').animate({scrollTop:0}, 400);
+    });
+
+    $(".downBtn").click(function(){
+        $('html, body').animate({scrollTop:($('body').height())}, 200);
+    });  
+      
+
+    </script>
+  
 </div>
 
-<div class="con search-box flex flex-jc-c">
+<div class="bottom"></div>
 
-	<form action="${pageContext.request.contextPath}/s/article/list">
-		<input type="hidden" name="page" value="1" /> <input type="hidden"
-			name="cateItemId" value="${param.cateItemId}" /> <input
-			type="hidden" name="searchKeywordType" value="title" /> <input
-			type="text" name="searchKeyword" value="${param.searchKeyword}" />
-		<button type="submit">검색</button>
-	</form>
-
-</div>
 
 <%@ include file="/jsp/part/foot.jspf"%>
