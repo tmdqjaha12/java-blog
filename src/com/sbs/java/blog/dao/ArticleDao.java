@@ -109,15 +109,28 @@ public class ArticleDao extends Dao {
 		return new CateItem(dbUtil.selectRow(dbConn, sql));
 	}
 	
-	public void doWriteArticle(String title, String body, int cateItemId) {
+	public int doWriteArticle(String title, String body, int cateItemId) {
 		String sql = "";
 		
-		sql += String.format("INSET INTO article ");
-		sql += String.format("SET regDate = NOW() ");
-		sql += String.format("updateDate = NOW() ");
-		sql += String.format("title = %s ", title);
-		sql += String.format("`body` = %s ", body);
+		sql += String.format("INSERT INTO article ");
+		sql += String.format("SET regDate = NOW() ,");
+		sql += String.format("updateDate = NOW() ,");
+		sql += String.format("title = '%s' ,", title);
+		sql += String.format("`body` = '%s' ,", body);
 		sql += String.format("cateItemId = %d ,", cateItemId);
-		sql += String.format("INSET INTO article ");
+		sql += String.format("displayStatus = 1");
+		
+		return dbUtil.insert(dbConn, sql);
+	}
+
+	public void doDeleteArticle(int id) {
+		String sql = "";
+		
+		sql += String.format("DELETE FROM article WHERE 1 AND id = %d", id);
+//		sql += String.format("FROM article ");
+//		sql += String.format("WHERE 1 ");
+//		sql += String.format("AND id = %d", id);
+
+		dbUtil.deleteRow(dbConn, sql);
 	}
 }

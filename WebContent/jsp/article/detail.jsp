@@ -41,23 +41,37 @@
 <link rel="stylesheet"
 	href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 
-<div class="con">
-	<h1><%=article.getTitle()%></h1>
 
-	<div>이모지 테스트 : 😀😁</div>
+<div class="article-detail-1" style="margin-top: 300px;">
+	<div class="con flex flex-jc-sb flex-column-nowrap"
+		style="border: 3px solid pink; width: 1000px;">
 
-	<script type="text/x-template" id="origin1" style="display: none;"><%=article.getBody()%></script>
-	<div id="viewer1"></div>
-	<script>
-		var editor1__initialValue = $('#origin1').html().trim();
-		var editor1 = new toastui.Editor({
-			el : document.querySelector('#viewer1'),
-			initialValue : editor1__initialValue,
-			viewer : true,
-			plugins : [ toastui.Editor.plugin.codeSyntaxHighlight,
-					youtubePlugin, replPlugin, codepenPlugin ]
-		});
-	</script>
+		<div class="title" style="text-align: center;">
+			<h1><%=article.getTitle()%></h1>
+			<div style="border-bottom: 3px solid pink; margin: 0 10px;"></div>
+		</div>
+
+		<script type="text/x-template" id="origin1" style="display: none;"><%=article.getBody()%></script>
+		<div id="viewer1" style="margin: 30px;"></div>
+		<script>
+			var editor1__initialValue = $('#origin1').html().trim();
+			var editor1 = new toastui.Editor({
+				el : document.querySelector('#viewer1'),
+				initialValue : editor1__initialValue,
+				viewer : true,
+				plugins : [ toastui.Editor.plugin.codeSyntaxHighlight,
+						youtubePlugin, replPlugin, codepenPlugin ]
+			});
+		</script>
+	</div>
+	
+	<form action="${pageContext.request.contextPath}/s/article/doModify" method="get" encType="multiplart/form-data">
+		<input	type="submit" value="수정" /> 
+	</form>
+	<form action="${pageContext.request.contextPath}/s/article/doDelete" method="get" encType="multiplart/form-data">
+		<input type="hidden" name="id" value="${param.id}" />
+		<input	type="submit" value="삭제" /> 
+	</form>
 </div>
 
 

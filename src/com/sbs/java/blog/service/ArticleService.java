@@ -39,8 +39,12 @@ public class ArticleService extends Service {
 		return articleDao.getCateItem(cateItemId);
 	}
 	
-	public void doWriteArticle(String title, String body, int cateItemId) {
-		articleDao.doWriteArticle(title, body, cateItemId);
+	public int doWriteArticle(String title, String body, int cateItemId) {
+		return articleDao.doWriteArticle(title, body, cateItemId);
+	}
+
+	public void doDeleteArticle(int id) {
+		articleDao.doDeleteArticle(id);
 	}
 
 }

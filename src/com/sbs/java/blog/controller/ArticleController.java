@@ -30,33 +30,67 @@ public class ArticleController extends Controller {
 			return doActionDetail(req, resp);
 		case "doWrite":
 			return doActionDoWrite(req, resp);
+		case "doModify":
+			return doActionDoModify(req, resp);
+		case "doDelete":
+			return doActionDoDelete(req, resp);
 		}
 
 		return "";
 	}
 
+	private String doActionDoDelete(HttpServletRequest req, HttpServletResponse resp) {
+		if (Util.empty(req, "id")) {
+			return "html:id를 입력해주세요.";
+		}
+
+		if (Util.isNum(req, "id") == false) {
+			return "html:id를 정수로 입력해주세요.";
+		}
+
+		int id = Util.getInt(req, "id");
+		
+		articleService.doDeleteArticle(id);
+
+		return "article/complDelete.jsp";
+	}
+
+	private String doActionDoModify(HttpServletRequest req, HttpServletResponse resp) {
+		// TODO Auto-generated method stub
+		return "article/doModify.jsp";
+	}
+
 	private String doActionDoWrite(HttpServletRequest req, HttpServletResponse resp) {
+		int id = -1;
 		
-//		doWriteArticle(req, resp);
+		if(doWriteArticle(req, resp) == -1) {
+			return "article/doWrite.jsp";
+		}
 		
-		return "article/doWrite.jsp";
+		return "article/complWrite.jsp";
 	}
 	
-	private String doWriteArticle(HttpServletRequest req, HttpServletResponse resp) {
+	private int doWriteArticle(HttpServletRequest req, HttpServletResponse resp) {
+		int id = -1;
+		
 		if (Util.empty(req, "title")) {
-			return "html:title를 입력해주세요.";
+//			resp.getWriter().append("html:title를 입력해주세요.");
+			return id;
 		}
 		
 		if (Util.empty(req, "body")) {
-			return "html:body를 입력해주세요.";
+//			resp.getWriter().append("body를 입력해주세요.");
+			return id;
 		}
 		
 		if (Util.empty(req, "cateItemId")) {
-			return "html:cateItemId를 입력해주세요.";
+//			resp.getWriter().append("cateItemId를 입력해주세요.");
+			return id;
 		}
 		
 		if (Util.isNum(req, "cateItemId") == false) {
-			return "html:id를 정수로 입력해주세요.";
+//			resp.getWriter().append("cateItemId를 정수로 입력해주세요.");
+			return id;
 		}
 		
 		String title = Util.getString(req, "title");
@@ -64,9 +98,9 @@ public class ArticleController extends Controller {
 		int cateItemId = Util.getInt(req, "cateItemId");
 		
 		
-		articleService.doWriteArticle(title, body, cateItemId);
+		id = articleService.doWriteArticle(title, body, cateItemId);
 		
-		return "";
+		return id;
 	}
 
 	private String doActionDetail(HttpServletRequest req, HttpServletResponse resp) {
