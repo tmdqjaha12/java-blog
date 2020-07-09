@@ -123,17 +123,19 @@ public class DBUtil {
 
 	public int insert(Connection dbConn, String sql) {
 		int id = -1;
-		
+
 		Statement stmt = null;
 		ResultSet rs = null;
-		
+
 		try {
 			stmt = dbConn.createStatement();
 			stmt.execute(sql, Statement.RETURN_GENERATED_KEYS);
 			rs = stmt.getGeneratedKeys();
+
 			if (rs.next()) {
 				id = rs.getInt(1);
 			}
+
 		} catch (SQLException e) {
 			throw new SQLErrorException("SQL 예외, SQL : " + sql);
 		} finally {
@@ -152,8 +154,9 @@ public class DBUtil {
 					throw new SQLErrorException("SQL 예외, stmt 닫기" + sql);
 				}
 			}
-		} 
-		
+
+		}
+
 		return id;
 	}
 

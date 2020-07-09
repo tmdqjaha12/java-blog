@@ -43,3 +43,42 @@ displayStatus = 1,
 title = '블로그를 시작합니다.',
 `body` = ''
 
+
+
+
+
+
+
+
+DELETE 
+ FROM article 
+ WHERE 1 
+ AND id = 353;
+ 
+ DELETE FROM article WHERE 1 AND id = 1;
+ 
+DROP TABLE IF EXISTS `member`;
+CREATE TABLE `member` (
+    id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    regDate DATETIME NOT NULL,
+    updateDate DATETIME NOT NULL,
+    memberStatus TINYINT(1) UNSIGNED NOT NULL,
+    `loginId` CHAR(200) NOT NULL,
+    `name` CHAR(200) NOT NULL,
+    `nickname` CHAR(200) NOT NULL,
+    `loginPw` CHAR(200) NOT NULL,
+    `loginPwConfirm` CHAR(200) NOT NULL
+);
+
+INSERT INTO `member` 
+SET regDate = NOW(),
+updateDate = NOW(),
+memberStatus = 0,
+`loginId` = 'meloporn',
+`name` = '승범',
+`nickname` = '메로폰',
+`loginPw` = 'sbs123414',
+`loginPwConfirm` = 'sbs123414';
+
+SELECT *
+FROM `member`;

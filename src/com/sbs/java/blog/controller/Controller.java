@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.sbs.java.blog.dto.CateItem;
 import com.sbs.java.blog.service.ArticleService;
+import com.sbs.java.blog.service.MemberService;
 
 public abstract class Controller {
 	protected Connection dbConn;
@@ -16,6 +17,7 @@ public abstract class Controller {
 	protected HttpServletResponse resp;
 
 	protected ArticleService articleService;
+	protected MemberService memberSercive;
 
 	public Controller(Connection dbConn, String actionMethodName, HttpServletRequest req, HttpServletResponse resp) {
 		this.dbConn = dbConn;
@@ -23,6 +25,7 @@ public abstract class Controller {
 		this.req = req;
 		this.resp = resp;
 		articleService = new ArticleService(dbConn, req, resp);
+		memberSercive = new MemberService(dbConn, req, resp);
 	}
 
 	public void beforeAction() {

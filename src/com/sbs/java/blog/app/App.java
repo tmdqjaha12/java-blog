@@ -106,12 +106,16 @@ public class App {
 
 		if (controller != null) {
 			String actionResult = controller.executeAction();
+			
+//			System.out.println("actionResult : " + actionResult);
 			if (actionResult.equals("")) {
 				resp.getWriter().append("액션의 결과가 없습니다.");
 			} else if (actionResult.endsWith(".jsp")) {
 				String viewPath = "/jsp/" + actionResult;
+//				System.out.println("viewPath : "+ viewPath);
 				req.getRequestDispatcher(viewPath).forward(req, resp);
 			} else if (actionResult.startsWith("html:")) {
+//				System.out.println("actionResult.substring(5) : " + actionResult.substring(5));
 				resp.getWriter().append(actionResult.substring(5));
 			} else {
 				resp.getWriter().append("처리할 수 없는 액션결과입니다.");
