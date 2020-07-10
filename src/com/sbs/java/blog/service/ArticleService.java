@@ -38,13 +38,20 @@ public class ArticleService extends Service {
 	public CateItem getCateItem(int cateItemId) {
 		return articleDao.getCateItem(cateItemId);
 	}
-	
-	public int doWriteArticle(String title, String body, int cateItemId) {
-		return articleDao.doWriteArticle(title, body, cateItemId);
-	}
 
 	public void doDeleteArticle(int id) {
 		articleDao.doDeleteArticle(id);
 	}
 
+	public void increaseHit(int id) {
+		articleDao.increaseHit(id);
+	}
+
+	public int write(int cateItemId, String title, String body) {
+		return articleDao.write(cateItemId, title, body);
+	}
+
+	public int modify(int id, int cateItemId, String regDate, String title, String body) {
+		return articleDao.modify(id, cateItemId, regDate, title, body);
+	}
 }

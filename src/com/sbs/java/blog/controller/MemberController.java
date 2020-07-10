@@ -46,8 +46,13 @@ public class MemberController extends Controller {
 		String loginId = req.getParameter("loginId");
 		String loginPw = req.getParameter("loginPwReal");
 		
+		int id = memberSercive.login(loginId, loginPw);
 		
-		return null;
+		if(id == 0) {
+			return "html:<script> alert('유효하지 않는 정보입니다.'); location.replace('login'); </script>";
+		}
+		
+		return "html:<script> alert('로그인 완료'); location.replace('../home/main'); </script>";
 	}
 
 	private String doActionJoin(HttpServletRequest req, HttpServletResponse resp) {

@@ -56,7 +56,7 @@ function submitLoginForm(form) {
 	form.loginPw.value = '';
 
 	form.submit();
-	joinFormSubmitted = true;
+	loginFormSubmitted = true;
 }
 
 var joinFormSubmitted = false;

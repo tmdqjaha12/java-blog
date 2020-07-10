@@ -45,6 +45,8 @@
 <div class="article-detail-1" style="margin-top: 300px;">
 	<div class="con flex flex-jc-sb flex-column-nowrap"
 		style="border: 3px solid pink; width: 1000px;">
+		
+		<h3>조회 : <%=article.getHit()%></h1>
 
 		<div class="title" style="text-align: center;">
 			<h1><%=article.getTitle()%></h1>
@@ -65,7 +67,12 @@
 		</script>
 	</div>
 	
-	<form action="${pageContext.request.contextPath}/s/article/doModify" method="get" encType="multiplart/form-data">
+	<form action="modify" method="POST" encType="multiplart/form-data">
+		<input type="hidden" name="id" value="<%=article.getId()%>"/>
+		<input type="hidden" name="regDate" value="<%=article.getRegDate()%>"/>
+		<input type="hidden" name="title" value="<%=article.getTitle()%>"/>
+		<input type="hidden" name="body" value="<%=article.getBody()%>"/>
+		<input type="hidden" name="cateItemId" value="<%=article.getCateItemId()%>"/>
 		<input	type="submit" value="수정" /> 
 	</form>
 	<form action="${pageContext.request.contextPath}/s/article/doDelete" method="get" encType="multiplart/form-data">

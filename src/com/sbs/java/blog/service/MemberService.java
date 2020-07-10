@@ -21,4 +21,8 @@ public class MemberService extends Service {
 	public int join(String loginId, String name, String nickname, String loginPw) {
 		return memberDao.join(loginId, name, nickname, loginPw);
 	}
+
+	public int login(String loginId, String loginPw) {
+		return memberDao.login(loginId, loginPw);
+	}
 }

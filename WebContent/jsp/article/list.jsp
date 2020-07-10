@@ -178,7 +178,7 @@ String cateItemName = (String) request.getAttribute("cateItemName");
     <button type="button" class="upBtn">▲</button><br /><br />
     <button type="button" class="downBtn">▼</button>  
 	<div class="doWrite" style="margin-top: 20px; border:1px solid black; background-color:#f9c6cf; margin-left:6px;">
-		<a href="${pageContext.request.contextPath}/s/article/doWrite">글쓰기</a>
+		<a href="${pageContext.request.contextPath}/s/article/write">글쓰기</a>
 	</div>
 
     <script>
