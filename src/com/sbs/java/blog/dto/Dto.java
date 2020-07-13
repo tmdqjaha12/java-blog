@@ -9,17 +9,24 @@ public class Dto {
 	private Map<String, Object> extra;
 
 	public Dto(Map<String, Object> row) {
-		this.id = (int) row.get("id");
-		this.regDate = (String) row.get("regDate");
-		this.extra = new HashMap<>();
+		
+		if((String) row.get("regDate") != null) {
+			this.id = (int) row.get("id");
+			this.regDate = (String) row.get("regDate");
+			this.extra = new HashMap<>();
 
-		for (String key : row.keySet()) {
-			if (key.startsWith("extra__")) {
-				Object value = row.get(key);
-				String extraKey = key.substring(7);
-				this.extra.put(extraKey, value);
+			for (String key : row.keySet()) {
+				if (key.startsWith("extra__")) {
+					Object value = row.get(key);
+					String extraKey = key.substring(7);
+					this.extra.put(extraKey, value);
+				}
 			}
 		}
+	}
+	
+	public Dto() {
+		
 	}
 
 	public int getId() {

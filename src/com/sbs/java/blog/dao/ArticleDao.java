@@ -176,7 +176,20 @@ public class ArticleDao extends Dao {
 		sql.append(", cateItemId = ?", cateItemId);
 		sql.append("WHERE id = ?", id);
 		
-		System.out.println(dbUtil.update(dbConn, sql));
+//		System.out.println(dbUtil.update(dbConn, sql));
 		return dbUtil.update(dbConn, sql);
+	}
+
+	public void comment(String name, String id, String pw, String comment) {
+		SecSql sql = new SecSql();
+
+//		sql.append("UPDATE article");
+//		sql.append("SET regDate = ?", regDate);
+//		sql.append(", updateDate = NOW()");
+//		sql.append(", title = ? ", title);
+//		sql.append(", body = ? ", body);
+//		sql.append(", cateItemId = ?", cateItemId);
+//		sql.append("WHERE id = ?", id);
+		
 	}
 }

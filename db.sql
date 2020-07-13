@@ -29,19 +29,22 @@ CREATE TABLE article (
     regDate DATETIME NOT NULL,
     updateDate DATETIME NOT NULL,
     cateItemId INT(10) UNSIGNED NOT NULL,
+    memberId INT(10) UNSIGNED NOT NULL,
     displayStatus TINYINT(1) UNSIGNED NOT NULL,
     `title` CHAR(200) NOT NULL,
-    `body` TEXT NOT NULL
+    `body` TEXT NOT NULL,
+    hit INT(100) UNSIGNED NOT NULL
 );
 
 # 1번글 생성
-INSERT INTO article SET
-regDate = NOW(),
-updateDate = NOW(),
-cateItemId = 6,
-displayStatus = 1,
-title = '블로그를 시작합니다.',
-`body` = ''
+INSERT INTO article
+SET regDate = NOW()
+, updateDate = NOW()
+, title = '12341234'
+, `body` = '12341234'
+, cateItemId = 1
+, memberId = 1
+, displayStatus = 1;
 
 
 

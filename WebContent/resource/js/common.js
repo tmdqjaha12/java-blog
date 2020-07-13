@@ -14,6 +14,48 @@ function MobileSideBar__init() {
 	});
 }
 
+var writeFormSubmitted = false;
+
+function submitWriteForm(form) {
+	if (writeFormSubmitted) {
+		alert('처리 중입니다.');
+		return;
+	}
+
+	form.title.value = form.title.value.trim();
+	if (form.title.value.length == 0) {
+		alert('제목을 입력해주세요.');
+		form.title.focus();
+
+		return;
+	}
+
+	if (form.title.value.indexOf(' ') != -1) {
+		alert('제목을 영문소문자와 숫자의 조합으로 입력해주세요.')
+		form.title.focus();
+
+		return;
+	}
+
+	form.body.value = form.body.value.trim();
+	if (form.body.value.length == 0) {
+		alert('내용을 입력해주세요.');
+		form.body.focus();
+
+		return;
+	}
+
+	if (form.body.value.indexOf(' ') != -1) {
+		alert('내용을 영문소문자와 숫자의 조합으로 입력해주세요.')
+		form.body.focus();
+
+		return;
+	}
+
+	form.submit();
+	writeFormSubmitted = true;
+}
+
 var loginFormSubmitted = false;
 
 function submitLoginForm(form) {
@@ -51,7 +93,7 @@ function submitLoginForm(form) {
 
 		return;
 	}
-	
+
 	form.loginPwReal.value = sha256(form.loginPw.value);
 	form.loginPw.value = '';
 
@@ -319,6 +361,27 @@ function getUrlParams(url) {
 	return params;
 }
 // lib 끝
+
+var editor1 = new toastui.Editor({
+	el : document.querySelector("#editor1"),
+	height : "600px",
+	initialEditType : "markdown",
+	previewStyle : "vertical",
+	initialValue : "# 안녕",
+	plugins : [ toastui.Editor.plugin.codeSyntaxHighlight,
+			youtubePlugin, replPlugin, codepenPlugin ]
+});
+
+function submitWriteForm(form) {
+	var source = editor1.getMarkdown().trim();
+	if (source.length == 0) {
+		alert('내용을 입력해주세요.');
+		editor1.focus();
+		return;
+	}
+	form.body.value = source;
+	form.submit();
+}
 
 $(function() {
 	MobileSideBar__init();

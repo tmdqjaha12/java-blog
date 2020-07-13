@@ -40,6 +40,7 @@ public class DBUtil {
 
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
+		
 
 		try {
 			stmt = sql.getPreparedStatement(dbConn);
@@ -213,54 +214,5 @@ public class DBUtil {
 		}
 
 		return affectedRows;
-	}
-	
-	public static int fact(Connection dbConn, SecSql sql) {
-		int affectedRows = 0;
-
-		PreparedStatement stmt = null;
-
-		try {
-			stmt = sql.getPreparedStatement(dbConn);
-			affectedRows = stmt.executeUpdate();
-		} catch (SQLException e) {
-			throw new SQLErrorException("SQL 예외, SQL : " + sql);
-		} finally {
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException e) {
-					throw new SQLErrorException("SQL 예외, stmt 닫기, SQL : " + sql);
-				}
-			}
-		}
-
-		return affectedRows;
-	}
-
-	public int exists(Connection dbConn, SecSql sql) {
-		ResultSet affectedRows;
-		int id = 0;
-
-		PreparedStatement stmt = null;
-
-		try {
-			stmt = sql.getPreparedStatement(dbConn);
-			affectedRows = stmt.executeQuery();
-			id = affectedRows.getConcurrency();
-			System.out.println(id);
-		} catch (SQLException e) {
-			throw new SQLErrorException("SQL 예외, SQL : " + sql);
-		} finally {
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException e) {
-					throw new SQLErrorException("SQL 예외, stmt 닫기, SQL : " + sql);
-				}
-			}
-		}
-
-		return id;
 	}
 }

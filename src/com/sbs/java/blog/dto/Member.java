@@ -14,18 +14,17 @@ public class Member extends Dto {
 		super(row);
 
 		this.updateDate = (String) row.get("updateDate");
-		this.loginId = (String) row.get("title");
-		this.name = (String) row.get("body");
+		this.loginId = (String) row.get("loginId");
+		this.name = (String) row.get("name");
 		this.nickname = (String) row.get("nickname");
 		this.loginPw = (String) row.get("loginPw");
 		this.loginPwConfirm = (String) row.get("loginPwConfirm");
 	}
-
+	
 	@Override
 	public String toString() {
-		return "Member [updateDate=" + updateDate + ", loginId=" + loginId + ", name=" + name + ", nickname=" + nickname
-				+ ", loginPw=" + loginPw + ", loginPwConfirm=" + loginPwConfirm + ", getId()=" + getId()
-				+ ", getRegDate()=" + getRegDate() + "]";
+		return "Member [updateDate=" + updateDate + ", loginId=" + loginId + ", name=" + name + ", nickname="
+				+ nickname + ", loginPw=" + loginPw + ", loginPwConfirm=" + loginPwConfirm + ", dto=" + super.toString() + "]";
 	}
 
 	public String getUpdateDate() {

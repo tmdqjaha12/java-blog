@@ -1,10 +1,13 @@
 package com.sbs.java.blog.dao;
 
 import java.sql.Connection;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.sbs.java.blog.dto.Article;
+import com.sbs.java.blog.dto.Member;
 import com.sbs.java.blog.util.DBUtil;
 import com.sbs.java.blog.util.SecSql;
 
@@ -33,21 +36,26 @@ public class MemberDao extends Dao{
 		return dbUtil.insert(dbConn, secSql);
 	}
 
-	public int login(String loginId, String loginPw) {
+	public Member login(String loginId, String loginPw) {
 		SecSql secSql = new SecSql();
 		
-//		secSql.append("SELECT *");
-//		secSql.append("FROM member");
+		secSql.append("SELECT *");
+		secSql.append("FROM member");
+		secSql.append("WHERE 1");
+		secSql.append("AND loginId = ?", loginId);
+		secSql.append("AND loginPw = ?", loginPw);
+//		
+//		secSql.append("SELECT EXISTS (");
+//		secSql.append("SELECT * FROM member");
 //		secSql.append("WHERE loginId = ?", loginId);
 //		secSql.append("AND loginPw = ?", loginPw);
+//		secSql.append(")AS success");
+		if(new Member(dbUtil.selectRow(dbConn, secSql)).getId() == 0) {
+			return null;
+		}
 		
-		secSql.append("SELECT EXISTS (");
-		secSql.append("SELECT * FROM member");
-		secSql.append("WHERE loginId = ?", loginId);
-		secSql.append("AND loginPw = ?", loginPw);
-		secSql.append(")AS success");
-		
-		return dbUtil.exists(dbConn, secSql);
+		return new Member(dbUtil.selectRow(dbConn, secSql));
 	}
 
+	
 }

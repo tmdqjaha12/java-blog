@@ -5,8 +5,8 @@ import java.sql.Connection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.sbs.java.blog.service.ArticleService;
-import com.sbs.java.blog.service.MemberService;
+import com.sbs.java.blog.dto.Member;
+import com.sbs.java.blog.session.Session;
 
 public class MemberController extends Controller {
 
@@ -46,11 +46,14 @@ public class MemberController extends Controller {
 		String loginId = req.getParameter("loginId");
 		String loginPw = req.getParameter("loginPwReal");
 		
-		int id = memberSercive.login(loginId, loginPw);
+		Member member = memberSercive.login(loginId, loginPw);
 		
-		if(id == 0) {
+		if(member == null) {
 			return "html:<script> alert('유효하지 않는 정보입니다.'); location.replace('login'); </script>";
 		}
+		
+		Session.setLoginedMember(member);
+	
 		
 		return "html:<script> alert('로그인 완료'); location.replace('../home/main'); </script>";
 	}

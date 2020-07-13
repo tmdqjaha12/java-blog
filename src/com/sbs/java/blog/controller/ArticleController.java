@@ -38,9 +38,21 @@ public class ArticleController extends Controller {
 			return doActionDoModify(req, resp);
 		case "doDelete":
 			return doActionDoDelete(req, resp);
+		case "doComment":
+			return doActionDoComment(req, resp);
 		}
-
 		return "";
+	}
+
+	private String doActionDoComment(HttpServletRequest req, HttpServletResponse resp) {
+		String name = Util.getString(req, "name");
+		String id = Util.getString(req, "id");
+		String pw = Util.getString(req, "pw");
+		String comment = Util.getString(req, "comment");
+		
+		articleService.comment(name, id, pw, comment);
+		
+		return "html:<script> alert('작성 완료'); location.replace('detail'); </script>";
 	}
 
 	private String doActionDoModify(HttpServletRequest req, HttpServletResponse resp) {
@@ -52,7 +64,7 @@ public class ArticleController extends Controller {
 		
 		int id_ = articleService.modify(id, cateItemId, regDate, title, body);
 		
-		System.out.println(id_);
+//		System.out.println(id_);
 		
 		return "html:<script> alert('수정완료'); location.replace('list'); </script>";
 	}

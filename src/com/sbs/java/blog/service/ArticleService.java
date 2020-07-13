@@ -54,4 +54,9 @@ public class ArticleService extends Service {
 	public int modify(int id, int cateItemId, String regDate, String title, String body) {
 		return articleDao.modify(id, cateItemId, regDate, title, body);
 	}
+
+	public void comment(String name, String id, String pw, String comment) {
+		articleDao.comment(name, id, pw, comment);
+		
+	}
 }
