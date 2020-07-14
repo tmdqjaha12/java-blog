@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.sbs.java.blog.dao.ArticleDao;
 import com.sbs.java.blog.dto.Article;
+import com.sbs.java.blog.dto.ArticleReply;
 import com.sbs.java.blog.dto.CateItem;
 
 public class ArticleService extends Service {
@@ -47,16 +48,19 @@ public class ArticleService extends Service {
 		articleDao.increaseHit(id);
 	}
 
-	public int write(int cateItemId, String title, String body) {
-		return articleDao.write(cateItemId, title, body);
+	public int write(int loginedMemberId, int cateItemId, String title, String body) {
+		return articleDao.write(loginedMemberId, cateItemId, title, body);
 	}
 
 	public int modify(int id, int cateItemId, String regDate, String title, String body) {
 		return articleDao.modify(id, cateItemId, regDate, title, body);
 	}
 
-	public void comment(String name, String id, String pw, String comment) {
-		articleDao.comment(name, id, pw, comment);
-		
+	public int comment(String articleId, String memberId, String body) {
+		return articleDao.comment(articleId, memberId, body);
+	}
+
+	public List<ArticleReply> commentList(int articleId) {
+		return articleDao.commentList(articleId);
 	}
 }

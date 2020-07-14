@@ -1,12 +1,13 @@
 <%@ page import="com.sbs.java.blog.dto.Article"%>
 <%@ page import="com.sbs.java.blog.dto.Member"%>
-<%@ page import="com.sbs.java.blog.session.Session"%>
+<%@ page import="com.sbs.java.blog.dto.ArticleReply"%>
+<%@ page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ include file="/jsp/part/head.jspf"%>
 <%
 	Article article = (Article) request.getAttribute("article");
-	Member member = Session.getLoginedMember();
+	List<ArticleReply> articleReplies = (List<ArticleReply>) request.getAttribute("articleReplies");
 %>
 <!-- 하이라이트 라이브러리 추가, 토스트 UI 에디터에서 사용됨 -->
 <script
@@ -70,32 +71,48 @@
 							youtubePlugin, replPlugin, codepenPlugin ]
 				});
 			</script>
-	</div>
 
-	<form action="modify" method="POST" encType="multiplart/form-data">
-		<input type="hidden" name="id" value="<%=article.getId()%>" /> <input
-			type="hidden" name="regDate" value="<%=article.getRegDate()%>" /> <input
-			type="hidden" name="title" value="<%=article.getTitle()%>" /> <input
-			type="hidden" name="body" value="<%=article.getBody()%>" /> <input
-			type="hidden" name="cateItemId" value="<%=article.getCateItemId()%>" />
-		<input type="submit" value="수정" />
-	</form>
-	<form action="${pageContext.request.contextPath}/s/article/doDelete"
-		method="get" encType="multiplart/form-data">
-		<input type="hidden" name="id" value="${param.id}" /> <input
-			type="submit" value="삭제" />
-	</form>
+			<%
+				if (session.getAttribute("loginedMemberId") != null) {
+					if (article.getMemberId() == (int)session.getAttribute("loginedMemberId")) {
+			%>
+			<div class="button flex" style="">
+				<form action="modify" method="POST" encType="multiplart/form-data">
+					<input type="hidden" name="id" value="<%=article.getId()%>" /> <input
+						type="hidden" name="regDate" value="<%=article.getRegDate()%>" />
+					<input type="hidden" name="title" value="<%=article.getTitle()%>" />
+					<input type="hidden" name="body" value="<%=article.getBody()%>" />
+					<input type="hidden" name="cateItemId"
+						value="<%=article.getCateItemId()%>" /> <input type="submit"
+						value="수정" />
+				</form>
+				<form action="${pageContext.request.contextPath}/s/article/doDelete"
+					method="get" encType="multiplart/form-data">
+					<input type="hidden" name="id" value="${param.id}" /> <input
+						type="submit" value="삭제" />
+				</form>
+			</div>
+			<%
+				}
+				}
+			%>
+		
+	</div>
 </div>
 
-<div class="con comment"
-	style="background-color: pink; width:100%;">
+
+<!-- 댓글 -->
+<div class="con comment" style="background-color: pink; width: 100%; margin-top:50px">
 	<form action="doComment" method="POST">
+		<input type="hidden" name="articleId" value="<%=article.getId()%>" />
+		<input type="hidden" name="memberId"
+			value="<%=article.getMemberId()%>" />
 		<table>
 			<tbody>
 				<tr>
 					<td><textarea style="resize: none;" cols="50" rows="5"
-							placeholder="댓글을 입력하세요. " name="comment"></textarea></td>
-					<td><input style="padding:30px;" type="submit" value="등록" /></td>
+							placeholder="댓글을 입력하세요. " name="body"></textarea></td>
+					<td><input style="padding: 30px;" type="submit" value="등록" /></td>
 				</tr>
 
 			</tbody>
@@ -103,10 +120,27 @@
 	</form>
 </div>
 
-<div class="con flex flex-column-nowrap comment-List"
+<div class="con  comment-List"
 	style="background-color: pink; width: 1000px; margin-top: 50px;">
-	<div class="flex-as-c"
-		style="width: 100px; height: 100px; background-color: red;">gddgdsg</div>
+	<div class="con articleRepliesItem">
+		<%
+			for (ArticleReply articleReply : articleReplies) {
+		%>
+		<table style="border: 1px solid red;">
+			<tbody>
+				<tr>
+					<td><%=articleReply.getRegDate()%></td>
+				</tr>
+				<tr>
+					<td><%=articleReply.getBody()%></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<%
+			}
+		%>
+	</div>
 </div>
 
 

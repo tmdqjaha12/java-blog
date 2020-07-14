@@ -5,9 +5,12 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.sbs.java.blog.dto.Article;
+import com.sbs.java.blog.dto.ArticleReply;
 import com.sbs.java.blog.dto.CateItem;
+import com.sbs.java.blog.dto.Member;
 import com.sbs.java.blog.util.Util;
 
 public class ArticleController extends Controller {
@@ -45,15 +48,39 @@ public class ArticleController extends Controller {
 	}
 
 	private String doActionDoComment(HttpServletRequest req, HttpServletResponse resp) {
-		String name = Util.getString(req, "name");
-		String id = Util.getString(req, "id");
-		String pw = Util.getString(req, "pw");
-		String comment = Util.getString(req, "comment");
-		
-		articleService.comment(name, id, pw, comment);
-		
-		return "html:<script> alert('작성 완료'); location.replace('detail'); </script>";
+		String articleId = Util.getString(req, "articleId");
+		String memberId = Util.getString(req, "memberId");
+		String body = Util.getString(req, "body");
+
+		int id = articleService.comment(articleId, memberId, body);
+
+		return "html:<script> location.replace('detail?id=" + articleId + "'); </script>";
 	}
+
+//	private String doActionList(HttpServletRequest req, HttpServletResponse resp) {
+//		String articleId = Util.getString(req, "articleId");
+//		String memberId = Util.getString(req, "memberId");
+//		String body = Util.getString(req, "body");
+//		int id = articleService.comment(articleId, memberId, body);
+//		
+//		int page = 1;
+//
+//		if (!Util.empty(req, "page") && Util.isNum(req, "page")) {
+//			page = Util.getInt(req, "page");
+//		}
+//
+//		int itemsInAPage = 5;
+//		int totalCount = articleService.getForPrintListCommentCount(cateItemId);
+//		int totalPage = (int) Math.ceil(totalCount / (double) itemsInAPage);
+//
+//		req.setAttribute("totalCount", totalCount);
+//		req.setAttribute("totalPage", totalPage);
+//		req.setAttribute("page", page);
+//
+//		List<Article> articles = articleService.getForPrintListArticles(page, itemsInAPage, cateItemId, searchKeywordType, searchKeyword);
+//		req.setAttribute("articles", articles);
+//		return "article/list.jsp";
+//	}
 
 	private String doActionDoModify(HttpServletRequest req, HttpServletResponse resp) {
 		int id = Util.getInt(req, "id");
@@ -61,11 +88,11 @@ public class ArticleController extends Controller {
 		String regDate = Util.getString(req, "regDate");
 		String title = Util.getString(req, "title");
 		String body = Util.getString(req, "body");
-		
+
 		int id_ = articleService.modify(id, cateItemId, regDate, title, body);
-		
+
 //		System.out.println(id_);
-		
+
 		return "html:<script> alert('수정완료'); location.replace('list'); </script>";
 	}
 
@@ -76,17 +103,16 @@ public class ArticleController extends Controller {
 		String regDate = Util.getString(req, "regDate");
 		String title = Util.getString(req, "title");
 		String body = Util.getString(req, "body");
-		
+
 		req.setAttribute("id", id);
 		req.setAttribute("cateItemId", cateItemId);
 		req.setAttribute("regDate", regDate);
 		req.setAttribute("title", title);
 		req.setAttribute("body", body);
-		
-		
+
 		return "article/modify.jsp";
 	}
-	
+
 	private String doActionDoDelete(HttpServletRequest req, HttpServletResponse resp) {
 		if (Util.empty(req, "id")) {
 			return "html:id를 입력해주세요.";
@@ -97,7 +123,7 @@ public class ArticleController extends Controller {
 		}
 
 		int id = Util.getInt(req, "id");
-		
+
 		articleService.doDeleteArticle(id);
 
 		return "html:<script> alert('삭제 완료'); location.replace('list'); </script>";
@@ -111,13 +137,17 @@ public class ArticleController extends Controller {
 		String title = req.getParameter("title");
 		String body = req.getParameter("body");
 		int cateItemId = Util.getInt(req, "cateItemId");
-		
-		int id = articleService.write(cateItemId, title, body);
-		
+		int loginedMemberId = 0;
+		if(session.getAttribute("loginedMemberId") != null) {
+			loginedMemberId = (int) session.getAttribute("loginedMemberId");
+		}
+
+		int id = articleService.write(loginedMemberId, cateItemId, title, body);
+
 		return "html:<script> alert('" + id + "번 게시물이 생성되었습니다.'); location.replace('list'); </script>";
 	}
 
-	private String doActionDetail(HttpServletRequest req, HttpServletResponse resp) {
+	private String doActionDetail(HttpServletRequest req, HttpServletResponse resp) {		
 		if (Util.empty(req, "id")) {
 			return "html:id를 입력해주세요.";
 		}
@@ -132,6 +162,10 @@ public class ArticleController extends Controller {
 		Article article = articleService.getForPrintArticle(id);
 
 		req.setAttribute("article", article);
+
+		List<ArticleReply> articleReplies = articleService.commentList(id);
+
+		req.setAttribute("articleReplies", articleReplies);
 
 		return "article/detail.jsp";
 	}
@@ -148,15 +182,14 @@ public class ArticleController extends Controller {
 		if (!Util.empty(req, "cateItemId") && Util.isNum(req, "cateItemId")) {
 			cateItemId = Util.getInt(req, "cateItemId");
 		}
-		
+
 		String cateItemName = "전체";
-		
-		if ( cateItemId != 0 ) {
+
+		if (cateItemId != 0) {
 			CateItem cateItem = articleService.getCateItem(cateItemId);
 			cateItemName = cateItem.getName();
 		}
 		req.setAttribute("cateItemName", cateItemName);
-		
 
 		String searchKeywordType = "";
 
@@ -178,7 +211,8 @@ public class ArticleController extends Controller {
 		req.setAttribute("totalPage", totalPage);
 		req.setAttribute("page", page);
 
-		List<Article> articles = articleService.getForPrintListArticles(page, itemsInAPage, cateItemId, searchKeywordType, searchKeyword);
+		List<Article> articles = articleService.getForPrintListArticles(page, itemsInAPage, cateItemId,
+				searchKeywordType, searchKeyword);
 		req.setAttribute("articles", articles);
 		return "article/list.jsp";
 	}

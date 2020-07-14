@@ -85,3 +85,51 @@ memberStatus = 0,
 
 SELECT *
 FROM `member`;
+
+
+DROP TABLE IF EXISTS `articleReply`;
+CREATE TABLE `articleReply` (
+    id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    regDate DATETIME NOT NULL,
+    updateDate DATETIME NOT NULL,
+    articleId INT(10) NOT NULL,
+    `body` TEXT NOT NULL,
+    memberId INT(10) NOT NULL
+);
+
+
+INSERT INTO articleReply
+SET regDate = NOW()
+, updateDate = NOW()
+, articleId = 1
+, memberId = 1
+, `body` = 'ㅎㅇ';
+
+SELECT *
+FROM articleReply;
+
+SELECT COUNT(*)
+FROM `member`
+WHERE loginId = 'sbs';
+
+SELECT COUNT(*)
+FROM `member`
+WHERE loginId = '12';
+
+////////////
+
+세션은 서버에 저장되는 각 사용자 별 개인 저장소 이다
+HttpSession session = request.getSession();
+
+로그인 처리 memberController의 doLogin에서 처리해야함
+session.setAttribute("loginedMember", 1);
+
+
+로그인 여부 체크
+int loginedMemberId = 0;
+if ( session.getAttribute("loginedMemberId")!=null){
+    loginedMemberId = (int)session.getAttribute("loginedMemberId");
+}
+
+로그아웃
+session.removeAttribute("loginedMemberId");

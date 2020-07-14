@@ -11,7 +11,7 @@ import com.sbs.java.blog.dto.Member;
 import com.sbs.java.blog.util.DBUtil;
 import com.sbs.java.blog.util.SecSql;
 
-public class MemberDao extends Dao{
+public class MemberDao extends Dao {
 	private Connection dbConn;
 	private DBUtil dbUtil;
 
@@ -23,7 +23,7 @@ public class MemberDao extends Dao{
 
 	public int join(String loginId, String name, String nickname, String loginPw) {
 		SecSql secSql = new SecSql();
-		
+
 		secSql.append("INSERT INTO member");
 		secSql.append("SET regDate = NOW()");
 		secSql.append(", updateDate = NOW()");
@@ -32,13 +32,13 @@ public class MemberDao extends Dao{
 		secSql.append(", name = ?", name);
 		secSql.append(", nickname = ?", nickname);
 		secSql.append(", loginPw = ?", loginPw);
-		
+
 		return dbUtil.insert(dbConn, secSql);
 	}
 
 	public Member login(String loginId, String loginPw) {
 		SecSql secSql = new SecSql();
-		
+
 		secSql.append("SELECT *");
 		secSql.append("FROM member");
 		secSql.append("WHERE 1");
@@ -50,12 +50,43 @@ public class MemberDao extends Dao{
 //		secSql.append("WHERE loginId = ?", loginId);
 //		secSql.append("AND loginPw = ?", loginPw);
 //		secSql.append(")AS success");
-		if(new Member(dbUtil.selectRow(dbConn, secSql)).getId() == 0) {
+		if (new Member(dbUtil.selectRow(dbConn, secSql)).getId() == 0) {
 			return null;
 		}
-		
+
 		return new Member(dbUtil.selectRow(dbConn, secSql));
 	}
 
-	
+	public boolean getMemberCounts(String loginId, String loginPw) {
+		SecSql secSql = new SecSql();
+
+		secSql.append("SELECT COUNT(*)");
+		secSql.append("FROM member");
+		secSql.append("WHERE loginId = ?", loginId);
+		secSql.append("AND loginPw = ?", loginPw);
+
+		return dbUtil.selectRowBooleanValue(dbConn, secSql);
+	}
+//loginId.replaceAll("<". "&lt;").replaceAll(">". "&gt;").replace("\r\n", "<br>">));
+
+	public boolean getLoginIdFact(String loginId) {
+		SecSql secSql = new SecSql();
+
+		secSql.append("SELECT COUNT(*)");
+		secSql.append("FROM member");
+		secSql.append("WHERE loginId = ?", loginId);
+
+		return dbUtil.selectRowBooleanValue(dbConn, secSql);
+	}
+
+	public boolean getNickNameFact(String nickname) {
+		SecSql secSql = new SecSql();
+
+		secSql.append("SELECT COUNT(*)");
+		secSql.append("FROM member");
+		secSql.append("WHERE nickname = ?", nickname);
+
+		return dbUtil.selectRowBooleanValue(dbConn, secSql);
+	}
+
 }

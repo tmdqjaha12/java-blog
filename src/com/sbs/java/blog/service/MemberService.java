@@ -27,4 +27,16 @@ public class MemberService extends Service {
 	public Member login(String loginId, String loginPw) {
 		return memberDao.login(loginId, loginPw);
 	}
+
+	public boolean getMemberCounts(String loginId, String loginPw) {
+		return memberDao.getMemberCounts(loginId, loginPw);
+	}
+
+	public boolean getLoginIdFact(String loginId) {
+		return memberDao.getLoginIdFact(loginId);
+	}
+
+	public boolean getNickNameFact(String nickname) {
+		return memberDao.getNickNameFact(nickname);
+	}
 }

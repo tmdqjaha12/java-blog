@@ -106,7 +106,7 @@ var joinFormSubmitted = false;
 function submitJoinForm(form) {
 	if (joinFormSubmitted) {
 		alert('처리 중입니다.');
-		return;
+		return;	
 	}
 
 	form.loginId.value = form.loginId.value.trim();
