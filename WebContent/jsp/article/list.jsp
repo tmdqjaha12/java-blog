@@ -135,21 +135,34 @@
 				<%
 					for (Article article : articles) {
 				%>
-				<li style="margin-top: 20px; text-align: right;"><a
-					href="./detail?id=<%=article.getId()%>">
+				<li style="margin-top: 20px; text-align: right;">
+					<a href="./detail?id=<%=article.getId()%>">
 						<ul>
 							<li>No. <%=article.getId()%></li>
 							<li class="txt_line">※ <%=article.getTitle()%></li>
-						</ul> <img class="title-bg-1"
-						src="${pageContext.request.contextPath}/resource/img/java.jpg"
-						alt="" />
-				</a></li>
+						</ul> 
+						<img class="title-bg-1" src="${pageContext.request.contextPath}/resource/img/java.jpg" alt="" />
+					</a>
+				</li>
 				<%
 					}
 				%>
 			</ul>
 		</div>
-
+		<!-- 
+		<div class="con">
+	<ul>
+		<%
+			for (Article article : articles) {
+		%>
+		<li><a href="./detail?id=<%=article.getId()%>"><%=article.getId()%>,
+				<%=article.getCateItemId()%>, <%=article.getTitle()%></a></li>
+		<%
+			}
+		%>
+	</ul>
+</div>
+ -->
 		<div class="con page-box flex-as-c">
 			<ul class="flex flex-jc-c">
 				<%
@@ -164,10 +177,10 @@
 			</ul>
 		</div>
 
+
 		<div class="con search-box flex flex-jc-c">
 
-			<form action="${pageContext.request.contextPath}/s/article/list"
-				style="margin-bottom: 50px;">
+			<form action="${pageContext.request.contextPath}/s/article/list">
 				<input type="hidden" name="page" value="1" /> <input type="hidden"
 					name="cateItemId" value="${param.cateItemId}" /> <input
 					type="hidden" name="searchKeywordType" value="title" /> <input

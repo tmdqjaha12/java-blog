@@ -103,13 +103,13 @@ public class ArticleDao extends Dao {
 	}
 
 	public CateItem getCateItem(int cateItemId) {
-		String sql = "";
+//		String sql = "";
 		SecSql secSql = new SecSql();
 
-		sql += String.format("SELECT * ");
-		sql += String.format("FROM cateItem ");
-		sql += String.format("WHERE 1 ");
-		sql += String.format("AND id = %d", cateItemId);
+//		sql += String.format("SELECT * ");
+//		sql += String.format("FROM cateItem ");
+//		sql += String.format("WHERE 1 ");
+//		sql += String.format("AND id = %d", cateItemId);
 
 		secSql.append("SELECT *");
 		secSql.append("FROM cateItem");

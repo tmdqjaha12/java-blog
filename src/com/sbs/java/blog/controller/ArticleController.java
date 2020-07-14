@@ -211,6 +211,13 @@ public class ArticleController extends Controller {
 		req.setAttribute("totalPage", totalPage);
 		req.setAttribute("page", page);
 
+		System.out.println("page : " + page);
+		System.out.println("itemsInAPage : " + itemsInAPage);
+		System.out.println("cateItemId : " + cateItemId);
+		System.out.println("searchKeywordType : " + searchKeywordType);
+		System.out.println("searchKeyword : " + searchKeyword);
+		
+		
 		List<Article> articles = articleService.getForPrintListArticles(page, itemsInAPage, cateItemId,
 				searchKeywordType, searchKeyword);
 		req.setAttribute("articles", articles);
