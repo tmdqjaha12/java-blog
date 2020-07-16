@@ -32,12 +32,35 @@ public class ArticleController extends Controller {
 			return doActionDoWrite();
 		case "write":
 			return doActionWrite();
+		case "doModify":
+			return doActionDoModify();
+		case "modify":
+			return doActionModify();
+		case "doDelete":
+			return doActionWrite();
 		}
 
 		return "";
 	}
 
-	private String doActionWrite() {
+	private String doActionModify() {
+		return "article/modify.jsp";
+	}
+
+	private String doActionDoModify() {
+		int memberId = (int)req.getAttribute("loginedMemberId");
+		int articleId = Util.getInt(req, "articleId");
+		String cateItemId = Util.getString(req, "cateItemId");
+		String title = Util.getString(req, "title");
+		String body = Util.getString(req, "body");
+		String regDate = Util.getString(req, "regDate");
+		
+		int id = articleService.modify(memberId, articleId, cateItemId, title, body, regDate);
+		
+		return "html:<script> alert('" + id + "번 게시물이 수정되었습니다.'); location.replace('list'); </script>";
+	}
+
+	private String doActionWrite() {		
 		return "article/write.jsp";
 	}
 
@@ -91,6 +114,7 @@ public class ArticleController extends Controller {
 			CateItem cateItem = articleService.getCateItem(cateItemId);
 			cateItemName = cateItem.getName();
 		}
+		req.setAttribute("cateItemId", cateItemId);
 		req.setAttribute("cateItemName", cateItemName);
 
 		String searchKeywordType = "";

@@ -41,11 +41,12 @@
 <link rel="stylesheet"
 	href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 
-<div class="con">
-	<h1><%=article.getTitle()%></h1>
-	<h3>조회 : <%=article.getHit()%></h1>
-
-	<div>이모지 테스트 : 😀😁</div>
+<div class="con detail-box-1">
+	<h1 class="title"><%=article.getTitle()%></h1>
+	<h3 class="hit">
+		조회 :
+		<%=article.getHit()%></h3>
+	<div class="title-line"></div>
 
 	<script type="text/x-template" id="origin1" style="display: none;"><%=article.getBodyForXTemplate()%></script>
 	<div id="viewer1"></div>
@@ -59,7 +60,26 @@
 					youtubePlugin, replPlugin, codepenPlugin ]
 		});
 	</script>
-</div>
+	
+	<div class="modify-and-delete">
+		<div>
+			<form action="modify" method="POST">
+				<input type="hidden" name="title" value="<%=article.getTitle()%>" />
+				<input type="hidden" name="body" value="<%=article.getBody()%>" />
+				<input type="hidden" name="articleId" value="<%=article.getId()%>" />
+				<input type="hidden" name="cateItemId" value="<%=article.getCateItemId()%>" />
+				<input type="hidden" name="regDate" value="<%=article.getRegDate()%>" />
+				
+				<input type="submit" value="수정"/>
+			</form>
+		</div>
+		<div>
+			<form action="doDelete" method="get">
+				<input type="submit" value="삭제"/>
+			</form>
+			</div>
+		</div>
+	</div>
 
 
 

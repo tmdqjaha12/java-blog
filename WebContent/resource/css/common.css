@@ -523,6 +523,7 @@ label[for] {
 /* Articles 페이징 시작 */
 .page-box {
 	margin-top:10px;
+	margin-bottom: 30px;
 	background-color:pink;
 	text-align: center;
 }
@@ -533,9 +534,55 @@ label[for] {
 
 .page-box > ul > li > a {
 	font-size: 1.2rem;
+	padding: 0 10px;
+	text-decoration: underline;
+	color: #787878;
 }
 
+.page-box > ul > li:hover > a {
+	color: black;
+}
+
+.page-box > ul > li.current > a {
+	color: red;
+}
+
+.page-box > ul > span {
+	cursor: pointer;
+}
+
+.page-box > ul > span:active {
+	color:blue;
+}
 /* Articles 페이징 끝 */
+
+/* Article Detail 시작 */
+.detail-box-1 {
+	margin-top:50px;
+	border:3px solid pink;
+}
+.detail-box-1 > h1.title {
+	text-align:center;
+	margin-top:10px;	
+}
+.detail-box-1 > h3.hit {
+	text-align:right;
+	margin-right:10px;
+}
+.detail-box-1 > .title-line {
+	border-bottom:2px solid pink;
+}
+.detail-box-1 > .modify-and-delete {
+	text-align: right;
+}
+.detail-box-1 > .modify-and-delete > div {
+	display:inline-block;
+}
+
+.detail-box-1 > #viewer1 {
+	margin: 10px;
+}
+/* Article Detail 끝 */
 
 /* 모바일 탑바 시작 */
 .mobile-top-bar {

@@ -52,9 +52,11 @@ INSERT INTO article SET
 regDate = NOW(),
 updateDate = NOW(),
 cateItemId = 6,
+memberId = 2,
 displayStatus = 1,
 title = '블로그를 시작합니다.',
-`body` = ''
+`body` = 'd',
+hit = 0;
 
 # 회원 테이블 생성
 DROP TABLE IF EXISTS `member`;

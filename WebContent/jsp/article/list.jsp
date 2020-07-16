@@ -5,9 +5,10 @@
 <%@ include file="/jsp/part/head.jspf"%>
 <%
 	List<Article> articles = (List<Article>) request.getAttribute("articles");
-	int totalPage = (int) request.getAttribute("totalPage");
-	int paramPage = (int) request.getAttribute("page");
-	String cateItemName = (String) request.getAttribute("cateItemName");
+int totalPage = (int) request.getAttribute("totalPage");
+int paramPage = (int) request.getAttribute("page");
+int cateItemId = (int) request.getAttribute("cateItemId");
+String cateItemName = (String) request.getAttribute("cateItemName");
 %>
 <!-- 하이라이트 라이브러리 추가, 토스트 UI 에디터에서 사용됨 -->
 <script
@@ -45,32 +46,19 @@
 <link rel="stylesheet"
 	href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 
-<style>
-.page-box>ul>li>a {
-	padding: 0 10px;
-	text-decoration: underline;
-	color: #787878;
-}
+<!-- LIST.JSP  -->
 
-.page-box>ul>li:hover>a {
-	color: black;
-}
-
-s
-.page-box>ul>li.current>a {
-	color: red;
-}
-</style>
-
-<!-- 해당 카테고리 -->
+<!-- 해당 카테고리 시작 -->
 <h1 class="con page-bn-1">
 	<%=cateItemName%>
 </h1>
+<!-- 해당 카테고리 끝 -->
 
 <!-- 게시물 수 -->
 <div class="con articles-count flex flex-jc-e">총 게시물 수 : ${totalCount}</div>
+<!-- 게시물 끝 -->
 
-<!-- 검색 폼 -->
+<!-- 검색 폼 시작 -->
 <div class="con search-box flex flex-jc-e">
 
 	<form action="${pageContext.request.contextPath}/s/article/list">
@@ -82,8 +70,9 @@ s
 	</form>
 
 </div>
+<!-- 검색 폼 끝 -->
 
-<!-- 리스트 -->
+<!-- 리스트 시작 -->
 <div class="con page-list-1">
 	<%
 		for (Article article : articles) {
@@ -101,21 +90,30 @@ s
 	%>
 
 </div>
+<!-- 리스트 끝 -->
 
-<!-- 게시물 페이지 -->
+<!-- 게시물 페이징 시작 -->
 <div class="con page-box">
 	<ul>
+		<span>◀</span>
 		<%
-			for (int i = 1; i <= totalPage; i++) {
+		
+			for (int i = 1; i < totalPage; i++) {
 		%>
-		<li class="<%=i == paramPage ? "current" : ""%>"><a
-			href="?cateItemId=${param.cateItemId}&searchKeywordType=${param.searchKeywordType}&searchKeyword=${param.searchKeyword}&page=<%=i%>"
-			class="block"><%=i%></a></li>
+		<li class="<%=i == paramPage ? "current" : ""%>">
+			<a href="?cateItemId=${param.cateItemId}&searchKeywordType=${param.searchKeywordType}&searchKeyword=${param.searchKeyword}&page=<%=i%>" class="block">
+				<%=i%>
+			</a>
+		</li>
 		<%
 			}
+		
+		
 		%>
+		<span>▶</span>
 	</ul>
 </div>
+<!-- 게시물 페이징 끝 -->
 
 
 

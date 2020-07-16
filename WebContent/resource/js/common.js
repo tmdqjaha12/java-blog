@@ -14,6 +14,7 @@ function MobileSideBar__init() {
 	});
 }
 
+
 // 유튜브 플러그인 시작
 function youtubePlugin() {
 	toastui.Editor.codeBlockManager.setReplacer("youtube", function(youtubeId) {
