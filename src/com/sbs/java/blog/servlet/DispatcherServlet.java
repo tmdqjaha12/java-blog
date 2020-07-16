@@ -13,7 +13,7 @@ import com.sbs.java.blog.app.App;
 @WebServlet("/s/*")
 public class DispatcherServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		req.setCharacterEncoding("UTF-8");
+		req.setCharacterEncoding("UTF-8"); // 한글깨짐 방지
 		new App(req, resp).start();
 	}
 

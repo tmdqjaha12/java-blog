@@ -1,39 +1,58 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ include file="/jsp/part/head.jspf"%>
-<div class="member-login-1" style="margin-top: 300px;">
-	<div class="con "
-		style="border: 3px solid pink; width: 500px; height: 500px;">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
 
-		<table style="margin: 0 auto; margin-top: 150px;">
-			<thead>
-			<caption>로그인</caption>
-			</thead>
-			<tbody>
-				<form action="doLogin" method="POST" encType="multiplart/form-data"
-					onsubmit="submitLoginForm(this); return false;">
-					<input type="hidden" name="loginPwReal">
-					<tr>
-						<th>아이디:</th>
-						<td><input type="text" placeholder="아이디를 입력하세요. "
-							name="loginId" /></td>
-					</tr>
+<style>
+/* cus */
+.login-form-box {
+	margin-top: 30px;
+}
+</style>
 
-					<tr>
-						<th>비밀번호:</th>
-						<td><input type="password" placeholder="비밀번호를 입력하세요. "
-							name="loginPw" /></td>
-					</tr>
+<script>
+	function submitLoginForm(form) {
+		form.loginId.value = form.loginId.value.trim();
+		if (form.loginId.value.length == 0) {
+			alert('로그인 아이디를 입력해주세요.');
+			form.loginId.focus();
+			return;
+		}
+		form.loginPw.value = form.loginPw.value.trim();
+		if (form.loginPw.value.length == 0) {
+			alert('로그인 비번을 입력해주세요.');
+			form.loginPw.focus();
+			return;
+		}
+		form.loginPwReal.value = sha256(form.loginPw.value);
+		form.loginPw.value = '';
+		form.submit();
+	}
+</script>
 
-					<tr>
-						<td colspan="2"><input type="submit" value="로그인" /> <a
-							href="../home/main">취소</a></td>
-					</tr>
-				</form>
-			</tbody>
-		</table>
-
-	</div>
+<div class="login-form-box con">
+	<form action="doLogin" method="POST" class="login-form form1"
+		onsubmit="submitLoginForm(this); return false;">
+		<input type="hidden" name="loginPwReal" />
+		<div class="form-row">
+			<div class="label">로그인 아이디</div>
+			<div class="input">
+				<input name="loginId" type="text" placeholder="로그인 아이디를 입력해주세요." />
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="label">로그인 비번</div>
+			<div class="input">
+				<input name="loginPw" type="password" placeholder="로그인 비번을 입력해주세요." />
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="label">전송</div>
+			<div class="input">
+				<input type="submit" value="전송" /> <a href="../home/main">취소</a>
+			</div>
+		</div>
+	</form>
 </div>
+
 <%@ include file="/jsp/part/foot.jspf"%>

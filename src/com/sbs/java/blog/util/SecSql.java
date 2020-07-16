@@ -8,9 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SecSql {
-	private String sqlType;
 	private StringBuilder sqlBuilder;
 	private List<Object> datas;
+	
+	@Override
+	public String toString() {
+		return "sql=" + getFormat() + ", data=" + datas;
+	}
 
 	public SecSql() {
 		sqlBuilder = new StringBuilder();
@@ -64,4 +68,4 @@ public class SecSql {
 	public static SecSql from(String sql) {
 		return new SecSql().append(sql);
 	}
-} 
+}

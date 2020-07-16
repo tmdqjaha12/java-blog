@@ -5,26 +5,20 @@ import java.util.Map;
 public class Member extends Dto {
 	private String updateDate;
 	private String loginId;
+	private String loginPw;
 	private String name;
 	private String nickname;
-	private String loginPw;
-	private String loginPwConfirm;
+	private String email;
 
 	public Member(Map<String, Object> row) {
 		super(row);
 
 		this.updateDate = (String) row.get("updateDate");
 		this.loginId = (String) row.get("loginId");
+		this.loginPw = (String) row.get("loginPw");
 		this.name = (String) row.get("name");
 		this.nickname = (String) row.get("nickname");
-		this.loginPw = (String) row.get("loginPw");
-		this.loginPwConfirm = (String) row.get("loginPwConfirm");
-	}
-	
-	@Override
-	public String toString() {
-		return "Member [updateDate=" + updateDate + ", loginId=" + loginId + ", name=" + name + ", nickname="
-				+ nickname + ", loginPw=" + loginPw + ", loginPwConfirm=" + loginPwConfirm + ", dto=" + super.toString() + "]";
+		this.email = (String) row.get("email");
 	}
 
 	public String getUpdateDate() {
@@ -43,6 +37,14 @@ public class Member extends Dto {
 		this.loginId = loginId;
 	}
 
+	public String getLoginPw() {
+		return loginPw;
+	}
+
+	public void setLoginPw(String loginPw) {
+		this.loginPw = loginPw;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -59,22 +61,19 @@ public class Member extends Dto {
 		this.nickname = nickname;
 	}
 
-	public String getLoginPw() {
-		return loginPw;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setLoginPw(String loginPw) {
-		this.loginPw = loginPw;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
-	public String getLoginPwConfirm() {
-		return loginPwConfirm;
+	@Override
+	public String toString() {
+		return "Member [updateDate=" + updateDate + ", loginId=" + loginId + ", loginPw=" + loginPw + ", name=" + name
+				+ ", nickname=" + nickname + ", email=" + email + ", getId()=" + getId() + ", getRegDate()="
+				+ getRegDate() + ", getExtra()=" + getExtra() + "]";
 	}
-
-	public void setLoginPwConfirm(String loginPwConfirm) {
-		this.loginPwConfirm = loginPwConfirm;
-	}
-
-	
 
 }
