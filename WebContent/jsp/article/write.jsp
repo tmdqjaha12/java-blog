@@ -100,5 +100,16 @@
 		}
 	
 </script>
-
+<!-- 
+var editor1 = new toastui.Editor({
+			el : document.querySelector('#"editor1"'),
+			height: '600px',
+			width: '600px',
+			previewStyle: 'vertical',
+			plugins : [ toastui.Editor.plugin.codeSyntaxHighlight,
+					youtubePlugin, replPlugin, codepenPlugin ]
+		});
+<div id="editor1"></div>
+				<script type="text/x-template" id="editor1">getBodyFromXTemplate()</script>
+ -->
 <%@ include file="/jsp/part/foot.jspf"%>

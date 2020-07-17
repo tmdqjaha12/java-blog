@@ -42,18 +42,24 @@ public class ArticleController extends Controller {
 
 		return "";
 	}
-
+	
 	private String doActionModify() {
+		int articleId = Util.getInt(req, "articleId");
+		String regDate = Util.getString(req, "regDate");
+
+		req.setAttribute("articleId", articleId);
+		req.setAttribute("regDate", regDate);
+		
 		return "article/modify.jsp";
 	}
 
 	private String doActionDoModify() {
 		int memberId = (int)req.getAttribute("loginedMemberId");
-		int articleId = Util.getInt(req, "articleId");
-		String cateItemId = Util.getString(req, "cateItemId");
 		String title = Util.getString(req, "title");
 		String body = Util.getString(req, "body");
 		String regDate = Util.getString(req, "regDate");
+		int cateItemId = Util.getInt(req, "cateItemId");
+		int articleId = Util.getInt(req, "articleId");
 		
 		int id = articleService.modify(memberId, articleId, cateItemId, title, body, regDate);
 		

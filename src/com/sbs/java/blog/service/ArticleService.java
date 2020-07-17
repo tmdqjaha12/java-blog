@@ -43,7 +43,7 @@ public class ArticleService extends Service {
 		articleDao.increaseHit(id);
 	}
 
-	public int modify(int memberId, int articleId, String cateItemId, String title, String body, String regDate) {
+	public int modify(int memberId, int articleId, int cateItemId, String title, String body, String regDate) {
 		return articleDao.modify(memberId, articleId, cateItemId, title, body, regDate);
 	}
 }

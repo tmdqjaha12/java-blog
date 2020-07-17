@@ -136,7 +136,7 @@ public class ArticleDao extends Dao {
 		return DBUtil.update(dbConn, sql);
 	}
 
-	public int modify(int memberId, int articleId, String cateItemId, String title, String body, String regDate) {
+	public int modify(int memberId, int articleId, int cateItemId, String title, String body, String regDate) {
 		SecSql sql = new SecSql();
 
 		sql.append("UPDATE article");

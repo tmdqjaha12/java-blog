@@ -38,6 +38,8 @@
 
 <div class="write-form-box con">
 	<form action="doModify" method="POST" class="write-form form1">
+		<input type="hidden" name="articleId" value="<%=request.getAttribute("articleId")%>"/>
+		<input type="hidden" name="regDate" value="<%=request.getAttribute("regDate")%>"/>
 		<div class="form-row">
 			<div class="label">카테고리 선택</div>
 			<div class="input">
@@ -62,7 +64,7 @@
 		<div class="form-row">
 			<div class="label">내용</div>
 			<div class="input">
-				<div id="viewer1">value="<%=request.getParameter("body")%>"</div>
+				<div id="viewer1"><%=request.getParameter("body")%></div>
 				<textarea name="body" class="body" style="display:none"></textarea>
 			</div>
 		</div>

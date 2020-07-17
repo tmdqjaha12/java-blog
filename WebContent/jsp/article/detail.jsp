@@ -69,7 +69,7 @@
 				<input type="hidden" name="articleId" value="<%=article.getId()%>" />
 				<input type="hidden" name="cateItemId" value="<%=article.getCateItemId()%>" />
 				<input type="hidden" name="regDate" value="<%=article.getRegDate()%>" />
-				
+
 				<input type="submit" value="수정"/>
 			</form>
 		</div>
