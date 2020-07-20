@@ -103,8 +103,8 @@
 					class="block">AboutMe</a></li>
 				<li><a href="#" class="block">SNS</a>
 					<ul>
-						<li><a href="#" target="_blank" class="block">GITHUB</a></li>
-						<li><a href="#" target="_blank" class="block">INSTA</a></li>
+						<li><a href="https://github.com/tmdqjaha12" target="_blank" class="block">GITHUB</a></li>
+						<li><a href="https://github.com/tmdqjaha12" target="_blank" class="block">INSTA</a></li>
 					</ul></li>
 			</ul>
 		</nav>
@@ -150,7 +150,7 @@
 					<li><a
 						href="${pageContext.request.contextPath}/s/article/list"
 						class="flex height-100p flex-ai-c">Articles</a>
-						<ul>
+						<ul style="z-index:5;">
 							<%
 								for (CateItem cateItem : cateItems) {
 							%>
@@ -166,9 +166,9 @@
 						class="flex height-100p flex-ai-c">AboutMe</a></li>
 					<li><a href="#" class="flex height-100p flex-ai-c">SNS</a>
 						<ul>
-							<li><a href="https://github.com/jhs512" target="_blank"
+							<li><a href="https://github.com/tmdqjaha12" target="_blank"
 								class="block">GITHUB</a></li>
-							<li><a href="https://github.com/jhs512" target="_blank"
+							<li><a href="https://github.com/tmdqjaha12" target="_blank"
 								class="block">INSTA</a></li>
 						</ul></li>
 				</ul>
@@ -178,7 +178,7 @@
 	<%
 		if (loginedMember != null) {
 	%>
-	<div class="con"><%=loginedMember.getName()%>번 회원님 환영합니다.
+	<div class="con"><!-- loginedMember.getName()%>번 회원님 환영합니다. -->
 	</div>
 	<%
 		}

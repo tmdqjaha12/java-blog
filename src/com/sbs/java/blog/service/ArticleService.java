@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sbs.java.blog.dao.ArticleDao;
 import com.sbs.java.blog.dto.Article;
+import com.sbs.java.blog.dto.ArticleReply;
 import com.sbs.java.blog.dto.CateItem;
 
 public class ArticleService extends Service {
@@ -45,5 +46,13 @@ public class ArticleService extends Service {
 
 	public int modify(int memberId, int articleId, int cateItemId, String title, String body, String regDate) {
 		return articleDao.modify(memberId, articleId, cateItemId, title, body, regDate);
+	}
+
+	public void reply(int memberId, int articleId, String body) {
+		articleDao.reply(memberId, articleId, body);
+	}
+	
+	public List<ArticleReply> getForPrintReplies(int id) {
+		return articleDao.getForPrintReplies(id);
 	}
 }

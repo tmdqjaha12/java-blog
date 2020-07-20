@@ -37,9 +37,10 @@
 </style>
 
 <div class="write-form-box con">
-	<form action="doModify" method="POST" class="write-form form1">
+	<form action="doModify" method="POST" class="write-form form1" onsubmit="submitModifyForm(this); return false;">
 		<input type="hidden" name="articleId" value="<%=request.getAttribute("articleId")%>"/>
 		<input type="hidden" name="regDate" value="<%=request.getAttribute("regDate")%>"/>
+		<input type="hidden" name="body">
 		<div class="form-row">
 			<div class="label">카테고리 선택</div>
 			<div class="input">
@@ -64,8 +65,7 @@
 		<div class="form-row">
 			<div class="label">내용</div>
 			<div class="input">
-				<div id="viewer1"><%=request.getParameter("body")%></div>
-				<textarea name="body" class="body" style="display:none"></textarea>
+				<div id="editor1"><%=request.getParameter("body")%></div>
 			</div>
 		</div>
 		<div class="form-row">
@@ -77,29 +77,39 @@
 	</form>
 </div>
 
-<script type="text/x-template" id="origin1" style="display: none;"></script>
+<script type="text/x-template" id="editor1" style="display: none;">getBodyForXTemplate()</script>
 
 <script>
-		var editor1__initialValue = getBodyFromXTemplate('#origin1');
 		var editor1 = new toastui.Editor({
-			el : document.querySelector('#viewer1'),
-			height: '600px',
-			initialEditType: 'markdown',
-			previewStyle: 'vertical',
-			initialValue: "# 내용을 입력해주세요.",
-			initialValue : editor1__initialValue,
-			viewer : true,
-			plugins : [ toastui.Editor.plugin.codeSyntaxHighlight,
-					youtubePlugin, replPlugin, codepenPlugin ]
-		});
-
-		function replaceAll(viewer1){
-			return viewer1.replaceAll("(?i)script", "<!--REPLACE:script-->");
+			  el: document.querySelector("#editor1"),
+			  height: "600px",
+			  initialEditType: "markdown",
+			  previewStyle: "vertical",
+			  initialValue: "",
+			  plugins: [toastui.Editor.plugin.codeSyntaxHighlight, youtubePlugin, replPlugin, codepenPlugin]
+			});
+		
+		function submitModifyForm(form) {
+			form.title.value = form.title.value.trim();
+			if (form.title.value.length == 0) {
+				alert('제목을 입력해주세요.');
+				form.title.focus();
+				return;
+			}
+		
+			var source = editor1.getMarkdown().trim();
+			if ( source.length == 0 ) {
+		  	alert('내용을 입력해주세요.');
+		  	editor1.focus();
+		  	return;
+			}
+		
+			
+			form.body.value = source;
+			form.submit();
+			
 		}
 
-		$(document).ready(function(viewer1) {
-			$('textarea.body').html('viewer1');
-		});
 </script>
 
 <%@ include file="/jsp/part/foot.jspf"%>

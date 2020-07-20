@@ -37,7 +37,8 @@
 </style>
 
 <div class="write-form-box con">
-	<form action="doWrite" method="POST" class="write-form form1">
+	<form action="doWrite" method="POST" class="write-form form1" onsubmit="submitWriteForm(this); return false;">
+	<input type="hidden" name="body">
 		<div class="form-row">
 			<div class="label">카테고리 선택</div>
 			<div class="input">
@@ -62,54 +63,51 @@
 		<div class="form-row">
 			<div class="label">내용</div>
 			<div class="input">
-				<div id="viewer1"></div>
-				<textarea id="textarea" name="body" class="body" style="display:none"></textarea>
+				<div id="editor1"></div>
 			</div>
 		</div>
 		<div class="form-row">
 			<div class="label">전송</div>
 			<div class="input">
-				<input type="submit" value="전송"  onclick="submitTextArea()"/> <a href="list">취소</a>
+				<input type="submit" value="전송" /> <a href="list">취소</a>
 			</div>
 		</div>
 	</form>
 </div>
 
-<script type="text/x-template" id="origin1" style="display: none;"></script>
+<script type="text/x-template" id="editor1" style="display: none;">getBodyForXTemplate()</script>
+
 
 <script>
-		var editor1__initialValue = getBodyFromXTemplate('#origin1');
 		var editor1 = new toastui.Editor({
-			el : document.querySelector('#viewer1'),
-			height: '600px',
-			initialEditType: 'markdown',
-			previewStyle: 'vertical',
-			initialValue: "# 내용을 입력해주세요.",
-			initialValue : editor1__initialValue,
-			viewer : true,
-			plugins : [ toastui.Editor.plugin.codeSyntaxHighlight,
-					youtubePlugin, replPlugin, codepenPlugin ]
-		});
+			  el: document.querySelector("#editor1"),
+			  height: "600px",
+			  initialEditType: "markdown",
+			  previewStyle: "vertical",
+			  initialValue: "",
+			  plugins: [toastui.Editor.plugin.codeSyntaxHighlight, youtubePlugin, replPlugin, codepenPlugin]
+			});
 
-		function replaceAll(viewer1){
-			return viewer1.replaceAll("(?i)script", "<!--REPLACE:script-->");
-		}
+		function submitWriteForm(form) {
+			form.title.value = form.title.value.trim();
+			if (form.title.value.length == 0) {
+				alert('제목을 입력해주세요.');
+				form.title.focus();
+				return;
+			}
 
-		function submitTextArea(){
-			document.getElementById("textarea").innerHtml = "gww";
+			var source = editor1.getMarkdown().trim();
+		  	if ( source.length == 0 ) {
+		    	alert('내용을 입력해주세요.');
+		    	editor1.focus();
+		    	return;
+		  	}
+
+		  	
+		  	form.body.value = source;
+		  	form.submit();
+			
 		}
-	
 </script>
-<!-- 
-var editor1 = new toastui.Editor({
-			el : document.querySelector('#"editor1"'),
-			height: '600px',
-			width: '600px',
-			previewStyle: 'vertical',
-			plugins : [ toastui.Editor.plugin.codeSyntaxHighlight,
-					youtubePlugin, replPlugin, codepenPlugin ]
-		});
-<div id="editor1"></div>
-				<script type="text/x-template" id="editor1">getBodyFromXTemplate()</script>
- -->
+
 <%@ include file="/jsp/part/foot.jspf"%>

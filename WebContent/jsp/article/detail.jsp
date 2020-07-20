@@ -1,9 +1,13 @@
+<%@page import="com.sbs.java.blog.dto.ArticleReply"%>
 <%@ page import="com.sbs.java.blog.dto.Article"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ include file="/jsp/part/head.jspf"%>
 <%
 	Article article = (Article) request.getAttribute("article");
+	List<ArticleReply> articleReplies = (List<ArticleReply>) request.getAttribute("articleReplies");
 %>
 <!-- 하이라이트 라이브러리 추가, 토스트 UI 에디터에서 사용됨 -->
 <script
@@ -47,19 +51,8 @@
 		조회 :
 		<%=article.getHit()%></h3>
 	<div class="title-line"></div>
-
-	<script type="text/x-template" id="origin1" style="display: none;"><%=article.getBodyForXTemplate()%></script>
-	<div id="viewer1"></div>
-	<script>
-		var editor1__initialValue = getBodyFromXTemplate('#origin1');
-		var editor1 = new toastui.Editor({
-			el : document.querySelector('#viewer1'),
-			initialValue : editor1__initialValue,
-			viewer : true,
-			plugins : [ toastui.Editor.plugin.codeSyntaxHighlight,
-					youtubePlugin, replPlugin, codepenPlugin ]
-		});
-	</script>
+	
+	<div id="viewer1"><%=article.getBody() %></div>
 	
 	<div class="modify-and-delete">
 		<div>
@@ -79,7 +72,115 @@
 			</form>
 			</div>
 		</div>
+</div>
+
+<div class="con article-reply-write">
+	<div class="reply-button">댓글 쓰기</div>
+	<div class="con article-reply-write-box">
+		<form action="doReply" method="get" onsubmit="submitModifyForm(this); return false;">
+			<input type="hidden" name="id" value="<%=article.getId()%>" />
+			<textarea name="body" rows="10" cols="80" style="resize: none; display:block; margin:0 auto;"></textarea>
+			<input type="submit" value="작성" style="display:block; width:100px; margin:0 auto; margin-top:10px;"/>
+		</form>
 	</div>
+</div>
+
+
+
+<div class="con article-reply-view">
+
+<% for (ArticleReply articleReply : articleReplies) { %>
+	<div class="line">
+		<table>
+			<tbody>
+				<tr>
+					<th><div class="img-box"><img src="${pageContext.request.contextPath}/resource/img/meloporn_banner.png" alt="" /></div></th>
+					<td><h5><a href="#"><%=articleReply.getMemberId() %></a> · <%=articleReply.getRegDate() %></h5></td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<h4><%=articleReply.getBody() %></h4>
+		<section class="reply-modify">...
+			<div class="reply-modify-box">
+				<form action="">
+					<input type="submit" value="수정" "/>
+				</form>
+				<form action="">
+					<input type="submit" value="삭제"/>
+				</form>
+				<form action="">
+					<input type="submit" value="신고"/>
+				</form>
+			</div>
+		</section>
+	</div>
+</div>
+<% } %>
+
+	
+	
+	<script type="text/x-template" id="origin1" style="display: none;"></script>
+	<script>
+		var editor1__initialValue = getBodyFromXTemplate('#origin1');
+		var editor1 = new toastui.Editor({
+			el : document.querySelector('#viewer1'),
+			initialValue : editor1__initialValue,
+			viewer : true,
+			plugins : [ toastui.Editor.plugin.codeSyntaxHighlight,
+					youtubePlugin, replPlugin, codepenPlugin ]
+		});	
+		function replaceAll(viewer1){
+			return viewer1.replaceAll("(?i)script", "<!--REPLACE:script-->");
+		}
+
+		function submitModifyForm(form) {
+			form.body.value = form.body.value.trim();
+			if (form.body.value.length == 0) {
+				alert('내용을 입력해주세요.');
+				form.body.focus();
+				return;
+			}
+	
+		  	form.submit();
+		}
+
+		function ArticleReplyWrite__init() {
+			$('.article-reply-write .reply-button').click(function() {
+				var $this = $(this);
+
+				if ($this.hasClass('active')) {
+					$this.removeClass('active');
+					$('.article-reply-write-box').removeClass('active');
+				} else {
+					$this.addClass('active')
+					$('.article-reply-write-box').addClass('active');
+				}
+			});
+		}
+		$(function() {
+			ArticleReplyWrite__init();
+		});
+
+		
+		function ArticleReplyModify__init() {
+			$('.article-reply-view .reply-modify').click(function() {
+				var $this = $(this);
+
+				if ($this.hasClass('active')) {
+					$this.removeClass('active');
+					$('.reply-modify-box').removeClass('active');
+				} else {
+					$this.addClass('active')
+					$('.reply-modify-box').addClass('active');
+				}
+			});
+		}
+		$(function() {
+			ArticleReplyModify__init();
+		});
+			
+	</script>
 
 
 

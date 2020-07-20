@@ -580,9 +580,139 @@ label[for] {
 }
 
 .detail-box-1 > #viewer1 {
-	margin: 10px;
+	margin: 20px;
 }
 /* Article Detail 끝 */
+
+/* Article Reply Write 시작 */
+.article-reply-write {
+	margin-top: 50px;
+}
+.article-reply-write > .reply-button {
+	width:120px;
+	height:30px;
+	background-color:white;
+	color:black;
+	text-align: center;
+	border-radius: 100%;
+	border:1px solid pink;
+	font-weight: bold;
+	display:block;
+	margin:0 auto;
+	cursor: pointer;
+}
+.article-reply-write > .reply-button.active {
+	background-color:pink;
+	color:white;
+}
+
+.article-reply-write > .article-reply-write-box {
+	display:none;
+}
+
+.article-reply-write > .article-reply-write-box.active {
+	display:block;
+	margin-top: 30px;
+	margin-left:auto;
+}  
+/* Article Reply Write 끝  */
+
+/* Article Reply view 시작 */
+.article-reply-view::before {
+	content: "";
+	display: block;
+	clear: both;
+	border-radius:100%;
+	border:3px solid pink;
+	margin-bottom: 50px;
+}
+
+.article-reply-view > .line::after {
+	content: "";
+	display: block;
+	clear: both;
+	border-radius:100%;
+	border:1px dotted pink;
+	margin-bottom: 10px;
+}
+
+
+.article-reply-view {
+	margin-top: 50px;
+}
+
+.article-reply-view .img-box > img {
+	width:50px;
+	height:50px;
+	border-radius: 100%;
+	border:0.7px solid black;
+}
+
+.article-reply-view h5 {
+	font-weight:normal;
+	margin-left:10px;
+}
+
+.article-reply-view h4 {
+	margin-left: 60px;
+}
+
+
+/* Article Reply view 끝 */
+
+/* Article Reply Modify 시작 */
+.article-reply-view .reply-modify {
+	position:relative;
+	width:30px; 
+	height:20px; 
+	background-color:#efefef; 
+	text-align:center; 
+	font-weight:bold; 
+	margin-bottom:10px; 
+	margin-left:95%; 
+	cursor:pointer;
+}
+
+.article-reply-view .reply-modify .reply-modify-box{
+	position:absolute;
+	top:-620%;
+	left:50%;
+	transform:translateX(-50%);
+	display:none;
+}
+.article-reply-view .reply-modify .reply-modify-box::after {
+	position:absolute;
+	content:"";
+	display:block;
+	width:20px;
+	height:20px;
+	background-color:#efefef;
+	top:90%;
+	left:50%;
+	transform:translateX(-50%) rotate(45deg);
+	cursor: default;
+	z-index: -1;
+}
+
+.article-reply-view .reply-modify .reply-modify-box.active{
+	display:block;
+}
+
+.article-reply-view .reply-modify .reply-modify-box input{
+	
+	border:none;
+	background-color:#efefef;
+	color:black;
+	display:block;
+	padding:10px;
+	cursor:pointer;
+}
+.article-reply-view .reply-modify .reply-modify-box input:hover {
+	background-color:black;
+	color:white;
+}
+
+/* Article Reply Modify 끝 */
 
 /* 모바일 탑바 시작 */
 .mobile-top-bar {

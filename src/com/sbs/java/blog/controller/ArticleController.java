@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.sbs.java.blog.dto.Article;
+import com.sbs.java.blog.dto.ArticleReply;
 import com.sbs.java.blog.dto.CateItem;
 import com.sbs.java.blog.util.Util;
 
@@ -38,11 +39,26 @@ public class ArticleController extends Controller {
 			return doActionModify();
 		case "doDelete":
 			return doActionWrite();
+		case "doReply":
+			return doActionReply();
+			
 		}
 
 		return "";
 	}
 	
+	private String doActionReply() {
+		int memberId = (int)req.getAttribute("loginedMemberId");
+		int articleId = Util.getInt(req, "id");
+		String body = Util.getString(req, "body");
+		System.out.println(memberId);
+		System.out.println(articleId);
+		System.out.println(body);
+		articleService.reply(memberId, articleId, body);
+		
+		return "html:<script> alert('작성 완료!'); location.replace('detail?id=" + articleId + "'); </script>";
+	}
+
 	private String doActionModify() {
 		int articleId = Util.getInt(req, "articleId");
 		String regDate = Util.getString(req, "regDate");
@@ -74,7 +90,7 @@ public class ArticleController extends Controller {
 		String title = req.getParameter("title");
 		String body = req.getParameter("body");
 		int cateItemId = Util.getInt(req, "cateItemId");
-		
+
 		int loginedMemberId = (int)req.getAttribute("loginedMemberId");
 		
 		int id = articleService.write(cateItemId, title, body, loginedMemberId);
@@ -95,8 +111,10 @@ public class ArticleController extends Controller {
 
 		articleService.increaseHit(id);
 		Article article = articleService.getForPrintArticle(id);
-
 		req.setAttribute("article", article);
+		
+		List<ArticleReply> articleReplies = articleService.getForPrintReplies(id);
+		req.setAttribute("articleReplies", articleReplies);
 
 		return "article/detail.jsp";
 	}
