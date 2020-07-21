@@ -1,5 +1,7 @@
 <%@page import="com.sbs.java.blog.dto.ArticleReply"%>
 <%@ page import="com.sbs.java.blog.dto.Article"%>
+<%@ page import="java.util.HashMap"%>
+<%@ page import="java.util.Map"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -8,6 +10,8 @@
 <%
 	Article article = (Article) request.getAttribute("article");
 	List<ArticleReply> articleReplies = (List<ArticleReply>) request.getAttribute("articleReplies");
+	Map<Integer, String> memberNickNames = (Map<Integer, String>) request.getAttribute("memberNickNames");
+
 %>
 <!-- 하이라이트 라이브러리 추가, 토스트 UI 에디터에서 사용됨 -->
 <script
@@ -74,6 +78,7 @@
 		</div>
 </div>
 
+<% if (request.getAttribute("loginedMember") != null){ %>
 <div class="con article-reply-write">
 	<div class="reply-button">댓글 쓰기</div>
 	<div class="con article-reply-write-box">
@@ -84,7 +89,7 @@
 		</form>
 	</div>
 </div>
-
+<% } %>
 
 
 <div class="con article-reply-view">
@@ -95,19 +100,21 @@
 			<tbody>
 				<tr>
 					<th><div class="img-box"><img src="${pageContext.request.contextPath}/resource/img/meloporn_banner.png" alt="" /></div></th>
-					<td><h5><a href="#"><%=articleReply.getMemberId() %></a> · <%=articleReply.getRegDate() %></h5></td>
+					<td><h5><a href="#"><%=memberNickNames.get(articleReply.getMemberId())%></a> · <%=articleReply.getRegDate() %></h5></td>
 				</tr>
 			</tbody>
 		</table>
 		
 		<h4><%=articleReply.getBody() %></h4>
-		<section class="reply-modify">...
+		<section class="reply-modify" >...
 			<div class="reply-modify-box">
 				<form action="">
 					<input type="submit" value="수정" "/>
 				</form>
-				<form action="">
-					<input type="submit" value="삭제"/>
+				<form action="doReplyDelete">
+					<input type="hidden" name="replyId" value="<%=articleReply.getId()%>" />
+					<input type="hidden" name="id" value="${param.id}" />
+					<input type="submit" value="삭제" /> 
 				</form>
 				<form action="">
 					<input type="submit" value="신고"/>
@@ -115,9 +122,8 @@
 			</div>
 		</section>
 	</div>
+	<% } %>
 </div>
-<% } %>
-
 	
 	
 	<script type="text/x-template" id="origin1" style="display: none;"></script>
@@ -163,22 +169,22 @@
 		});
 
 		
-		function ArticleReplyModify__init() {
-			$('.article-reply-view .reply-modify').click(function() {
-				var $this = $(this);
+//		function ArticleReplyModify__init() {
+//			$('.article-reply-view .reply-modify').click(function() {
+//				var $this = $(this);
 
-				if ($this.hasClass('active')) {
-					$this.removeClass('active');
-					$('.reply-modify-box').removeClass('active');
-				} else {
-					$this.addClass('active')
-					$('.reply-modify-box').addClass('active');
-				}
-			});
-		}
-		$(function() {
-			ArticleReplyModify__init();
-		});
+//				if ($this.hasClass('active')) {
+//					$this.removeClass('active');
+//					$('.reply-modify-box').removeClass('active');
+//				} else {
+//					$this.addClass('active')
+//					$('.reply-modify-box').addClass('active');
+//				}
+//			});
+//		}
+//		$(function() {
+//			ArticleReplyModify__init();
+//		});
 			
 	</script>
 

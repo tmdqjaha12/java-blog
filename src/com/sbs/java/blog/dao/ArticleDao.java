@@ -162,6 +162,8 @@ public class ArticleDao extends Dao {
 		sql.append(",articleId = ?", articleId);
 		sql.append(",memberId = ?", memberId);
 		sql.append(",body = ?", body);
+		
+		DBUtil.insert(dbConn, sql);
 	}
 
 	public List<ArticleReply> getForPrintReplies(int id) {
@@ -169,7 +171,7 @@ public class ArticleDao extends Dao {
 		
 		sql.append("SELECT *");
 		sql.append("FROM articleReply");
-		sql.append("WHERE id = ?", id);
+		sql.append("WHERE articleId = ?", id);
 		sql.append("ORDER BY id DESC ");
 
 		List<Map<String, Object>> rows = DBUtil.selectRows(dbConn, sql);
@@ -180,5 +182,25 @@ public class ArticleDao extends Dao {
 		}
 
 		return replies;
+	}
+
+	public String getForPrintMemberNickName(int memberId) {
+		SecSql sql = new SecSql();
+
+		sql.append("SELECT nickname");
+		sql.append("FROM member");
+		sql.append("WHERE id = ?", memberId);
+		
+		return DBUtil.selectRowStringValue(dbConn, sql);
+	}
+
+	public void deleteReply(int id) {
+		SecSql sql = new SecSql();
+
+		sql.append("DELETE FROM articleReply");
+		sql.append("WHERE 1");
+		sql.append("AND id = ?", id);
+
+		DBUtil.deleteRow(dbConn, sql);
 	}
 }

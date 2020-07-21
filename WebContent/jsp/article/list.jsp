@@ -1,4 +1,6 @@
 <%@ page import="java.util.List"%>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.Map" %>
 <%@ page import="com.sbs.java.blog.dto.Article"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -9,6 +11,7 @@ int totalPage = (int) request.getAttribute("totalPage");
 int paramPage = (int) request.getAttribute("page");
 int cateItemId = (int) request.getAttribute("cateItemId");
 String cateItemName = (String) request.getAttribute("cateItemName");
+Map<Integer, String> memberNickNames = (Map<Integer, String>) request.getAttribute("memberNickNames");
 %>
 <!-- 하이라이트 라이브러리 추가, 토스트 UI 에디터에서 사용됨 -->
 <script
@@ -74,6 +77,13 @@ String cateItemName = (String) request.getAttribute("cateItemName");
 
 <!-- 리스트 시작 -->
 <div class="con page-list-1">
+	<ul style="text-align:center;">
+		<li>게시물 번호</li>
+		<li>작성일</li>
+		<li>제목</li>
+		<li>작성자</li>
+		<li>조회수</li>
+	</ul>
 	<%
 		for (Article article : articles) {
 	%>
@@ -82,7 +92,7 @@ String cateItemName = (String) request.getAttribute("cateItemName");
 		<li><a href="#" title="<%=article.getRegDate()%>"><%=article.getRegDate()%></a></li>
 		<li><a href="./detail?id=<%=article.getId()%>"
 			class="page-list-title" title="<%=article.getTitle()%>"><%=article.getTitle()%></a></li>
-		<li><a href="#">이름</a></li>
+		<li><a href="#"><%=memberNickNames.get(article.getMemberId())%></a></li>
 		<li><a href="#"><%=article.getHit()%></a></li>
 	</ul>
 	<%

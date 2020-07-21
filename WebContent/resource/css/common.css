@@ -694,7 +694,7 @@ label[for] {
 	z-index: -1;
 }
 
-.article-reply-view .reply-modify .reply-modify-box.active{
+.article-reply-view .reply-modify:hover .reply-modify-box{
 	display:block;
 }
 

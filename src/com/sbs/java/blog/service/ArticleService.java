@@ -55,4 +55,12 @@ public class ArticleService extends Service {
 	public List<ArticleReply> getForPrintReplies(int id) {
 		return articleDao.getForPrintReplies(id);
 	}
+
+	public String getForPrintMemberNickName(int memberId) {
+		return articleDao.getForPrintMemberNickName(memberId);
+	}
+
+	public void deleteReply(int replyId) {
+		articleDao.deleteReply(replyId);
+	}
 }
