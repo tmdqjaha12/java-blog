@@ -4,12 +4,18 @@ import java.sql.Connection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import com.sbs.java.blog.service.MemberService;
+import com.sbs.java.blog.service.MailService;
 
 public class MemberController extends Controller {
+//	private MailService mailService;
 
+//	public MemberController(Connection dbConn, String actionMethodName, HttpServletRequest req,
+//			HttpServletResponse resp, MailService mailService) {
+//		super(dbConn, actionMethodName, req, resp);
+//		this.mailService = mailService;
+//	}
+	
 	public MemberController(Connection dbConn, String actionMethodName, HttpServletRequest req,
 			HttpServletResponse resp) {
 		super(dbConn, actionMethodName, req, resp);
@@ -84,7 +90,14 @@ public class MemberController extends Controller {
 		}
 
 		memberService.join(loginId, loginPw, name, nickname, email);
+		
+//		String text = name + "님 환영합니다!";
+//		String content = "★가입을 진심으로 축하드립니다★";
+//		SendMail sendmail = new SendMail(email, text, content);
+//		sendmail.doSendMail();
 
+//		boolean sendMailDone = mailService.send(email, "안녕하세요.", "반갑습니다.!!") == 1;
+		
 		return String.format("html:<script> alert('%s님 환영합니다.'); location.replace('../home/main'); </script>", name);
 	}
 

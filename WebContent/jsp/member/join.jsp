@@ -61,7 +61,7 @@
 </script>
 
 <div class="join-form-box con">
-	<form action="doJoin" method="POST" class="join-form form1"
+	<form action="doJoin" method="get" class="join-form form1"
 		onsubmit="submitJoinForm(this); return false;">
 		<input type="hidden" name="loginPwReal" />
 		<div class="form-row">
