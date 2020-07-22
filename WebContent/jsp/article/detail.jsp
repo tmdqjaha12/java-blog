@@ -57,7 +57,7 @@
 	<div class="title-line"></div>
 	
 	<div id="viewer1"><%=article.getBody() %></div>
-	
+	<% if(loginedMemberId == article.getMemberId()) {%>
 	<div class="modify-and-delete">
 		<div>
 			<form action="modify" method="POST">
@@ -72,17 +72,19 @@
 		</div>
 		<div>
 			<form action="doDelete" method="get">
+				<input type="hidden" name="id" value="<%=article.getId()%>"/><!-- 흠? -->
 				<input type="submit" value="삭제"/>
 			</form>
 			</div>
 		</div>
+		<% } %>
 </div>
 
 <% if (request.getAttribute("loginedMember") != null){ %>
 <div class="con article-reply-write">
 	<div class="reply-button">댓글 쓰기</div>
 	<div class="con article-reply-write-box">
-		<form action="doReply" method="get" onsubmit="submitModifyForm(this); return false;">
+		<form action="doReply" method="get" onsubmit="submitReplyForm(this); return false;">
 			<input type="hidden" name="id" value="<%=article.getId()%>" />
 			<textarea name="body" rows="10" cols="80" style="resize: none; display:block; margin:0 auto;"></textarea>
 			<input type="submit" value="작성" style="display:block; width:100px; margin:0 auto; margin-top:10px;"/>
@@ -105,26 +107,39 @@
 			</tbody>
 		</table>
 		
-		<h4><%=articleReply.getBody() %></h4>
+		<h4 class="replyBody active"><%=articleReply.getBody() %></h4>
+		<% if(loginedMemberId == articleReply.getMemberId()) {%>
+		<div class="con article-reply-modify">
+				<div class="con article-reply-modify-box">
+					<form action="doReplyModify" method="POST" onsubmit="submitReplyForm(this); return false;">
+					<input type="hidden" name="articleId" value="${param.id}" /><!-- 흠? -->
+					<input type="hidden" name="id" value="<%=articleReply.getId()%>"/>
+					<input type="hidden" name="regDate" value="<%=articleReply.getRegDate()%>"/>
+					<textarea id="replymodify1" name="body" rows="6" cols="40" style="resize: none; display:inline-block; margin-left:30%; vertical-align:top;"><%=articleReply.getBody() %></textarea>
+					<input type="submit" value="수정" style="display:inline-block; height:100px; vertical-align:top;"/>
+				</form>
+			</div>
+		</div>
+		
 		<section class="reply-modify" >...
 			<div class="reply-modify-box">
-				<form action="">
-					<input type="submit" value="수정" "/>
-				</form>
+				<div onclick="test(<%=articleReply.getId()%>)" class="reply-modify-button" >수정</div> <!-- articleReply.getId() 특정 버튼만 작동-->
 				<form action="doReplyDelete">
 					<input type="hidden" name="replyId" value="<%=articleReply.getId()%>" />
-					<input type="hidden" name="id" value="${param.id}" />
-					<input type="submit" value="삭제" /> 
+					<input type="hidden" name="id" value="${param.id}" /><!-- 흠? -->
+					<input type="submit" value="삭제" />
 				</form>
 				<form action="">
 					<input type="submit" value="신고"/>
 				</form>
 			</div>
 		</section>
+		<% } %>
 	</div>
 	<% } %>
 </div>
 	
+	<script type="text/x-template" id="replymodify1" style="display: none;">getBodyForXTemplate()</script>
 	
 	<script type="text/x-template" id="origin1" style="display: none;"></script>
 	<script>
@@ -140,7 +155,7 @@
 			return viewer1.replaceAll("(?i)script", "<!--REPLACE:script-->");
 		}
 
-		function submitModifyForm(form) {
+		function submitReplyForm(form) {
 			form.body.value = form.body.value.trim();
 			if (form.body.value.length == 0) {
 				alert('내용을 입력해주세요.');
@@ -167,6 +182,43 @@
 		$(function() {
 			ArticleReplyWrite__init();
 		});
+		
+
+		function ArticleReplyModify__init() {
+			$('.reply-modify .reply-modify-button').click(function() {
+				var $this = $(this);
+
+				if ($this.hasClass('active')) {
+					$this.removeClass('active');
+					$('.replyBody').addClass('active');
+					$('.article-reply-modify-box').removeClass('active');
+				} else {
+					$this.addClass('active')
+					$('.replyBody').removeClass('active');
+					$('.article-reply-modify-box').addClass('active');
+				}
+			});
+		}
+		$(function() {
+			ArticleReplyModify__init();
+		});
+
+//		function test(id){
+//			var $this = $(this);
+//			var div = document.getElementByClass(id);
+//			div.style.disply = "block";
+//			div.style.removeProperty("display");
+//
+//			if ($this.hasClass(id)) {
+//				$this.removeClass(id);
+//				$('.replyBody').addClass(id);
+//				$('.article-reply-modify-box').removeClass(id);
+//			} else {
+//				$this.addClass(id)
+//				$('.replyBody').removeClass(id);
+//				$('.article-reply-modify-box').addClass(id);
+//			}
+//		}
 
 		
 //		function ArticleReplyModify__init() {

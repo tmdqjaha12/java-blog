@@ -655,8 +655,19 @@ label[for] {
 
 .article-reply-view h4 {
 	margin-left: 60px;
+	display:none;
 }
 
+.article-reply-view h4.active {
+	display: block;
+}
+
+.article-reply-modify-box{
+	display:none;
+}
+.article-reply-modify-box.active{
+	display: block;
+}
 
 /* Article Reply view 끝 */
 
@@ -675,7 +686,7 @@ label[for] {
 
 .article-reply-view .reply-modify .reply-modify-box{
 	position:absolute;
-	top:-620%;
+	top:-560%;
 	left:50%;
 	transform:translateX(-50%);
 	display:none;
@@ -699,7 +710,6 @@ label[for] {
 }
 
 .article-reply-view .reply-modify .reply-modify-box input{
-	
 	border:none;
 	background-color:#efefef;
 	color:black;
@@ -712,7 +722,57 @@ label[for] {
 	color:white;
 }
 
+.article-reply-view .reply-modify .reply-modify-box .reply-modify-button {
+	background-color:#efefef;
+	font-weight:normal;
+}
+.article-reply-view .reply-modify .reply-modify-box .reply-modify-button:hover {
+	background-color:black;
+	color:white;
+}
+
 /* Article Reply Modify 끝 */
+
+/* login-form-box 시작 */
+
+/* login-form-box 끝 */
+
+/* find-box 시작 */
+.find-box {
+	position: relative;
+}
+
+.find-box > .align-find-box {
+	position: absolute;
+	left:50%;
+	transform: translateX(-50%);
+}
+
+.find-box::after {
+	content: "";
+	display:block;
+	clear: both;
+}
+
+.find-box form {
+	float: left;
+	box-sizing: border-box;
+}
+
+.find-box input {
+	border:none;
+	background-color:white;
+	cursor: pointer;
+	display:block;
+	padding:5px;
+	margin:10px;
+}
+
+.find-box input:hover {
+	color:blue;
+}
+
+/* find-box 끝 */
 
 /* 모바일 탑바 시작 */
 .mobile-top-bar {

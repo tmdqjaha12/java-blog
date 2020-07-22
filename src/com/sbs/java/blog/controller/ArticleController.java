@@ -40,24 +40,45 @@ public class ArticleController extends Controller {
 		case "modify":
 			return doActionModify();
 		case "doDelete":
-			return doActionWrite();
+			return doActionDoDelete();
 		case "doReply":
-			return doActionReply();
+			return doActionDoReply();
+		case "doReplyModify":
+			return doActionDoReplyModify();
 		case "doReplyDelete":
-			return doActionReplyDelete();
+			return doActionDoReplyDelete();
 		}
 		return "";
 	}
-	
-	private String doActionReplyDelete() {
+
+	private String doActionDoReplyDelete() {
 		int replyId = Util.getInt(req, "replyId");
 		int id = Util.getInt(req, "id");
 		articleService.deleteReply(replyId);
 
 		return "html:<script> alert('댓글 삭제 완료'); location.replace('detail?id=" + id + "'); </script>";
 	}
+	
+	private String doActionDoReplyModify() {
+		int memberId = (int)req.getAttribute("loginedMemberId");
+		int articleId = Util.getInt(req, "articleId");
+		int id = Util.getInt(req, "id");
+		String regDate = Util.getString(req, "regDate");
+		String body = Util.getString(req, "body");
+		
+		System.out.println(memberId);
+		System.out.println(articleId);
+		System.out.println(id);
+		System.out.println(regDate);
+		System.out.println(body);
+		
+		int id_ = articleService.modifyReply(id, articleId, memberId, regDate, body);
+		
+		return "html:<script> alert('수정 완료!'); location.replace('detail?id=" + articleId + "'); </script>";
+	}
 
-	private String doActionReply() {
+
+	private String doActionDoReply() {
 		int memberId = (int)req.getAttribute("loginedMemberId");
 		int articleId = Util.getInt(req, "id");
 		String body = Util.getString(req, "body");
@@ -65,6 +86,13 @@ public class ArticleController extends Controller {
 		articleService.reply(memberId, articleId, body);
 		
 		return "html:<script> alert('작성 완료!'); location.replace('detail?id=" + articleId + "'); </script>";
+	}
+	
+	private String doActionDoDelete() {
+		int id = Util.getInt(req, "id");
+		articleService.deleteArticle(id);
+
+		return "html:<script> alert('게시글 삭제 완료'); location.replace('list'); </script>";
 	}
 
 	private String doActionModify() {

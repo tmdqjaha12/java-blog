@@ -35,4 +35,16 @@ public class MemberService extends Service {
 	public Member getMemberById(int id) {
 		return memberDao.getMemberById(id);
 	}
+
+	public String getStringForFindId(String name, String email) {
+		return memberDao.getStringForFindId(name, email);
+	}
+
+	public boolean getBooleanForFindPw(String loginId, String name, String email) {
+		return memberDao.getBooleanForFindPw(loginId, name, email);
+	}
+	
+	public void updateImshiPw(String loginId, String name, String email, String imshiPw) {
+		memberDao.updateImshiPw(loginId, name, email, imshiPw);
+	}
 }

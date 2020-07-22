@@ -55,4 +55,17 @@
 	</form>
 </div>
 
+<div class="find-box con">
+	<div class="align-find-box">
+		<form action="findId" method="POST">
+			<input type="submit" value="아이디 찾기"/>
+		</form>
+		<form action="findPw" method="POST">
+			<input type="submit" value="비밀번호 찾기"/>
+		</form>
+	</div>
+</div>
+
+
+
 <%@ include file="/jsp/part/foot.jspf"%>

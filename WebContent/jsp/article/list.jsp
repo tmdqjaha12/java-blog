@@ -6,7 +6,7 @@
 	pageEncoding="UTF-8"%>
 <%@ include file="/jsp/part/head.jspf"%>
 <%
-	List<Article> articles = (List<Article>) request.getAttribute("articles");
+List<Article> articles = (List<Article>) request.getAttribute("articles");
 int totalPage = (int) request.getAttribute("totalPage");
 int paramPage = (int) request.getAttribute("page");
 int cateItemId = (int) request.getAttribute("cateItemId");
@@ -90,9 +90,12 @@ Map<Integer, String> memberNickNames = (Map<Integer, String>) request.getAttribu
 	<ul>
 		<li><a href="#"><%=article.getId()%></a></li>
 		<li><a href="#" title="<%=article.getRegDate()%>"><%=article.getRegDate()%></a></li>
-		<li><a href="./detail?id=<%=article.getId()%>"
-			class="page-list-title" title="<%=article.getTitle()%>"><%=article.getTitle()%></a></li>
-		<li><a href="#"><%=memberNickNames.get(article.getMemberId())%></a></li>
+		<li><a href="./detail?id=<%=article.getId()%>" class="page-list-title" title="<%=article.getTitle()%>"><%=article.getTitle()%></a></li>
+		<%if(memberNickNames.get(article.getMemberId()).length() != 0){%>
+			<li><a href="#"><%=memberNickNames.get(article.getMemberId())%></a></li>
+		<% }else{ %>
+			<li><a href="#" style="color:red;">탈퇴회원</a></li>
+		<% } %>
 		<li><a href="#"><%=article.getHit()%></a></li>
 	</ul>
 	<%

@@ -6,20 +6,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.sbs.java.blog.service.MailService;
+import com.sbs.java.blog.util.Util;
 
 public class MemberController extends Controller {
-//	private MailService mailService;
+	private MailService mailService;
 
-//	public MemberController(Connection dbConn, String actionMethodName, HttpServletRequest req,
-//			HttpServletResponse resp, MailService mailService) {
-//		super(dbConn, actionMethodName, req, resp);
-//		this.mailService = mailService;
-//	}
-	
 	public MemberController(Connection dbConn, String actionMethodName, HttpServletRequest req,
-			HttpServletResponse resp) {
+			HttpServletResponse resp, MailService mailService) {
 		super(dbConn, actionMethodName, req, resp);
+		this.mailService = mailService;
 	}
+	
+//	public MemberController(Connection dbConn, String actionMethodName, HttpServletRequest req,
+//			HttpServletResponse resp) {
+//		super(dbConn, actionMethodName, req, resp);
+//	}
 
 	public String doAction() {
 		switch (actionMethodName) {
@@ -33,10 +34,62 @@ public class MemberController extends Controller {
 			return doActionDoLogin();
 		case "doLogout":
 			return doActionDoLogout();
+		case "findId":
+			return doActionFindId();
+		case "doFindId":
+			return doActionDoFindId();
+		case "findPw":
+			return doActionFindPw();
+		case "doFindPw":
+			return doActionDoFindPw();
 		}
 
 		return "";
 	}
+
+	private String doActionDoFindPw() {
+		String loginId = req.getParameter("loginId");
+		String name = req.getParameter("name");
+		String email = req.getParameter("email");
+		
+		if(memberService.getBooleanForFindPw(loginId, name, email)) {
+			String imshiPw = Util.getRandomPassword(8);
+			String encryptSHA256ImshiPw = Util.encryptSHA256(imshiPw);
+			
+			memberService.updateImshiPw(loginId, name, email, encryptSHA256ImshiPw);
+			
+			mailService.send(email, "임시 비밀번호 발송", name + "님의 임시 비밀번호 : " + imshiPw);
+			
+			return String.format("html:<script> alert('발송된 임시번호로 로그인해주세요.'); location.replace('login'); </script>");
+		}
+		
+		return String.format("html:<script> alert('유효한 정보를 찾지 못했습니다.'); location.replace('login'); </script>");
+	}
+
+	private String doActionFindPw() {
+		return "member/findPw.jsp";
+	}
+
+	private String doActionDoFindId() {
+		String name = req.getParameter("name");
+		String email = req.getParameter("email");
+		String loginId = "";
+		
+		loginId = memberService.getStringForFindId(name, email);
+		
+		if(loginId.length() != 0) {
+			mailService.send(email, "아이디 발송", name + "님의 아이디 : " + loginId);
+			return String.format("html:<script> alert('해당 이메일으로 아이디가 발송되었습니다.'); location.replace('login'); </script>");
+		}
+			
+		
+				
+		return String.format("html:<script> alert('유효한 정보를 찾지 못했습니다.'); location.replace('login'); </script>");
+	}
+
+	private String doActionFindId() {
+		return "member/findId.jsp";
+}
 
 	private String doActionDoLogin() {
 		String loginId = req.getParameter("loginId");
@@ -91,12 +144,7 @@ public class MemberController extends Controller {
 
 		memberService.join(loginId, loginPw, name, nickname, email);
 		
-//		String text = name + "님 환영합니다!";
-//		String content = "★가입을 진심으로 축하드립니다★";
-//		SendMail sendmail = new SendMail(email, text, content);
-//		sendmail.doSendMail();
-
-//		boolean sendMailDone = mailService.send(email, "안녕하세요.", "반갑습니다.!!") == 1;
+		mailService.send(email, "가입을 축하드립니다!", name + "반갑습니다.!!");
 		
 		return String.format("html:<script> alert('%s님 환영합니다.'); location.replace('../home/main'); </script>", name);
 	}

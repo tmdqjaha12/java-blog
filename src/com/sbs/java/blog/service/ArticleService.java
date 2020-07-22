@@ -47,6 +47,10 @@ public class ArticleService extends Service {
 	public int modify(int memberId, int articleId, int cateItemId, String title, String body, String regDate) {
 		return articleDao.modify(memberId, articleId, cateItemId, title, body, regDate);
 	}
+	
+	public void deleteArticle(int id) {
+		articleDao.deleteArticle(id);
+	}
 
 	public void reply(int memberId, int articleId, String body) {
 		articleDao.reply(memberId, articleId, body);
@@ -58,6 +62,10 @@ public class ArticleService extends Service {
 
 	public String getForPrintMemberNickName(int memberId) {
 		return articleDao.getForPrintMemberNickName(memberId);
+	}
+	
+	public int modifyReply(int id, int articleId, int memberId, String regDate, String body) {
+		return articleDao.modifyReply(id, articleId, memberId, regDate, body);
 	}
 
 	public void deleteReply(int replyId) {

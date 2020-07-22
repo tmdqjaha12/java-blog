@@ -33,6 +33,8 @@ CREATE TABLE article (
     `title` CHAR(200) NOT NULL,
     `body` TEXT NOT NULL
 );
+SELECT *
+FROM article
 
 # 댓글 테이블 생성
 DROP TABLE IF EXISTS articleReply;
@@ -47,6 +49,27 @@ CREATE TABLE articleReply(
 SELECT *
 FROM articleReply;
 
+DELETE FROM articleReply WHERE 1 AND id = 10;
+
+UPDATE articleReply
+SET regDate = '2020-07-22 11:32:51'
+, updateDate = NOW()
+, articleId =  132
+, memberId = 28
+, 
+28
+132
+16
+2020-07-22 11:32:51
+ㅇㅁㅇㅁ
+
+INSERT INTO articleReply
+SET regDate = NOW()
+,updateDate = NOW()
+,articleId = 3
+,memberId = 3
+,`body` = '111';
+
 # 1번글 생성
 INSERT INTO article SET
 regDate = NOW(),
@@ -55,7 +78,7 @@ cateItemId = 6,
 memberId = 2,
 displayStatus = 1,
 title = '블로그를 시작합니다.',
-`body` = 'd',
+`body` = '111',
 hit = 0;
 
 # 회원 테이블 생성
@@ -71,6 +94,27 @@ CREATE TABLE `member` (
     `email` CHAR(100) NOT NULL,
     `level` INT(1) UNSIGNED DEFAULT 0 NOT NULL
 );
+
+SELECT COUNT(*) AS cnt
+FROM `member`
+WHERE `name` = 12
+AND `email` = '12@12';
+
+SELECT loginId
+FROM `member`
+WHERE `name` = 12
+AND `email` = '12@12';
+
+SELECT *
+FROM `member`;
+
+UPDATE `member`
+SET nickname = 'hihihi'
+WHERE `name` = '12';
+
+SELECT nickname
+FROM `member`
+WHERE id = 1
 
 # 마스터 회원 생성
 INSERT INTO `member` SET

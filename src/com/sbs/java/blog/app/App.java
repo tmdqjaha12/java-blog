@@ -20,18 +20,18 @@ import com.sbs.java.blog.util.Util;
 public class App {
 	private HttpServletRequest req;
 	private HttpServletResponse resp;
-//	private MailService mailService;
+	private MailService mailService;
 
-//	public App(HttpServletRequest req, HttpServletResponse resp, MailService mailService) {
-//		this.req = req;
-//		this.resp = resp;
-//		this.mailService = mailService;
-//	}
-	
-	public App(HttpServletRequest req, HttpServletResponse resp) {
+	public App(HttpServletRequest req, HttpServletResponse resp, MailService mailService) {
 		this.req = req;
 		this.resp = resp;
+		this.mailService = mailService;
 	}
+	
+//	public App(HttpServletRequest req, HttpServletResponse resp) {
+//		this.req = req;
+//		this.resp = resp;
+//	}
 
 	private void loadDbDriver() throws IOException {
 		// DB 커넥터 로딩 시작
@@ -105,8 +105,8 @@ public class App {
 			controller = new ArticleController(dbConn, actionMethodName, req, resp);
 			break;
 		case "member":
-//			controller = new MemberController(dbConn, actionMethodName, req, resp, mailService);
-			controller = new MemberController(dbConn, actionMethodName, req, resp);
+			controller = new MemberController(dbConn, actionMethodName, req, resp, mailService);
+//			controller = new MemberController(dbConn, actionMethodName, req, resp);
 			break;
 		case "home":
 			controller = new HomeController(dbConn, actionMethodName, req, resp);
