@@ -7,48 +7,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ include file="/jsp/part/head.jspf"%>
+<%@ include file="/jsp/part/toastUiEditor.jspf" %>
 <%
 	Article article = (Article) request.getAttribute("article");
 	List<ArticleReply> articleReplies = (List<ArticleReply>) request.getAttribute("articleReplies");
 	Map<Integer, String> memberNickNames = (Map<Integer, String>) request.getAttribute("memberNickNames");
 
 %>
-<!-- 하이라이트 라이브러리 추가, 토스트 UI 에디터에서 사용됨 -->
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
-
-<!-- 하이라이트 라이브러리, 언어 -->
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/css.min.js"></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/javascript.min.js"></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/xml.min.js"></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/php.min.js"></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/php-template.min.js"></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/sql.min.js"></script>
-
-<!-- 코드 미러 라이브러리 추가, 토스트 UI 에디터에서 사용됨 -->
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.css" />
-
-<!-- 토스트 UI 에디터, 자바스크립트 코어 -->
-<script
-	src="https://uicdn.toast.com/editor/latest/toastui-editor-viewer.min.js"></script>
-
-<!-- 토스트 UI 에디터, 신택스 하이라이트 플러그인 추가 -->
-<script
-	src="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight-all.min.js"></script>
-
-<!-- 토스트 UI 에디터, CSS 코어 -->
-<link rel="stylesheet"
-	href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
-
 <div class="con detail-box-1">
 	<h1 class="title"><%=article.getTitle()%></h1>
 	<h3 class="hit">
@@ -56,28 +21,33 @@
 		<%=article.getHit()%></h3>
 	<div class="title-line"></div>
 	
-	<div id="viewer1"><%=article.getBody() %></div>
+	<script type="text/x-template"><%=article.getBodyForXTemplate()%></script>
+	<div class="toast-editor toast-editor-viewer" style="margin:20px;"></div>
+					
 	<% if(loginedMemberId == article.getMemberId()) {%>
 	<div class="modify-and-delete">
-		<div>
-			<form action="modify" method="POST">
-				<input type="hidden" name="title" value="<%=article.getTitle()%>" />
-				<input type="hidden" name="body" value="<%=article.getBody()%>" />
-				<input type="hidden" name="articleId" value="<%=article.getId()%>" />
-				<input type="hidden" name="cateItemId" value="<%=article.getCateItemId()%>" />
-				<input type="hidden" name="regDate" value="<%=article.getRegDate()%>" />
-
-				<input type="submit" value="수정"/>
-			</form>
+		<div class="btn">
+			<%
+				if ((boolean) article.getExtra().get("deleteAvailable")) {
+			%>
+			<a onclick="if ( confirm('삭제하시겠습니까?') == false ) return false;"
+				href="./doDelete?id=<%=article.getId()%>">삭제</a>
+			<%
+				}
+			%>
 		</div>
-		<div>
-			<form action="doDelete" method="get">
-				<input type="hidden" name="id" value="<%=article.getId()%>"/><!-- 흠? -->
-				<input type="submit" value="삭제"/>
-			</form>
-			</div>
+		<div class="inline-block">
+			<%
+				if ((boolean) article.getExtra().get("modifyAvailable")) {
+			%>
+			<a href="./modify?id=<%=article.getId()%>">수정</a>
+			<%
+				}
+			%>
 		</div>
 		<% } %>
+	</div>
+		
 </div>
 
 <% if (request.getAttribute("loginedMember") != null){ %>
@@ -139,21 +109,7 @@
 	<% } %>
 </div>
 	
-	<script type="text/x-template" id="replymodify1" style="display: none;">getBodyForXTemplate()</script>
-	
-	<script type="text/x-template" id="origin1" style="display: none;"></script>
 	<script>
-		var editor1__initialValue = getBodyFromXTemplate('#origin1');
-		var editor1 = new toastui.Editor({
-			el : document.querySelector('#viewer1'),
-			initialValue : editor1__initialValue,
-			viewer : true,
-			plugins : [ toastui.Editor.plugin.codeSyntaxHighlight,
-					youtubePlugin, replPlugin, codepenPlugin ]
-		});	
-		function replaceAll(viewer1){
-			return viewer1.replaceAll("(?i)script", "<!--REPLACE:script-->");
-		}
 
 		function submitReplyForm(form) {
 			form.body.value = form.body.value.trim();
@@ -202,41 +158,6 @@
 		$(function() {
 			ArticleReplyModify__init();
 		});
-
-//		function test(id){
-//			var $this = $(this);
-//			var div = document.getElementByClass(id);
-//			div.style.disply = "block";
-//			div.style.removeProperty("display");
-//
-//			if ($this.hasClass(id)) {
-//				$this.removeClass(id);
-//				$('.replyBody').addClass(id);
-//				$('.article-reply-modify-box').removeClass(id);
-//			} else {
-//				$this.addClass(id)
-//				$('.replyBody').removeClass(id);
-//				$('.article-reply-modify-box').addClass(id);
-//			}
-//		}
-
-		
-//		function ArticleReplyModify__init() {
-//			$('.article-reply-view .reply-modify').click(function() {
-//				var $this = $(this);
-
-//				if ($this.hasClass('active')) {
-//					$this.removeClass('active');
-//					$('.reply-modify-box').removeClass('active');
-//				} else {
-//					$this.addClass('active')
-//					$('.reply-modify-box').addClass('active');
-//				}
-//			});
-//		}
-//		$(function() {
-//			ArticleReplyModify__init();
-//		});
 			
 	</script>
 

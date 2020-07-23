@@ -47,4 +47,8 @@ public class MemberService extends Service {
 	public void updateImshiPw(String loginId, String name, String email, String imshiPw) {
 		memberDao.updateImshiPw(loginId, name, email, imshiPw);
 	}
+
+	public int getTrueAuthCode(String loginedMemberId) {
+		return memberDao.getTrueAuthCode(loginedMemberId);
+	}
 }

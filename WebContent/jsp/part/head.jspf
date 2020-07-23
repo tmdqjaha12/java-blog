@@ -133,7 +133,7 @@
 						} else {
 					%>
 					<li><a
-						href="${pageContext.request.contextPath}/s/member/login"
+						href="${pageContext.request.contextPath}/s/member/login?afterLoginRedirectUrl=${urlEncodedAfterLoginRedirectUrl}"
 						class="flex height-100p flex-ai-c">Login</a></li>
 					<li><a href="${pageContext.request.contextPath}/s/member/join"
 						class="flex height-100p flex-ai-c">Join</a></li>

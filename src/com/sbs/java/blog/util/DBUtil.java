@@ -171,35 +171,8 @@ public class DBUtil {
 
 		return affectedRows;
 	}
-	
-	public static void deleteRow(Connection dbConn, SecSql sql) {
-//		int affectedRows = 0;
 
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-
-		try {
-			stmt = sql.getPreparedStatement(dbConn);
-			stmt.executeUpdate();
-//			affectedRows = stmt.executeUpdate(sql);숫자
-		} catch (SQLException e) {
-			throw new SQLErrorException("SQL 예외, SQL : " + sql, e );
-		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					throw new SQLErrorException("SQL 예외, rs 닫기" + sql, e);
-				}
-			}
-
-			if (stmt != null) {
-				try {
-					stmt.close();
-				} catch (SQLException e) {
-					throw new SQLErrorException("SQL 예외, stmt 닫기" + sql, e);
-				}
-			}
-		}
+	public static int delete(Connection dbConn, SecSql sql) {
+		return update(dbConn, sql);
 	}
 }

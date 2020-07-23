@@ -75,7 +75,7 @@ public class ArticleDao extends Dao {
 	public Article getForPrintArticle(int id) {
 		SecSql sql = new SecSql();
 
-		sql.append("SELECT *, '장희성' AS extra__writer ");
+		sql.append("SELECT *, '하승범' AS extra__writer ");
 		sql.append("FROM article ");
 		sql.append("WHERE 1 ");
 		sql.append("AND id = ? ", id);
@@ -137,30 +137,24 @@ public class ArticleDao extends Dao {
 		return DBUtil.update(dbConn, sql);
 	}
 
-	public int modify(int memberId, int articleId, int cateItemId, String title, String body, String regDate) {
+	public int modifyArticle(int id, int cateItemId, String title, String body) {
 		SecSql sql = new SecSql();
 
 		sql.append("UPDATE article");
-		sql.append("SET regDate = ?", regDate);
-		sql.append(", updateDate = NOW()");
+		sql.append("SET updateDate = NOW()");
 		sql.append(", title = ? ", title);
 		sql.append(", body = ? ", body);
-		sql.append(", displayStatus = '1'");
 		sql.append(", cateItemId = ?", cateItemId);
-		sql.append(", memberId = ?", memberId);
-		sql.append("WHERE id = ?", articleId);
+		sql.append("WHERE id = ?", id);
 
 		return DBUtil.update(dbConn, sql);
 	}
 	
-	public void deleteArticle(int id) {
-		SecSql sql = new SecSql();
+	public int deleteArticle(int id) {
+		SecSql sql = SecSql.from("DELETE FROM article");
+		sql.append("WHERE id = ?", id);
 
-		sql.append("DELETE FROM article");
-		sql.append("WHERE 1");
-		sql.append("AND id = ?", id);
-
-		DBUtil.deleteRow(dbConn, sql);
+		return DBUtil.delete(dbConn, sql);
 	}
 
 	public void reply(int memberId, int articleId, String body) {
@@ -211,7 +205,7 @@ public class ArticleDao extends Dao {
 		sql.append("WHERE 1");
 		sql.append("AND id = ?", id);
 
-		DBUtil.deleteRow(dbConn, sql);
+		DBUtil.delete(dbConn, sql);
 	}
 
 	public int modifyReply(int id, int articleId, int memberId, String regDate, String body) {

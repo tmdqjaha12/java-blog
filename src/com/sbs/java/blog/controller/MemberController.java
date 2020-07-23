@@ -42,6 +42,10 @@ public class MemberController extends Controller {
 			return doActionFindPw();
 		case "doFindPw":
 			return doActionDoFindPw();
+		case "authMail":
+			return doActionauthMail();
+		case "doAuthMail":
+			return doActionDoAuthMail();
 		}
 
 		return "";
@@ -58,7 +62,7 @@ public class MemberController extends Controller {
 			
 			memberService.updateImshiPw(loginId, name, email, encryptSHA256ImshiPw);
 			
-			mailService.send(email, "임시 비밀번호 발송", name + "님의 임시 비밀번호 : " + imshiPw);
+			mailService.send(email, "임시 비밀번호 발송", name + "님의 임시 비밀번호 : " + imshiPw, "");
 			
 			return String.format("html:<script> alert('발송된 임시번호로 로그인해주세요.'); location.replace('login'); </script>");
 		}
@@ -78,7 +82,7 @@ public class MemberController extends Controller {
 		loginId = memberService.getStringForFindId(name, email);
 		
 		if(loginId.length() != 0) {
-			mailService.send(email, "아이디 발송", name + "님의 아이디 : " + loginId);
+			mailService.send(email, "아이디 발송", name + "님의 아이디 : " + loginId, "");
 			return String.format("html:<script> alert('해당 이메일으로 아이디가 발송되었습니다.'); location.replace('login'); </script>");
 		}
 			
@@ -102,8 +106,10 @@ public class MemberController extends Controller {
 		}
 
 		session.setAttribute("loginedMemberId", loginedMemberId);
+		
+		String redirectUrl = Util.getString(req, "redirectUrl", "../home/main");
 
-		return String.format("html:<script> alert('로그인 되었습니다.'); location.replace('../home/main'); </script>");
+		return String.format("html:<script> alert('로그인 되었습니다.'); location.replace('" + redirectUrl + "'); </script>");
 	}
 
 	private String doActionLogin() {
@@ -114,6 +120,18 @@ public class MemberController extends Controller {
 		session.removeAttribute("loginedMemberId");
 
 		return String.format("html:<script> alert('로그아웃 되었습니다.'); location.replace('../home/main'); </script>");
+	}
+	
+	private String doActionauthMail() { 
+		return "member/authMail.jsp";
+	}
+	
+	private String doActionDoAuthMail() {
+		String loginedMemberId = (String) req.getAttribute("loginedMemberId");
+		
+		memberService.getTrueAuthCode(loginedMemberId);//update -1 if문 ?해야할까
+		
+		return String.format("html:<script> alert('인증 완료!'); location.replace('../home/main'); </script>");
 	}
 
 	private String doActionDoJoin() {
@@ -144,7 +162,11 @@ public class MemberController extends Controller {
 
 		memberService.join(loginId, loginPw, name, nickname, email);
 		
-		mailService.send(email, "가입을 축하드립니다!", name + "반갑습니다.!!");
+		String authCode = Util.getRandomPassword(5);
+		String massage = "<a href=\"https://meloporn.my.iu.gy/blog/s/member/authMail?code=" + authCode + "\">인증하기</a>";
+		String authMassage = Util.getHtmlFormEmail(massage, authCode);
+		
+		mailService.send(email, "가입을 축하드립니다!", name + "님환영합니다.", authMassage);
 		
 		return String.format("html:<script> alert('%s님 환영합니다.'); location.replace('../home/main'); </script>", name);
 	}

@@ -89,34 +89,79 @@ public class ArticleController extends Controller {
 	}
 	
 	private String doActionDoDelete() {
-		int id = Util.getInt(req, "id");
-		articleService.deleteArticle(id);
+		if (Util.empty(req, "id")) {
+			return "html:id를 입력해주세요.";
+		}
 
-		return "html:<script> alert('게시글 삭제 완료'); location.replace('list'); </script>";
+		if (Util.isNum(req, "id") == false) {
+			return "html:id를 정수로 입력해주세요.";
+		}
+		
+		int id = Util.getInt(req, "id");
+		
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
+//		System.out.println(loginedMemberId);
+		
+		Map<String, Object> getCheckRsDeleteAvailableRs = articleService.getCheckRsDeleteAvailable(id, loginedMemberId);
+
+		if (Util.isSuccess(getCheckRsDeleteAvailableRs) == false) {
+			return "html:<script> alert('" + getCheckRsDeleteAvailableRs.get("msg") + "'); history.back(); </script>";
+		}
+		
+		articleService.deleteArticle(id);
+		
+		return "html:<script> alert('" + id + "번 게시물이 삭제되었습니다.'); location.replace('list'); </script>";
 	}
 
 	private String doActionModify() {
-		int articleId = Util.getInt(req, "articleId");
-		String regDate = Util.getString(req, "regDate");
+		if (Util.empty(req, "id")) {
+			return "html:id를 입력해주세요.";
+		}
 
-		req.setAttribute("articleId", articleId);
-		req.setAttribute("regDate", regDate);
-		
+		if (Util.isNum(req, "id") == false) {
+			return "html:id를 정수로 입력해주세요.";
+		}
+
+		int id = Util.getInt(req, "id");
+
+		articleService.increaseHit(id);
+
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
+		Article article = articleService.getForPrintArticle(id, loginedMemberId);
+
+		req.setAttribute("article", article);
+
 		return "article/modify.jsp";
 	}
 
 	private String doActionDoModify() {
-		int memberId = (int)req.getAttribute("loginedMemberId");
+		if (Util.empty(req, "id")) {
+			return "html:id를 입력해주세요.";
+		}
+
+		if (Util.isNum(req, "id") == false) {
+			return "html:id를 정수로 입력해주세요.";
+		}
+
+		int id = Util.getInt(req, "id");
+
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
+
+		Map<String, Object> getCheckRsModifyAvailableRs = articleService.getCheckRsModifyAvailable(id, loginedMemberId);
+
+		if (Util.isSuccess(getCheckRsModifyAvailableRs) == false) {
+			return "html:<script> alert('" + getCheckRsModifyAvailableRs.get("msg") + "'); history.back(); </script>";
+		}
+
+		int cateItemId = Util.getInt(req, "cateItemId");
 		String title = Util.getString(req, "title");
 		String body = Util.getString(req, "body");
-		String regDate = Util.getString(req, "regDate");
-		int cateItemId = Util.getInt(req, "cateItemId");
-		int articleId = Util.getInt(req, "articleId");
-		
-		int id = articleService.modify(memberId, articleId, cateItemId, title, body, regDate);
-		
-		return "html:<script> alert('" + id + "번 게시물이 수정되었습니다.'); location.replace('list'); </script>";
+
+		articleService.modifyArticle(id, cateItemId, title, body);
+
+		return "html:<script> alert('" + id + "번 게시물이 수정되었습니다.'); location.replace('detail?id=" + id + "'); </script>";
 	}
+
 
 	private String doActionWrite() {		
 		return "article/write.jsp";
@@ -146,7 +191,10 @@ public class ArticleController extends Controller {
 		int id = Util.getInt(req, "id");
 
 		articleService.increaseHit(id);
-		Article article = articleService.getForPrintArticle(id);
+		
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
+		Article article = articleService.getForPrintArticle(id, loginedMemberId);
+		
 		req.setAttribute("article", article);
 		
 		List<ArticleReply> articleReplies = articleService.getForPrintReplies(id);
@@ -204,8 +252,10 @@ public class ArticleController extends Controller {
 		req.setAttribute("totalCount", totalCount);
 		req.setAttribute("totalPage", totalPage);
 		req.setAttribute("page", page);
+		
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
 
-		List<Article> articles = articleService.getForPrintListArticles(page, itemsInAPage, cateItemId,
+		List<Article> articles = articleService.getForPrintListArticles(loginedMemberId, page, itemsInAPage, cateItemId,
 				searchKeywordType, searchKeyword);
 		req.setAttribute("articles", articles);
 		

@@ -83,6 +83,7 @@ Map<Integer, String> memberNickNames = (Map<Integer, String>) request.getAttribu
 		<li>제목</li>
 		<li>작성자</li>
 		<li>조회수</li>
+		<li>비고</li>
 	</ul>
 	<%
 		for (Article article : articles) {
@@ -97,6 +98,28 @@ Map<Integer, String> memberNickNames = (Map<Integer, String>) request.getAttribu
 			<li><a href="#" style="color:red;">탈퇴회원</a></li>
 		<% } %>
 		<li><a href="#"><%=article.getHit()%></a></li>
+		<li class="bigo" style="text-align: center; line-height: 55px;">
+			<div class="inline-block" style="">
+				<%
+					if ((boolean) article.getExtra().get("deleteAvailable")) {
+				%>
+				<a onclick="if ( confirm('삭제하시겠습니까?') == false ) return false;"
+					href="./doDelete?id=<%=article.getId()%>">삭제</a>
+				<%
+					}
+				%>
+			</div>
+			<div class="inline-block">
+				<%
+					if ((boolean) article.getExtra().get("modifyAvailable")) {
+				%>
+				<a onclick="if ( confirm('수정하시겠습니까?') == false ) return false;"
+					href="./modify?id=<%=article.getId()%>">수정</a>
+				<%
+					}
+				%>
+			</div>
+		</li>
 	</ul>
 	<%
 		}
