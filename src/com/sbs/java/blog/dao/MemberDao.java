@@ -99,14 +99,24 @@ public class MemberDao extends Dao {
 		return DBUtil.selectRowBooleanValue(dbConn, sql);
 	}
 	
-	public int getTrueAuthCode(String loginedMemberId) {
+	public int getTrueAuthCode(int id) {
 		SecSql sql = new SecSql();
 
 		sql.append("UPDATE member");
 		sql.append("SET updateDate = NOW()");
 		sql.append(", mailAuthCode = 1");
-		sql.append("WHERE loginedMemberId = ?", loginedMemberId);
+		sql.append("WHERE id = ?", id);
 		
 		return DBUtil.update(dbConn, sql);
+	}
+
+	public int getTrueMailAuthCode(int id) {
+		SecSql sql = new SecSql();
+
+		sql.append("SELECT mailAuthCode");
+		sql.append("FROM member");
+		sql.append("WHERE id = ?", id);
+		
+		return DBUtil.selectRowIntValue(dbConn, sql);
 	}
 }

@@ -5,14 +5,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ include file="/jsp/part/head.jspf"%>
-<%
-List<Article> articles = (List<Article>) request.getAttribute("articles");
-int totalPage = (int) request.getAttribute("totalPage");
-int paramPage = (int) request.getAttribute("page");
-int cateItemId = (int) request.getAttribute("cateItemId");
-String cateItemName = (String) request.getAttribute("cateItemName");
-Map<Integer, String> memberNickNames = (Map<Integer, String>) request.getAttribute("memberNickNames");
-%>
+
+
 <!-- 하이라이트 라이브러리 추가, 토스트 UI 에디터에서 사용됨 -->
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
@@ -53,7 +47,7 @@ Map<Integer, String> memberNickNames = (Map<Integer, String>) request.getAttribu
 
 <!-- 해당 카테고리 시작 -->
 <h1 class="con page-bn-1">
-	<%=cateItemName%>
+	${cateItemName}
 </h1>
 <!-- 해당 카테고리 끝 -->
 
@@ -85,45 +79,35 @@ Map<Integer, String> memberNickNames = (Map<Integer, String>) request.getAttribu
 		<li>조회수</li>
 		<li>비고</li>
 	</ul>
-	<%
-		for (Article article : articles) {
-	%>
+
+
+	<c:forEach items="${articles}" var="article">
+	
 	<ul>
-		<li><a href="#"><%=article.getId()%></a></li>
-		<li><a href="#" title="<%=article.getRegDate()%>"><%=article.getRegDate()%></a></li>
-		<li><a href="./detail?id=<%=article.getId()%>" class="page-list-title" title="<%=article.getTitle()%>"><%=article.getTitle()%></a></li>
-		<%if(memberNickNames.get(article.getMemberId()).length() != 0){%>
-			<li><a href="#"><%=memberNickNames.get(article.getMemberId())%></a></li>
-		<% }else{ %>
+		<li><a href="#">${article.id}</a></li>
+		<li><a href="#" title="${article.regDate}">${article.regDate}</a></li>
+		<li><a href="./detail?id=${article.id}" class="page-list-title" title="${article.title}">${article.title}</a></li>
+		<!-- 
+    		
 			<li><a href="#" style="color:red;">탈퇴회원</a></li>
-		<% } %>
-		<li><a href="#"><%=article.getHit()%></a></li>
+    		
+		 -->
+		<li><a href="#">${article.hit}</a></li>
 		<li class="bigo" style="text-align: center; line-height: 55px;">
 			<div class="inline-block" style="">
-				<%
-					if ((boolean) article.getExtra().get("deleteAvailable")) {
-				%>
-				<a onclick="if ( confirm('삭제하시겠습니까?') == false ) return false;"
-					href="./doDelete?id=<%=article.getId()%>">삭제</a>
-				<%
-					}
-				%>
+				<c:if test="${article.extra.deleteAvailable}">
+					<a onclick="if ( confirm('삭제하시겠습니까?') == false ) return false;" href="./doDelete?id=${article.id}">삭제</a>
+				</c:if> 
 			</div>
-			<div class="inline-block">
-				<%
-					if ((boolean) article.getExtra().get("modifyAvailable")) {
-				%>
-				<a onclick="if ( confirm('수정하시겠습니까?') == false ) return false;"
-					href="./modify?id=<%=article.getId()%>">수정</a>
-				<%
-					}
-				%>
+			<div class="inline-block" style="">
+				<c:if test="${article.extra.modifyAvailable}"> 
+					<a href="./modify?id=${article.id}">수정</a>
+				</c:if>
 			</div>
 		</li>
 	</ul>
-	<%
-		}
-	%>
+	
+	</c:forEach>
 
 </div>
 <!-- 리스트 끝 -->
@@ -132,20 +116,11 @@ Map<Integer, String> memberNickNames = (Map<Integer, String>) request.getAttribu
 <div class="con page-box">
 	<ul>
 		<span>◀</span>
-		<%
-		
-			for (int i = 1; i < totalPage; i++) {
-		%>
-		<li class="<%=i == paramPage ? "current" : ""%>">
-			<a href="?cateItemId=${param.cateItemId}&searchKeywordType=${param.searchKeywordType}&searchKeyword=${param.searchKeyword}&page=<%=i%>" class="block">
-				<%=i%>
-			</a>
-		</li>
-		<%
-			}
-		
-		
-		%>
+		<c:forEach var="i" begin="1" end="${totalPage}" step="1">
+		<li class="${i == cPage ? 'current' : ''}"><a
+			href="?cateItemId=${param.cateItemId}&searchKeywordType=${param.searchKeywordType}&searchKeyword=${param.searchKeyword}&page=${i}"
+			class="block">${i}</a></li>
+		</c:forEach>
 		<span>▶</span>
 	</ul>
 </div>

@@ -42,10 +42,11 @@
 	<form action="doAuthMail" method="POST" class="login-form form1"
 		onsubmit="submitAuthForm(this); return false;">
 		<input type="hidden" name="redirectUrl" value="${param.afterLoginRedirectUrl}" />
+		<input type="hidden" name="authCode" value="${authCode}" />
 		<div class="form-row">
 			<div class="label">인증번호 입력</div>
 			<div class="input">
-				<input name="authCode" type="text" placeholder="인증번호를 입력해주세요." />
+				<input name="inputAuthCode" type="text" placeholder="인증번호를 입력해주세요." />
 			</div>
 		</div>
 		<div class="form-row">

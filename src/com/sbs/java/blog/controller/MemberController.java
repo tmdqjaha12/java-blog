@@ -123,15 +123,23 @@ public class MemberController extends Controller {
 	}
 	
 	private String doActionauthMail() { 
+		String authCode = Util.getString(req, "code");
+		req.setAttribute("authCode", authCode);
 		return "member/authMail.jsp";
 	}
 	
 	private String doActionDoAuthMail() {
-		String loginedMemberId = (String) req.getAttribute("loginedMemberId");
+		String authCode = Util.getString(req, "authCode");
+		String inputAuthCode = Util.getString(req, "inputAuthCode");
+ 		
+		if(authCode.equals(inputAuthCode)) {
+			int loginedMemberId = (int) req.getAttribute("loginedMemberId");
+			memberService.getTrueAuthCode(loginedMemberId);
+			
+			return String.format("html:<script> alert('인증 완료!'); location.replace('../home/main'); </script>");
+		}
 		
-		memberService.getTrueAuthCode(loginedMemberId);//update -1 if문 ?해야할까
-		
-		return String.format("html:<script> alert('인증 완료!'); location.replace('../home/main'); </script>");
+		return String.format("html:<script> alert('인증 실패!'); history.back(); </script>");
 	}
 
 	private String doActionDoJoin() {

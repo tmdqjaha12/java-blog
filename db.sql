@@ -92,8 +92,18 @@ CREATE TABLE `member` (
     `name` CHAR(100) NOT NULL, 
     `nickname` CHAR(100) NOT NULL UNIQUE,
     `email` CHAR(100) NOT NULL,
-    `level` INT(1) UNSIGNED DEFAULT 0 NOT NULL
+    `level` INT(1) UNSIGNED DEFAULT 0 NOT NULL,
+    `mailAuthCode` INT(1) UNSIGNED DEFAULT 0 NOT NULL
 );
+
+ALTER TABLE `member` ADD COLUMN mailAuthCode INT(10) UNSIGNED NOT NULL AFTER `level`;
+
+SELECT *
+FROM `member`;
+
+SELECT mailAuthCode
+FROM `member`
+WHERE id = 19
 
 SELECT COUNT(*) AS cnt
 FROM `member`
@@ -105,12 +115,12 @@ FROM `member`
 WHERE `name` = 12
 AND `email` = '12@12';
 
-SELECT *
-FROM `member`;
+select *
+from `member`;
 
-UPDATE `member`
-SET nickname = 'hihihi'
-WHERE `name` = '12';
+update `member`
+set nickname = 'hihihi'
+where `name` = '12';
 
 SELECT nickname
 FROM `member`

@@ -251,7 +251,7 @@ public class ArticleController extends Controller {
 		
 		req.setAttribute("totalCount", totalCount);
 		req.setAttribute("totalPage", totalPage);
-		req.setAttribute("page", page);
+		req.setAttribute("cPagedoReply", page);
 		
 		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
 

@@ -43,6 +43,7 @@ public abstract class Controller {
 		req.setAttribute("cateItems", cateItems);
 
 		// 사용자 관련 정보를 리퀘스트 객체에 정리해서 넣기
+		int trueMailAuthCode = -1;
 		int loginedMemberId = -1;
 		boolean isLogined = false;
 		Member loginedMember = null;
@@ -51,12 +52,13 @@ public abstract class Controller {
 			loginedMemberId = (int) session.getAttribute("loginedMemberId");
 			isLogined = true;
 			loginedMember = memberService.getMemberById(loginedMemberId);
+			trueMailAuthCode = memberService.getTrueMailAuthCode(loginedMemberId);
 		}
 
 		req.setAttribute("loginedMemberId", loginedMemberId);
 		req.setAttribute("loginedMember", loginedMember);
 		req.setAttribute("isLogined", isLogined);
-
+		req.setAttribute("trueMailAuthCode", trueMailAuthCode);
 		// 현재 URL
 
 		String currentUrl = req.getRequestURI();
@@ -105,6 +107,7 @@ public abstract class Controller {
 
 	private String doGuard() {
 		boolean isLogined = (boolean) req.getAttribute("isLogined");
+		int trueMailAuthCode = (int) req.getAttribute("trueMailAuthCode");
 
 		// 로그인에 관련된 가드 시작
 		boolean needToLogin = false;
@@ -133,8 +136,11 @@ public abstract class Controller {
 			break;
 		}
 
+		String urlEncodedAfterLoginRedirectUrl = (String) req.getAttribute("urlEncodedAfterLoginRedirectUrl");
+
 		if (needToLogin && isLogined == false) {
-			return "html:<script> alert('로그인 후 이용해주세요.'); location.href = '../member/login'; </script>";
+			return "html:<script> alert('로그인 후 이용해주세요.'); location.href = '../member/login?afterLoginRedirectUrl="
+					+ urlEncodedAfterLoginRedirectUrl + "'; </script>";
 		}
 		// 로그인에 관련된 가드 끝
 
@@ -151,13 +157,34 @@ public abstract class Controller {
 			}
 			break;
 		}
-		
-		String urlEncodedAfterLoginRedirectUrl = (String)req.getAttribute("urlEncodedAfterLoginRedirectUrl");
 
 		if (needToLogout && isLogined) {
-			return "html:<script> alert('로그인 후 이용해주세요.'); location.href = '../member/login?afterLoginRedirectUrl=" + urlEncodedAfterLoginRedirectUrl + "'; </script>";
+//			return "html:<script> alert('로그아웃 후 이용해주세요.'); location.href = '../home/main'; </script>";
+			return "html:<script> location.href = '../home/main'; </script>";
 		}
 		// 로그아웃에 관련된 가드 끝
+
+//		
+		if (trueMailAuthCode == 0) {
+			switch (controllerName) {
+//			case "member":
+//				switch (actionMethodName) {
+//					return "html:<script> alert('인증 후 이용해주세요.'); location.href = '../home/main'; </script>";
+//				}
+//				break;
+			case "article":
+				switch (actionMethodName) {
+				case "write":
+				case "doWrite":
+				case "modify":
+				case "doModify":
+				case "doDelete":
+					return "html:<script> alert('인증 후 이용해주세요.'); location.href = '../home/main'; </script>";
+				}
+				break;
+			}
+		}
+//
 
 		return null;
 	}

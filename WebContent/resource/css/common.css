@@ -578,6 +578,7 @@ label[for] {
 }
 .detail-box-1 > .modify-and-delete {
 	text-align: right;
+	vertical-align: bottom;
 }
 .detail-box-1 > .modify-and-delete > div {
 	display:inline-block;
