@@ -46,9 +46,17 @@ public class MemberController extends Controller {
 			return doActionauthMail();
 		case "doAuthMail":
 			return doActionDoAuthMail();
+		case "doChat":
+			return doActionDoChat();
 		}
 
 		return "";
+	}
+
+	private String doActionDoChat() {
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
+		session.setAttribute("loginedMemberId", loginedMemberId);
+		return "member/chatpage.jsp";
 	}
 
 	private String doActionDoFindPw() {
