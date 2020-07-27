@@ -41,52 +41,123 @@ public class ArticleController extends Controller {
 			return doActionModify();
 		case "doDelete":
 			return doActionDoDelete();
-		case "doReply":
-			return doActionDoReply();
-		case "doReplyModify":
-			return doActionDoReplyModify();
-		case "doReplyDelete":
-			return doActionDoReplyDelete();
+		case "doWriteReply":
+			return doActionDoWriteReply();
+		case "doModifyReply":
+			return doActionDoModifyReply();
+		case "modifyReply":
+			return doActionModifyReply();
+		case "doDeleteReply":
+			return doActionDoDeleteReply();
 		}
 		return "";
 	}
+	
+	
 
-	private String doActionDoReplyDelete() {
-		int replyId = Util.getInt(req, "replyId");
+
+	private String doActionDoDeleteReply() {
+		if (Util.empty(req, "id")) {
+			return "html:id를 입력해주세요.";
+		}
+
+		if (Util.isNum(req, "id") == false) {
+			return "html:id를 정수로 입력해주세요.";
+		}
+
 		int id = Util.getInt(req, "id");
-		articleService.deleteReply(replyId);
 
-		return "html:<script> alert('댓글 삭제 완료'); location.replace('detail?id=" + id + "'); </script>";
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
+
+		Map<String, Object> getReplyCheckRsDeleteAvailableRs = articleService.getReplyCheckRsDeleteAvailable(id, loginedMemberId);
+
+		if (Util.isSuccess(getReplyCheckRsDeleteAvailableRs) == false) {
+			return "html:<script> alert('" + getReplyCheckRsDeleteAvailableRs.get("msg") + "'); history.back(); </script>";
+		}
+
+		articleService.deleteArticleReply(id);
+
+		String redirectUrl = Util.getString(req, "redirectUrl", "list");
+
+		return "html:<script> alert('" + id + "번 댓글이 삭제되었습니다.'); location.replace('" + redirectUrl + "'); </script>";
 	}
 	
-	private String doActionDoReplyModify() {
-		int memberId = (int)req.getAttribute("loginedMemberId");
-		int articleId = Util.getInt(req, "articleId");
+	private String doActionDoModifyReply() {
+		if (Util.empty(req, "id")) {
+			return "html:id를 입력해주세요.";
+		}
+
+		if (Util.isNum(req, "id") == false) {
+			return "html:id를 정수로 입력해주세요.";
+		}
+
 		int id = Util.getInt(req, "id");
-		String regDate = Util.getString(req, "regDate");
 		String body = Util.getString(req, "body");
-		
-		System.out.println(memberId);
-		System.out.println(articleId);
-		System.out.println(id);
-		System.out.println(regDate);
-		System.out.println(body);
-		
-		int id_ = articleService.modifyReply(id, articleId, memberId, regDate, body);
-		
-		return "html:<script> alert('수정 완료!'); location.replace('detail?id=" + articleId + "'); </script>";
+
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
+
+		Map<String, Object> getReplyCheckRsModifyAvailableRs = articleService.getReplyCheckRsModifyAvailable(id,
+				loginedMemberId);
+
+		if (Util.isSuccess(getReplyCheckRsModifyAvailableRs) == false) {
+			return "html:<script> alert('" + getReplyCheckRsModifyAvailableRs.get("msg")
+					+ "'); history.back(); </script>";
+		}
+
+		articleService.modifyArticleReply(id, body);
+
+		String redirectUrl = Util.getString(req, "redirectUri", "list");
+
+		redirectUrl = Util.getNewUrl(redirectUrl, "lastWorkArticleReplyId", id + "");
+
+		return "html:<script> alert('" + id + "번 댓글이 수정되었습니다.'); location.replace('" + redirectUrl + "'); </script>";
+	}
+	
+	private String doActionModifyReply() {
+		if (Util.empty(req, "id")) {
+			return "html:id를 입력해주세요.";
+		}
+
+		if (Util.isNum(req, "id") == false) {
+			return "html:id를 정수로 입력해주세요.";
+		}
+
+		int id = Util.getInt(req, "id");
+
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
+
+		ArticleReply articleReply = articleService.getArticleReply(id);
+		req.setAttribute("articleReply", articleReply);
+
+		Article article = articleService.getForPrintArticle(articleReply.getArticleId(), loginedMemberId);
+		req.setAttribute("article", article);
+
+		return "article/modifyReply.jsp";
 	}
 
 
-	private String doActionDoReply() {
-		int memberId = (int)req.getAttribute("loginedMemberId");
-		int articleId = Util.getInt(req, "id");
+	private String doActionDoWriteReply() {
+		if (Util.empty(req, "articleId")) {
+			return "html:articleId를 입력해주세요.";
+		}
+
+		if (Util.isNum(req, "articleId") == false) {
+			return "html:articleId를 정수로 입력해주세요.";
+		}
+
+		int articleId = Util.getInt(req, "articleId");
+
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
 		String body = Util.getString(req, "body");
+		String redirectUrl = Util.getString(req, "redirectUrl");
+
+		int id = articleService.writeArticleReply(articleId, loginedMemberId, body);
 		
-		articleService.reply(memberId, articleId, body);
-		
-		return "html:<script> alert('작성 완료!'); location.replace('detail?id=" + articleId + "'); </script>";
+		redirectUrl = Util.getNewUrl(redirectUrl, "generatedArticleReplyId", id + "");
+
+		return "html:<script> alert('" + id + "번 댓글이 작성되었습니다.'); location.replace('" + redirectUrl + "'); </script>";
 	}
+
 	
 	private String doActionDoDelete() {
 		if (Util.empty(req, "id")) {
@@ -197,21 +268,29 @@ public class ArticleController extends Controller {
 		
 		req.setAttribute("article", article);
 		
-		List<ArticleReply> articleReplies = articleService.getForPrintReplies(id);
+
+		List<ArticleReply> articleReplies = articleService.getForPrintArticleReplies(id, loginedMemberId);
+
 		req.setAttribute("articleReplies", articleReplies);
 		
-		String memberNickName = "";
-		Map<Integer, String> memberNickNames = new HashMap<Integer, String>();
-		for(ArticleReply articleReply : articleReplies) {
-			memberNickName = articleService.getForPrintMemberNickName(articleReply.getMemberId());
-			memberNickNames.put(articleReply.getMemberId(), memberNickName);
-		}
-		req.setAttribute("memberNickNames", memberNickNames);
-
+//		List<ArticleReply> articleReplies = articleService.getForPrintReplies(id);
+//		req.setAttribute("articleReplies", articleReplies);
+//		
+//		String memberNickName = "";
+//		Map<Integer, String> memberNickNames = new HashMap<Integer, String>();
+//		for(ArticleReply articleReply : articleReplies) {
+//			memberNickName = articleService.getForPrintMemberNickName(articleReply.getMemberId());
+//			memberNickNames.put(articleReply.getMemberId(), memberNickName);
+//		}
+//		req.setAttribute("memberNickNames", memberNickNames);
+//		
+		
 		return "article/detail.jsp";
 	}
 
 	private String doActionList() {
+		long startTime = System.nanoTime();
+		
 		int page = 1;
 
 		if (!Util.empty(req, "page") && Util.isNum(req, "page")) {
@@ -249,13 +328,24 @@ public class ArticleController extends Controller {
 		int totalCount = articleService.getForPrintListArticlesCount(cateItemId, searchKeywordType, searchKeyword);
 		int totalPage = (int) Math.ceil(totalCount / (double) itemsInAPage);
 		
+		int nowPage = page;
+		
+		if(page % 5 != 0) {
+			page = page/5;
+			page = (page*5)+1;
+		} else if(page % 5 == 0) {
+			page = page - 4;
+		}
+		
+		req.setAttribute("page", page);
+		
 		req.setAttribute("totalCount", totalCount);
 		req.setAttribute("totalPage", totalPage);
 		req.setAttribute("cPagedoReply", page);
 		
 		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
 
-		List<Article> articles = articleService.getForPrintListArticles(loginedMemberId, page, itemsInAPage, cateItemId,
+		List<Article> articles = articleService.getForPrintListArticles(loginedMemberId, nowPage, itemsInAPage, cateItemId,
 				searchKeywordType, searchKeyword);
 		req.setAttribute("articles", articles);
 		
@@ -267,6 +357,12 @@ public class ArticleController extends Controller {
 			memberNickNames.put(article.getMemberId(), memberNickName);
 		}
 		req.setAttribute("memberNickNames", memberNickNames);
+		
+		long endTime = System.nanoTime();
+		long estimatedTime = endTime - startTime;
+		// nano seconds to seconds
+		double seconds = estimatedTime / 1000000000.0;
+		System.out.println("seconds : " + seconds);
 		
 		return "article/list.jsp";
 	}

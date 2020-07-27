@@ -11,6 +11,10 @@ body, ul, li, h1 {
 	padding: 0;
 	list-style: none;
 }
+body {
+	padding-bottom:200px;
+}
+
 
 a {
 	color: inherit;
@@ -618,11 +622,11 @@ label[for] {
 	color:white;
 }
 
-.article-reply-write > .article-reply-write-box {
+.write-reply-form-box {
 	display:none;
 }
 
-.article-reply-write > .article-reply-write-box.active {
+.write-reply-form-box.active {
 	display:block;
 	margin-top: 30px;
 	margin-left:auto;
@@ -862,3 +866,11 @@ label[for] {
 }
 
 /* 모바일 사이드바 끝 *//*list*/
+
+.padding-left-10 {
+	padding-left:10px;
+}
+
+.padding-right-10 {
+	padding-right:10px;
+}

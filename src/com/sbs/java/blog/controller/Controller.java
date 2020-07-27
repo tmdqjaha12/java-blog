@@ -59,6 +59,7 @@ public abstract class Controller {
 		req.setAttribute("loginedMember", loginedMember);
 		req.setAttribute("isLogined", isLogined);
 		req.setAttribute("trueMailAuthCode", trueMailAuthCode);
+		req.setAttribute("noBaseCurrentUri", req.getRequestURI().replace(req.getContextPath(), ""));
 		// 현재 URL
 
 		String currentUrl = req.getRequestURI();

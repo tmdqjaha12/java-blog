@@ -157,37 +157,39 @@ public class ArticleDao extends Dao {
 		return DBUtil.delete(dbConn, sql);
 	}
 
-	public void reply(int memberId, int articleId, String body) {
+	public int writeArticleReply(int articleId, int memberId, String body) {
 		SecSql sql = new SecSql();
-		
+
 		sql.append("INSERT INTO articleReply");
 		sql.append("SET regDate = NOW()");
-		sql.append(",updateDate = NOW()");
-		sql.append(",articleId = ?", articleId);
-		sql.append(",memberId = ?", memberId);
-		sql.append(",body = ?", body);
-		
-		DBUtil.insert(dbConn, sql);
+		sql.append(", updateDate = NOW()");
+		sql.append(", articleId = ?", articleId);
+		sql.append(", body = ? ", body);
+		sql.append(", displayStatus = '1'");
+		sql.append(", memberId = ?", memberId);
+
+		return DBUtil.insert(dbConn, sql);
 	}
 
-	public List<ArticleReply> getForPrintReplies(int id) {
+	public List<ArticleReply> getForPrintArticleReplies(int articleId, int actorId) {
 		SecSql sql = new SecSql();
-		
+
 		sql.append("SELECT *");
 		sql.append("FROM articleReply");
-		sql.append("WHERE articleId = ?", id);
+		sql.append("WHERE displayStatus = 1");
+		sql.append("AND articleId = ?", articleId);
 		sql.append("ORDER BY id DESC ");
 
 		List<Map<String, Object>> rows = DBUtil.selectRows(dbConn, sql);
-		List<ArticleReply> replies = new ArrayList<>();
+		List<ArticleReply> articleReplies = new ArrayList<>();
 
 		for (Map<String, Object> row : rows) {
-			replies.add(new ArticleReply(row));
+			articleReplies.add(new ArticleReply(row));
 		}
 
-		return replies;
+		return articleReplies;
 	}
-
+	
 	public String getForPrintMemberNickName(int memberId) {
 		SecSql sql = new SecSql();
 
@@ -198,27 +200,38 @@ public class ArticleDao extends Dao {
 		return DBUtil.selectRowStringValue(dbConn, sql);
 	}
 
-	public void deleteReply(int id) {
+	public ArticleReply getArticleReply(int id) {
 		SecSql sql = new SecSql();
 
-		sql.append("DELETE FROM articleReply");
-		sql.append("WHERE 1");
-		sql.append("AND id = ?", id);
+		sql.append("SELECT *");
+		sql.append("FROM articleReply");
+		sql.append("WHERE id = ?", id);
 
-		DBUtil.delete(dbConn, sql);
+		Map<String, Object> row = DBUtil.selectRow(dbConn, sql);
+
+		if ( row.isEmpty() ) {
+			return null;
+		}
+
+		return new ArticleReply(row);
 	}
 
-	public int modifyReply(int id, int articleId, int memberId, String regDate, String body) {
+	public int deleteArticleReply(int id) {
+		SecSql sql = SecSql.from("DELETE FROM articleReply");
+		sql.append("WHERE id = ?", id);
+
+		return DBUtil.delete(dbConn, sql);
+	}
+
+	public int modifyArticleReply(int id, String body) {
 		SecSql sql = new SecSql();
 
 		sql.append("UPDATE articleReply");
-		sql.append("SET regDate = ?", regDate);
-		sql.append(", updateDate = NOW()");
-		sql.append(", articleId = ? ", articleId);
-		sql.append(", memberId = ? ", memberId);
-		sql.append(", body = ?", body);
-		sql.append("WHERE id = ?", articleId);
+		sql.append("SET updateDate = NOW()");
+		sql.append(", body = ? ", body);
+		sql.append("WHERE id = ?", id);
 
 		return DBUtil.update(dbConn, sql);
 	}
+
 }

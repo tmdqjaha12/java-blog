@@ -1,7 +1,4 @@
-<%@ page import="java.util.List"%>
-<%@ page import="java.util.HashMap" %>
-<%@ page import="java.util.Map" %>
-<%@ page import="com.sbs.java.blog.dto.Article"%>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ include file="/jsp/part/head.jspf"%>
@@ -44,6 +41,8 @@
 	href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 
 <!-- LIST.JSP  -->
+
+
 
 <!-- 해당 카테고리 시작 -->
 <h1 class="con page-bn-1">
@@ -92,6 +91,20 @@
 			<li><a href="#" style="color:red;">탈퇴회원</a></li>
     		
 		 -->
+		<li>
+		<c:set var="nickname" value="${memberNickNames.get(article.memberId)}" />
+			<c:choose>
+	 
+			    <c:when test="${empty nickname}">
+			        <a href="#" style="color:red;">탈퇴 회원</a>
+			    </c:when>
+			 
+			    <c:otherwise>
+			        <a href="#">${memberNickNames.get(article.memberId)}</a>
+			    </c:otherwise>
+		 
+			</c:choose>
+		</li>
 		<li><a href="#">${article.hit}</a></li>
 		<li class="bigo" style="text-align: center; line-height: 55px;">
 			<div class="inline-block" style="">
@@ -115,17 +128,24 @@
 <!-- 게시물 페이징 시작 -->
 <div class="con page-box">
 	<ul>
-		<span>◀</span>
-		<c:forEach var="i" begin="1" end="${totalPage}" step="1">
-		<li class="${i == cPage ? 'current' : ''}"><a
-			href="?cateItemId=${param.cateItemId}&searchKeywordType=${param.searchKeywordType}&searchKeyword=${param.searchKeyword}&page=${i}"
-			class="block">${i}</a></li>
+		<c:if test="${page-5 > 0}">
+			<span><a href="?cateItemId=${param.cateItemId}&searchKeywordType=${param.searchKeywordType}&searchKeyword=${param.searchKeyword}&page=${page-5}">◀</a></span>
+		</c:if>
+		
+		<c:forEach var="i" begin="${page}" end="${page+4}" step="1">
+		<li class="${i == param.page ? 'current' : ''}"><a href="?cateItemId=${param.cateItemId}&searchKeywordType=${param.searchKeywordType}&searchKeyword=${param.searchKeyword}&page=${i}"
+			class="block" <c:if test="${i > totalPage}">style="display:none;"</c:if>>${i}</a></li>
 		</c:forEach>
-		<span>▶</span>
+		
+		<c:if test="${totalPage-page > 4}">
+		<span><a href="?cateItemId=${param.cateItemId}&searchKeywordType=${param.searchKeywordType}&searchKeyword=${param.searchKeyword}&page=${page+5}">▶</a></span>
+		</c:if>
 	</ul>
 </div>
 <!-- 게시물 페이징 끝 -->
 
+<script>
 
+</script>
 
 <%@ include file="/jsp/part/foot.jspf"%>

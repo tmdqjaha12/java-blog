@@ -1,18 +1,18 @@
-<%@ page import="com.sbs.java.blog.dto.Article"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="pageTitle" value="게시물 수정"></c:set>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ include file="/jsp/part/head.jspf"%>
 <%@ include file="/jsp/part/toastUiEditor.jspf"%>
-<%
-	Article article = (Article) request.getAttribute("article");
-%>
 
 <style>
 /* cus */
-.write-form-box {
+.modify-form-box {
 	margin-top: 30px;
 }
 </style>
+
+
 <script>
 	var submitModifyFormDone = false;
 	function submitModifyForm(form) {
@@ -20,14 +20,12 @@
 			alert('처리중입니다.');
 			return;
 		}
-
 		form.title.value = form.title.value.trim();
 		if (form.title.value.length == 0) {
 			alert('제목을 입력해주세요.');
 			form.title.focus();
 			return false;
 		}
-
 		var editor = $(form).find('.toast-editor').data('data-toast-editor');
 		var body = editor.getMarkdown();
 		body = body.trim();
@@ -36,13 +34,11 @@
 			editor.focus();
 			return false;
 		}
-
 		form.body.value = body;
 		form.submit();
 		submitModifyFormDone = true;
 	}
 </script>
-
 
 <div class="modify-form-box con">
 	<form action="doModify" method="POST" class="modify-form form1"
@@ -62,9 +58,9 @@
 			<div class="input">
 				<select name="cateItemId">
 					<c:forEach items="${cateItems}" var="cateItem">
-						<option ${article.cateItemId == cateItem.id ? 'selected' : ''}
-							value="${cateItem.id}">${cateItem.name}</option>
+						<option ${article.cateItemId == cateItem.id ? 'selected' : ''} value="${cateItem.id}">${cateItem.name}</option>
 					</c:forEach>
+
 				</select>
 			</div>
 		</div>
@@ -91,27 +87,4 @@
 	</form>
 </div>
 
-<c:set var="name" value="홍길동" />
-
-<c:choose>
-	<c:when test="${name eq '홍길동'}">
-        홍길동이 맞습니다.
-    </c:when>
-	<c:when test="${name eq '철수'}">
-        홍길동이 아닙니다.
-    </c:when>
-	<c:otherwise>
-        사람이 없습니다 ㅜㅜ
-    </c:otherwise>
-</c:choose>
-
-<c:if test="${name eq '홍길동'}">
-    홍길동이 맞습니다.
-</c:if>
-<c:if test="${name eq '철수'}">
-    홍길동이 아닙니다.
-</c:if>
-<c:if test="${empty name}">
-    홍길동이 아닙니다.
-</c:if>
 <%@ include file="/jsp/part/foot.jspf"%>

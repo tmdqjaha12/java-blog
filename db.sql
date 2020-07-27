@@ -153,3 +153,113 @@ FROM article
 WHERE displayStatus = 1
 ORDER BY id DESC
 LIMIT 0, 10
+
+# 댓글 테이블 추가
+DROP TABLE IF EXISTS articleReply;
+CREATE TABLE articleReply (
+    id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    regDate DATETIME NOT NULL,
+    updateDate DATETIME NOT NULL,
+    memberId INT(10) UNSIGNED NOT NULL,
+    displayStatus TINYINT(1) UNSIGNED NOT NULL,
+    `body` TEXT NOT NULL
+);
+
+ALTER TABLE articleReply ADD COLUMN articleId INT(10) UNSIGNED NOT NULL DEFAULT 0 AFTER memberId;
+
+# 기존 게시물 댓글의 게시물 번호를 1번으로 정리(통일)
+UPDATE articleReply
+SET articleId = 1
+WHERE articleId = 0; 
+
+###########3
+
+# 캐릭터SET 설정
+SET NAMES utf8mb4;
+
+# DB 생성
+DROP DATABASE IF EXISTS site36; # site36 있으면 삭제
+CREATE DATABASE site36; # site36 DB생성
+USE site36; # site36 DB 선택
+
+# 카테고리 테이블 생성
+DROP TABLE IF EXISTS cateItem; # 카테고리 테이블 있으면 삭제
+CREATE TABLE cateItem ( # 카테고리 테이블 생성
+    id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT, # 카테고리 테이블 ID
+    regDate DATETIME NOT NULL, # 날짜
+    `name` CHAR(100) NOT NULL UNIQUE # 카테고리 이름
+);
+
+# 카테고리 추가
+INSERT INTO cateItem SET regDate = NOW(), `name` = 'IT/일반'; # IT/일반 카테고리 추가
+INSERT INTO cateItem SET regDate = NOW(), `name` = 'IT/알고리즘';
+INSERT INTO cateItem SET regDate = NOW(), `name` = 'IT/프론트엔드';
+INSERT INTO cateItem SET regDate = NOW(), `name` = 'IT/백엔드';
+INSERT INTO cateItem SET regDate = NOW(), `name` = '디자인/피그마';
+INSERT INTO cateItem SET regDate = NOW(), `name` = '일상/일반';
+
+# 게시물 테이블 생성
+DROP TABLE IF EXISTS article; # 게시물 테이블 있으면 삭제
+CREATE TABLE article ( # 게시물 테이블 생성
+    id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT, # 게시물 테이블 ID
+    regDate DATETIME NOT NULL, # 게시물 날짜
+    updateDate DATETIME NOT NULL, # 업데이트 날짜
+    cateItemId INT(10) UNSIGNED NOT NULL, # 카테고리 ID
+    displayStatus TINYINT(1) UNSIGNED NOT NULL, # 게시물 열람 권한
+    `title` CHAR(200) NOT NULL, # 게시물 제목
+    `body` TEXT NOT NULL # 게시물 내용
+);
+
+# 1번글 생성
+INSERT INTO article SET
+regDate = NOW(),
+updateDate = NOW(),
+cateItemId = 6,
+displayStatus = 1,
+title = '블로그를 시작합니다.',
+`body` = '';
+
+# 회원 테이블 생성
+DROP TABLE IF EXISTS `member`; # 회원 테이블 있으면 삭제
+CREATE TABLE `member` ( # 회원 테이블 생성
+    id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT, # 회원 테이블 ID
+    regDate DATETIME NOT NULL, # 가입 날짜
+    updateDate DATETIME NOT NULL, # 회원 정보 수정 날짜
+    `loginId` CHAR(100) NOT NULL UNIQUE, # 회원 로그인 아이디
+    `loginPw` CHAR(100) NOT NULL, # 회원 로그인 비번
+    `name` CHAR(100) NOT NULL,  # 회원 이름
+    `nickname` CHAR(100) NOT NULL UNIQUE, # 회원 별면
+    `email` CHAR(100) NOT NULL, # 회원 이메일
+    `level` INT(1) UNSIGNED DEFAULT 0 NOT NULL # 회원 권한 레벨
+);
+
+# 마스터 회원 생성
+INSERT INTO `member` SET # 멤버 테이블에 ADMIN생성
+regDate = NOW(), # 생성날짜
+updateDate = NOW(), # 정보수정 날짜
+`loginId` = 'admin', # 아이디
+`loginPw` = SHA2('admin', 256), # 비밀번호
+`name` = 'admin', # 이름
+`nickname` = 'admin', # 닉네임
+`email` = 'admin@admin.com', # 이메일
+`level` = 10; # 권한레벨 10
+
+# 게시물에 memberId 칼럼 추가
+ALTER TABLE article ADD COLUMN hit INT(10) UNSIGNED NOT NULL DEFAULT 0 AFTER cateItemId;
+
+# 게시물에 memberId 칼럼 추가
+ALTER TABLE article ADD COLUMN memberId INT(10) UNSIGNED NOT NULL AFTER cateItemId;
+
+# 댓글 테이블 생성
+DROP TABLE IF EXISTS articleReply;  # 댓글 테이블 있으면 삭제
+CREATE TABLE articleReply ( # 댓글 테이블 생성
+    id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT, # 댓글 테이블 ID
+    regDate DATETIME NOT NULL, # 댓글 생성 날짜
+    updateDate DATETIME NOT NULL, # 댓글 수정 날짜
+    memberId INT(10) UNSIGNED NOT NULL, # 댓글 멤버 ID
+    displayStatus TINYINT(1) UNSIGNED NOT NULL, # 댓글 열람 권한
+    `body` TEXT NOT NULL # 댓글 내용
+);
+
+# 댓글 테이블에 mberId 칼럼 추가
+ALTER TABLE articleReply ADD COLUMN articleId INT(10) UNSIGNED NOT NULL DEFAULT 0 AFTER memberId;

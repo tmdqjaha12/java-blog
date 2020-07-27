@@ -1,6 +1,4 @@
-<%@ page import="java.util.List"%>
-<%@ page import="com.sbs.java.blog.dto.CateItem"%>
-<%@ page import="com.sbs.java.blog.dto.Member"%>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
@@ -54,6 +52,39 @@
 	var isLogined = "${isLogined}" == "true";
 	var loginedMember = null;
 	var trueMailAuthCode = parseInt("${trueMailAuthCode}");
+</script>
+
+
+<script>
+	var param = {};
+</script>
+<c:forEach var="pageParameter" items="${param}">
+	<script>
+		param["${pageParameter.key}"] = "${pageParameter.value}";
+	</script>
+</c:forEach>
+
+<script>
+if ( !param.jsAction ) {
+	param.jsAction = '';
+}
+
+var jsActions = param.jsAction.split(',');
+
+for ( var key in jsActions ) {
+	var jsActionFuncName = jsActions[key];
+
+	$(function() {
+		setTimeout(function() {
+			if ( window[jsActionFuncName] ) {
+				window[jsActionFuncName]();
+			}
+			else {
+				console.error("jsAction으로 요청받은, " + jsActionFuncName + " 함수는 존재하지 않아서 실행하지 못했습니다.");
+			}
+		}, 100);
+	});
+}
 </script>
 
 <!-- 
