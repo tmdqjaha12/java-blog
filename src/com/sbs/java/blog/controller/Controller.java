@@ -185,7 +185,23 @@ public abstract class Controller {
 				break;
 			}
 		}
-//
+		
+		if (trueMailAuthCode == 1) {
+			switch (controllerName) {
+			case "member":
+				switch (actionMethodName) {
+				case "authMail":
+					return "html:<script> alert('이미 인증되었습니다.'); location.href = '../home/main'; </script>";
+				}
+				break;
+//			case "article":
+//				switch (actionMethodName) {
+//				case "write":
+//					return "html:<script> alert('인증 후 이용해주세요.'); location.href = '../home/main'; </script>";
+//				}
+//				break;
+			}
+		}
 
 		return null;
 	}

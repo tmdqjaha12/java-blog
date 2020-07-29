@@ -5,6 +5,7 @@ import java.sql.Connection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.sbs.java.blog.dto.Member;
 import com.sbs.java.blog.service.MailService;
 import com.sbs.java.blog.util.Util;
 
@@ -16,7 +17,7 @@ public class MemberController extends Controller {
 		super(dbConn, actionMethodName, req, resp);
 		this.mailService = mailService;
 	}
-	
+
 //	public MemberController(Connection dbConn, String actionMethodName, HttpServletRequest req,
 //			HttpServletResponse resp) {
 //		super(dbConn, actionMethodName, req, resp);
@@ -48,9 +49,22 @@ public class MemberController extends Controller {
 			return doActionDoAuthMail();
 		case "doChat":
 			return doActionDoChat();
+		case "memberModify":
+			return doActionMemberModify();
+		case "doMemberModify":
+			return doActionDoMemberModify();
 		}
 
 		return "";
+	}
+
+	private String doActionDoMemberModify() {
+	Member member = (Member) req.getAttribute("loginedMember");
+	return null;
+}
+
+	private String doActionMemberModify() {
+		return "member/memberModify.jsp";
 	}
 
 	private String doActionDoChat() {
@@ -63,18 +77,18 @@ public class MemberController extends Controller {
 		String loginId = req.getParameter("loginId");
 		String name = req.getParameter("name");
 		String email = req.getParameter("email");
-		
-		if(memberService.getBooleanForFindPw(loginId, name, email)) {
+
+		if (memberService.getBooleanForFindPw(loginId, name, email)) {
 			String imshiPw = Util.getRandomPassword(8);
 			String encryptSHA256ImshiPw = Util.encryptSHA256(imshiPw);
-			
+
 			memberService.updateImshiPw(loginId, name, email, encryptSHA256ImshiPw);
-			
+
 			mailService.send(email, "임시 비밀번호 발송", name + "님의 임시 비밀번호 : " + imshiPw, "");
-			
+
 			return String.format("html:<script> alert('발송된 임시번호로 로그인해주세요.'); location.replace('login'); </script>");
 		}
-		
+
 		return String.format("html:<script> alert('유효한 정보를 찾지 못했습니다.'); location.replace('login'); </script>");
 	}
 
@@ -86,22 +100,20 @@ public class MemberController extends Controller {
 		String name = req.getParameter("name");
 		String email = req.getParameter("email");
 		String loginId = "";
-		
+
 		loginId = memberService.getStringForFindId(name, email);
-		
-		if(loginId.length() != 0) {
+
+		if (loginId.length() != 0) {
 			mailService.send(email, "아이디 발송", name + "님의 아이디 : " + loginId, "");
 			return String.format("html:<script> alert('해당 이메일으로 아이디가 발송되었습니다.'); location.replace('login'); </script>");
 		}
-			
-		
-				
+
 		return String.format("html:<script> alert('유효한 정보를 찾지 못했습니다.'); location.replace('login'); </script>");
 	}
 
 	private String doActionFindId() {
 		return "member/findId.jsp";
-}
+	}
 
 	private String doActionDoLogin() {
 		String loginId = req.getParameter("loginId");
@@ -114,7 +126,7 @@ public class MemberController extends Controller {
 		}
 
 		session.setAttribute("loginedMemberId", loginedMemberId);
-		
+
 		String redirectUrl = Util.getString(req, "redirectUrl", "../home/main");
 
 		return String.format("html:<script> alert('로그인 되었습니다.'); location.replace('" + redirectUrl + "'); </script>");
@@ -129,24 +141,24 @@ public class MemberController extends Controller {
 
 		return String.format("html:<script> alert('로그아웃 되었습니다.'); location.replace('../home/main'); </script>");
 	}
-	
-	private String doActionauthMail() { 
+
+	private String doActionauthMail() {
 		String authCode = Util.getString(req, "code");
 		req.setAttribute("authCode", authCode);
 		return "member/authMail.jsp";
 	}
-	
+
 	private String doActionDoAuthMail() {
 		String authCode = Util.getString(req, "authCode");
 		String inputAuthCode = Util.getString(req, "inputAuthCode");
- 		
-		if(authCode.equals(inputAuthCode)) {
+
+		if (authCode.equals(inputAuthCode)) {
 			int loginedMemberId = (int) req.getAttribute("loginedMemberId");
 			memberService.getTrueAuthCode(loginedMemberId);
-			
+
 			return String.format("html:<script> alert('인증 완료!'); location.replace('../home/main'); </script>");
 		}
-		
+
 		return String.format("html:<script> alert('인증 실패!'); history.back(); </script>");
 	}
 
@@ -177,13 +189,13 @@ public class MemberController extends Controller {
 		}
 
 		memberService.join(loginId, loginPw, name, nickname, email);
-		
+
 		String authCode = Util.getRandomPassword(5);
 		String massage = "<a href=\"https://meloporn.my.iu.gy/blog/s/member/authMail?code=" + authCode + "\">인증하기</a>";
 		String authMassage = Util.getHtmlFormEmail(massage, authCode);
-		
+
 		mailService.send(email, "가입을 축하드립니다!", name + "님환영합니다.", authMassage);
-		
+
 		return String.format("html:<script> alert('%s님 환영합니다.'); location.replace('../home/main'); </script>", name);
 	}
 
