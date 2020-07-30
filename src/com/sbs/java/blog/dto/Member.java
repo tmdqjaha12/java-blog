@@ -71,9 +71,9 @@ public class Member extends Dto {
 
 	@Override
 	public String toString() {
-		return "Member [updateDate=" + updateDate + ", loginId=" + loginId + ", loginPw=" + loginPw + ", name=" + name
-				+ ", nickname=" + nickname + ", email=" + email + ", getId()=" + getId() + ", getRegDate()="
-				+ getRegDate() + ", getExtra()=" + getExtra() + "]";
+		return "Member [loginId=" + loginId + ", loginPw=" + loginPw + ", name=" + name + ", nickname=" + nickname
+				+ ", email=" + email + ", getId()=" + getId() + ", getRegDate()=" + getRegDate() + ", getUpdateDate()="
+				+ getUpdateDate() + ", getExtra()=" + getExtra() + "]";
 	}
 
 }

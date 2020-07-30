@@ -65,26 +65,26 @@
 </c:forEach>
 
 <script>
-if ( !param.jsAction ) {
-	param.jsAction = '';
-}
+	if (!param.jsAction) {
+		param.jsAction = '';
+	}
 
-var jsActions = param.jsAction.split(',');
+	var jsActions = param.jsAction.split(',');
 
-for ( var key in jsActions ) {
-	var jsActionFuncName = jsActions[key];
+	for ( var key in jsActions) {
+		var jsActionFuncName = jsActions[key];
 
-	$(function() {
-		setTimeout(function() {
-			if ( window[jsActionFuncName] ) {
-				window[jsActionFuncName]();
-			}
-			else {
-				console.error("jsAction으로 요청받은, " + jsActionFuncName + " 함수는 존재하지 않아서 실행하지 못했습니다.");
-			}
-		}, 100);
-	});
-}
+		$(function() {
+			setTimeout(function() {
+				if (window[jsActionFuncName]) {
+					window[jsActionFuncName]();
+				} else {
+					console.error("jsAction으로 요청받은, " + jsActionFuncName
+							+ " 함수는 존재하지 않아서 실행하지 못했습니다.");
+				}
+			}, 100);
+		});
+	}
 </script>
 
 <!-- 
@@ -134,9 +134,8 @@ script
 		<nav class="menu-box-1 flex-grow-1">
 			<ul>
 				<c:if test="${isLogined}">
-					<li><a
-						href="${pageContext.request.contextPath}/s/member/doLogout"
-						class="block">Logout</a></li>
+					<li><a href="${pageContext.request.contextPath}/s/member/doLogout" class="block">Logout</a></li>
+					<li><a href="${pageContext.request.contextPath}/s/member/passwordForPrivate" class="block">My Private</a></li>
 				</c:if>
 				<c:if test="${isLogined == false}">
 					<li><a
@@ -145,7 +144,7 @@ script
 					<li><a href="${pageContext.request.contextPath}/s/member/join"
 						class="block">Join</a></li>
 				</c:if>
-				
+
 				<li><a href="${pageContext.request.contextPath}/s/home/main"
 					class="block">Home</a></li>
 				<li><a href="#" class="block">Articles</a>
@@ -163,8 +162,10 @@ script
 					class="block">AboutMe</a></li>
 				<li><a href="#" class="block">SNS</a>
 					<ul>
-						<li><a href="https://github.com/tmdqjaha12" target="_blank" class="block">GITHUB</a></li>
-						<li><a href="https://github.com/tmdqjaha12" target="_blank" class="block">INSTA</a></li>
+						<li><a href="https://github.com/tmdqjaha12" target="_blank"
+							class="block">GITHUB</a></li>
+						<li><a href="https://github.com/tmdqjaha12" target="_blank"
+							class="block">INSTA</a></li>
 					</ul></li>
 			</ul>
 		</nav>
@@ -176,7 +177,9 @@ script
 		<div class="con flex flex-jc-sb height-100p">
 			<div class="img-box">
 				<a class="top-bn-img"
-					href="${pageContext.request.contextPath}/s/home/main"> <img src="${pageContext.request.contextPath}/resource/img/meloporn_banner.png" alt="" />
+					href="${pageContext.request.contextPath}/s/home/main"> <img
+					src="${pageContext.request.contextPath}/resource/img/meloporn_banner.png"
+					alt="" />
 				</a>
 			</div>
 
@@ -188,8 +191,11 @@ script
 							href="${pageContext.request.contextPath}/s/member/doLogout"
 							class="flex height-100p flex-ai-c">Logout</a></li>
 						<li><a
-						href="${pageContext.request.contextPath}/s/member/doChat"
-						class="flex height-100p flex-ai-c">Chatting</a></li>
+							href="${pageContext.request.contextPath}/s/member/passwordForPrivate"
+							class="flex height-100p flex-ai-c">My Private</a></li>
+						<li><a
+							href="${pageContext.request.contextPath}/s/member/doChat"
+							class="flex height-100p flex-ai-c">Chatting</a></li>
 					</c:if>
 					<c:if test="${isLogined == false}">
 						<li><a
@@ -199,22 +205,32 @@ script
 							href="${pageContext.request.contextPath}/s/member/join"
 							class="flex height-100p flex-ai-c">Join</a></li>
 					</c:if>
-					<li><a href="${pageContext.request.contextPath}/s/home/main" class="flex height-100p flex-ai-c">Home</a></li>
+					<li><a href="${pageContext.request.contextPath}/s/home/main"
+						class="flex height-100p flex-ai-c">Home</a></li>
 					<li><a
-						href="${pageContext.request.contextPath}/s/article/write" class="flex height-100p flex-ai-c">Write</a></li>
+						href="${pageContext.request.contextPath}/s/article/write"
+						class="flex height-100p flex-ai-c">Write</a></li>
 
 
-					<li><a href="${pageContext.request.contextPath}/s/article/list" class="flex height-100p flex-ai-c">Articles</a>
-						<ul style="z-index:5;">
+					<li><a
+						href="${pageContext.request.contextPath}/s/article/list"
+						class="flex height-100p flex-ai-c">Articles</a>
+						<ul style="z-index: 5;">
 							<c:forEach items="${cateItems}" var="cateItem">
-								<li><a href="${pageContext.request.contextPath}/s/article/list?cateItemId=${cateItem.id}" class="block">${cateItem.name}</a></li>
+								<li><a
+									href="${pageContext.request.contextPath}/s/article/list?cateItemId=${cateItem.id}"
+									class="block">${cateItem.name}</a></li>
 							</c:forEach>
 						</ul></li>
-					<li><a href="${pageContext.request.contextPath}/s/home/aboutMe" class="flex height-100p flex-ai-c">AboutMe</a></li>
+					<li><a
+						href="${pageContext.request.contextPath}/s/home/aboutMe"
+						class="flex height-100p flex-ai-c">AboutMe</a></li>
 					<li><a href="#" class="flex height-100p flex-ai-c">SNS</a>
 						<ul>
-							<li><a href="https://github.com/tmdqjaha12" target="_blank" class="block">GITHUB</a></li>
-							<li><a href="https://github.com/tmdqjaha12" target="_blank" class="block">INSTA</a></li>
+							<li><a href="https://github.com/tmdqjaha12" target="_blank"
+								class="block">GITHUB</a></li>
+							<li><a href="https://github.com/tmdqjaha12" target="_blank"
+								class="block">INSTA</a></li>
 						</ul></li>
 				</ul>
 			</nav>
@@ -222,8 +238,5 @@ script
 	</div>
 
 	<c:if test="${isLogined}">
-		<div class="con">${loginedMember.name}번회원님 환영합니다.</div>
-	</c:if> 
-
-	
-	
+		<div class="con">${loginedMember.name}번회원님환영합니다.</div>
+	</c:if>

@@ -126,10 +126,6 @@ public class ArticleService extends Service {
 		return articleReplies;
 	}
 
-	public String getForPrintMemberNickName(int memberId) {
-		return articleDao.getForPrintMemberNickName(memberId);
-	}
-
 	public Map<String, Object> getReplyCheckRsModifyAvailable(int id, int actorId) {
 		ArticleReply articleReply = getArticleReply(id);
 

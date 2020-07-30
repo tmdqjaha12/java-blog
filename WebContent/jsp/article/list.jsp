@@ -91,8 +91,8 @@
 			<li><a href="#" style="color:red;">탈퇴회원</a></li>
     		
 		 -->
-		<li>
-		<c:set var="nickname" value="${memberNickNames.get(article.memberId)}" />
+		<li><a href="">${article.extra.writer}</a>
+		<!--<c:set var="nickname" value="${memberNickNames.get(article.memberId)}" />
 			<c:choose>
 	 
 			    <c:when test="${empty nickname}">
@@ -103,7 +103,7 @@
 			        <a href="#">${memberNickNames.get(article.memberId)}</a>
 			    </c:otherwise>
 		 
-			</c:choose>
+			</c:choose>-->
 		</li>
 		<li><a href="#">${article.hit}</a></li>
 		<li class="bigo" style="text-align: center; line-height: 55px;">

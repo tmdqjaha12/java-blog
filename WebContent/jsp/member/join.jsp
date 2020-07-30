@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ include file="/jsp/part/head.jspf"%>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
 
 <style>
 /* cus */
@@ -11,13 +12,21 @@
 </style>
 
 <script>
-	function submitJoinForm(form) {
+	var JoinForm__validLoginId = '';
+	function JoinForm__submit(form) {
 		form.loginId.value = form.loginId.value.trim();
 		if (form.loginId.value.length == 0) {
 			alert('로그인 아이디를 입력해주세요.');
 			form.loginId.focus();
 			return;
 		}
+
+		if (form.loginId.value != JoinForm__validLoginId) {
+			alert('다른 아이디를 입력해주세요.');
+			form.loginId.focus();
+			return;
+		}
+
 		form.loginPw.value = form.loginPw.value.trim();
 		if (form.loginPw.value.length == 0) {
 			alert('로그인 비번을 입력해주세요.');
@@ -58,16 +67,39 @@
 		form.loginPwConfirm.value = '';
 		form.submit();
 	}
+
+	function JoinForm__checkLoginIdDup(input) {
+		var form = input.form;
+		form.loginId.value = form.loginId.value.trim();
+		if (form.loginId.value.length == 0) {
+			return;
+		}
+		$.get('getLoginIdDup', {
+			loginId : form.loginId.value
+		}, function(data) {
+			var $message = $(form.loginId).next();
+			if (data.resultCode.substr(0, 2) == 'S-') {
+				$message.empty().append(
+						'<div style="color:green;">' + data.msg + '</div>');
+				JoinForm__validLoginId = data.loginId;
+			} else {
+				$message.empty().append(
+						'<div style="color:red;">' + data.msg + '</div>');
+				JoinForm__validLoginId = '';
+			}
+		}, 'json');
+	}
 </script>
 
 <div class="join-form-box con">
 	<form action="doJoin" method="get" class="join-form form1"
-		onsubmit="submitJoinForm(this); return false;">
+		onsubmit="JoinForm__submit(this); return false;">
 		<input type="hidden" name="loginPwReal" />
 		<div class="form-row">
 			<div class="label">로그인 아이디</div>
 			<div class="input">
-				<input name="loginId" type="text" placeholder="로그인 아이디를 입력해주세요." />
+				<input onkeyup="JoinForm__checkLoginIdDup(this);" name="loginId" type="text" placeholder="로그인 아이디를 입력해주세요." />
+				<div class="message-msg"></div>
 			</div>
 		</div>
 		<div class="form-row">

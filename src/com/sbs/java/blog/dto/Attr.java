@@ -2,13 +2,15 @@ package com.sbs.java.blog.dto;
 
 import java.util.Map;
 
-public class CateItem extends Dto {
+public class Attr extends Dto {
 	private String name;
+	private String value;
 
-	public CateItem(Map<String, Object> row) {
+	public Attr(Map<String, Object> row) {
 		super(row);
 
 		this.name = (String) row.get("name");
+		this.value = (String) row.get("value");
 	}
 
 	public String getName() {
@@ -19,10 +21,17 @@ public class CateItem extends Dto {
 		this.name = name;
 	}
 
-	@Override
-	public String toString() {
-		return "CateItem [name=" + name + ", getId()=" + getId() + ", getRegDate()=" + getRegDate()
-				+ ", getUpdateDate()=" + getUpdateDate() + ", getExtra()=" + getExtra() + "]";
+	public String getValue() {
+		return value;
 	}
 
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	@Override
+	public String toString() {
+		return "Attr [name=" + name + ", value=" + value + ", getId()=" + getId() + ", getRegDate()=" + getRegDate()
+				+ ", getUpdateDate()=" + getUpdateDate() + ", getExtra()=" + getExtra() + "]";
+	}
 }

@@ -396,6 +396,11 @@ label[for] {
 }
 
 /* 커스텀 */
+
+.form1 .message {
+	color:red;
+}
+
 @media ( max-width :799px) {
 	.visible-on-md-up {
 		display: none !important;

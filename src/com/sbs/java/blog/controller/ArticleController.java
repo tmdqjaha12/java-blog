@@ -350,13 +350,13 @@ public class ArticleController extends Controller {
 		req.setAttribute("articles", articles);
 		
 		
-		String memberNickName = "";
-		Map<Integer, String> memberNickNames = new HashMap<Integer, String>();
-		for(Article article : articles) {
-			memberNickName = articleService.getForPrintMemberNickName(article.getMemberId());
-			memberNickNames.put(article.getMemberId(), memberNickName);
-		}
-		req.setAttribute("memberNickNames", memberNickNames);
+//		String memberNickName = "";
+//		Map<Integer, String> memberNickNames = new HashMap<Integer, String>();
+//		for(Article article : articles) {
+//			memberNickName = articleService.getForPrintMemberNickName(article.getMemberId());
+//			memberNickNames.put(article.getMemberId(), memberNickName);
+//		}
+//		req.setAttribute("memberNickNames", memberNickNames);
 		
 		long endTime = System.nanoTime();
 		long estimatedTime = endTime - startTime;

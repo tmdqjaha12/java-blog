@@ -89,7 +89,17 @@ public class Util {
 		return req.getParameter(paramName);
 	}
 
-	public static int sendMail(String smtpServerId, String smtpServerPw, String from, String fromName, String to, String title, String body, String authMassage) {
+	public static int sendMail(String smtpServerId, String smtpServerPw, String from, String fromName, String to,
+			String title, String body) {
+		System.out.println(smtpServerId);
+		System.out.println(smtpServerPw);
+		System.out.println(from);
+		System.out.println(fromName);
+		System.out.println(to);
+		System.out.println(title);
+		System.out.println(body);
+
+
 		Properties prop = System.getProperties();
 		prop.put("mail.smtp.starttls.enable", "true");
 		prop.put("mail.smtp.host", "smtp.gmail.com");
@@ -108,11 +118,7 @@ public class Util {
 			msg.setFrom(new InternetAddress(from, fromName));
 			msg.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
 			msg.setSubject(title, "UTF-8");
-			msg.setText(body, "UTF-8");
-			if(authMassage.length() != 0) {
-				msg.setContent(authMassage,"text/html; charset=euc-kr");
-			}
-			
+			msg.setContent(body, "text/html; charset=UTF-8");
 
 			Transport.send(msg);
 
@@ -161,35 +167,35 @@ public class Util {
 		return sha;
 	}
 	
-	public static String getHtmlFormEmail(String msg1, String msg2) {
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append("<html>");
-		sb.append("<head>");
-		sb.append("<script>");
-		sb.append("history.replaceState({}, null, location.pathname);");
-		sb.append("</script>");
-		sb.append("</head>");
-		sb.append("<body>");
-		sb.append("<table border=\"1\">");
-		sb.append("<tbody>");
-		sb.append("<tr>");
-		sb.append("<th>");
-		sb.append("<h3>인증번호 : ");
-		sb.append(msg2);
-		sb.append("</h3>");
-		sb.append("</th>");
-		sb.append("<td>");
-		sb.append(msg1);
-		sb.append("</td>");
-		sb.append("</tr>");
-		sb.append("</tbody>");
-		sb.append("</table>");
-		sb.append("</body>");
-		sb.append("</html>");
-
-		return sb.toString();
-	}
+//	public static String getHtmlFormEmail(String msg1, String msg2) {
+//		StringBuilder sb = new StringBuilder();
+//		
+//		sb.append("<html>");
+//		sb.append("<head>");
+//		sb.append("<script>");
+//		sb.append("history.replaceState({}, null, location.pathname);");
+//		sb.append("</script>");
+//		sb.append("</head>");
+//		sb.append("<body>");
+//		sb.append("<table border=\"1\">");
+//		sb.append("<tbody>");
+//		sb.append("<tr>");
+//		sb.append("<th>");
+//		sb.append("<h3>인증번호 : ");
+//		sb.append(msg2);
+//		sb.append("</h3>");
+//		sb.append("</th>");
+//		sb.append("<td>");
+//		sb.append(msg1);
+//		sb.append("</td>");
+//		sb.append("</tr>");
+//		sb.append("</tbody>");
+//		sb.append("</table>");
+//		sb.append("</body>");
+//		sb.append("</html>");
+//
+//		return sb.toString();
+//	}
 	
 
 //		로그인 주소관련
