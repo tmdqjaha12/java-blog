@@ -43,10 +43,6 @@ public class MemberController extends Controller {
 			return doActionFindPw();
 		case "doFindPw":
 			return doActionDoFindPw();
-		case "authMail":
-			return doActionauthMail();
-		case "doAuthMail":
-			return doActionDoAuthMail();
 		case "doChat":
 			return doActionDoChat();
 		case "memberModify":
@@ -63,20 +59,28 @@ public class MemberController extends Controller {
 			return actionModifyPrivate();
 		case "doModifyPrivate":
 			return actionDoModifyPrivate();
-		case "attr":
-			return doActionAttr();
+		case "authEmail":
+			return actionAuthEmail();
 		}
 
 		return "";
 	}
-	
-	private String doActionAttr() {
-		String authCode = Util.getRandomPassword(5);
-		attrService.setValue("member__1__extra__emailAuthCode", authCode);
-		req.getAttribute("loginedMemberId");
-		Attr tempPasswordExpireDateAttr = attrService.get("member__1__extra__emailAuthCode");
-//		attrService.remove("member__1__extra__emailAuthCode");
-		return "html:" + tempPasswordExpireDateAttr.getId();
+
+	private String actionAuthEmail() {
+		int loginedMemberId = Util.getInt(req, "memberId");
+		String strLoginedMemberId = "" + loginedMemberId;
+		int memberId = Util.getInt(req, "memberId");
+		String authCode = Util.getString(req, "authCode");
+		String email = Util.getString(req, "email");
+		
+		if (memberService.isValidEmailAuthCode(strLoginedMemberId, authCode) == false) {//attr비교
+			return String.format(
+					"html:<script> alert('인증번호를 다시 체크해주세요.'); location.replace('authEmail=" + email + "&authCode=" + authCode + "&memberId=" + memberId + "'); </script>");
+		}
+		
+		memberService.genEmailAuthed(loginedMemberId, email);//attr 이메일저장
+		
+		return String.format("html:<script> alert('인증 되었습니다.'); location.replace('../home/main'); </script>");
 	}
 
 	private String actionDoModifyPrivate() {
@@ -228,26 +232,6 @@ public class MemberController extends Controller {
 		return String.format("html:<script> alert('로그아웃 되었습니다.'); location.replace('../home/main'); </script>");
 	}
 
-	private String doActionauthMail() {
-		String authCode = Util.getString(req, "code");
-		req.setAttribute("authCode", authCode);
-		return "member/authMail.jsp";
-	}
-
-	private String doActionDoAuthMail() {
-		String authCode = Util.getString(req, "authCode");
-		String inputAuthCode = Util.getString(req, "inputAuthCode");
-
-		if (authCode.equals(inputAuthCode)) {
-			int loginedMemberId = (int) req.getAttribute("loginedMemberId");
-			memberService.getTrueAuthCode(loginedMemberId);
-
-			return String.format("html:<script> alert('인증 완료!'); location.replace('../home/main'); </script>");
-		}
-
-		return String.format("html:<script> alert('인증 실패!'); history.back(); </script>");
-	}
-
 	private String doActionDoJoin() {
 
 		String loginId = req.getParameter("loginId");
@@ -273,34 +257,18 @@ public class MemberController extends Controller {
 		if (isJoinableEmail == false) {
 			return String.format("html:<script> alert('%s(은)는 이미 사용중인 이메일 입니다.'); history.back(); </script>", email);
 		}
-		
-		int joinId = memberService.join(loginId, loginPw, name, nickname, email);
-//		
-//		String authCode = memberService.genAuthMailAuthCode(joinId);
-//		
-//		
-//		
-//		
-//		String loginPw = req.getParameter("loginPwReal");
-//
-//		Member loginedMember = (Member) req.getAttribute("loginedMember");
-//		int loginedMemberId = loginedMember.getId();
-//
-//		if (loginedMember.getLoginPw().equals(loginPw)) {
-//			String authCode = memberService.genAuthMailAuthCode(loginedMemberId);
-//
-//			return String
-//					.format("html:<script> location.replace('modifyPrivate?authCode=" + authCode + "'); </script>");
-//		}
-//
-//		return String.format("html:<script> alert('비밀번호를 다시 입력해주세요.'); history.back(); </script>");
-		
 
-//		String authCode = Util.getRandomPassword(5);
-//		String massage = "<a href=\"https://meloporn.my.iu.gy/blog/s/member/authMail?code=" + authCode + "\">인증하기</a>";
-//		String authMassage = Util.getHtmlFormEmail(massage, authCode);
+		int joinId = memberService.join(loginId, loginPw, name, nickname, email);// 회원 테이블 저장
 
-//		mailService.send(email, "가입을 축하드립니다!", name + "님환영합니다.", authMassage);
+		String authCode = memberService.genEmailAuthCode(joinId); // 회원 attr 테이블 저장 & 인증코드
+		memberService.genLastPasswordChangeDate(joinId); // 회원 업데이트 attr 테이블 저장
+		memberService.genEmailAuthed(joinId, email); // 회원 이메일 attr 테이블 저장
+		
+		String sendBody = "<a href=\"https://meloporn.my.iu.gy/blog/s/member/authEmail?email=" + email + "&authCode="
+				+ authCode + "&memberId=" + joinId + "\" target=\"_blank\">사이트로 이동</a>";//meloporn.my.iu.gy //localhost:8081
+		// 회원 인증 링크
+
+		mailService.send(email, "가입을 환영합니다.", sendBody); // 메일 발송
 
 		return String.format("html:<script> alert('%s님 환영합니다.'); location.replace('../home/main'); </script>", name);
 	}

@@ -41,7 +41,7 @@ public class AttrDao {
 
 	public String getValue(String relTypeCode, int relId, String typeCode, String type2Code) {
 		SecSql sql = new SecSql();
-
+	
 		sql.append("SELECT `value`");
 		sql.append("FROM attr");
 		sql.append("WHERE 1");

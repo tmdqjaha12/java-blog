@@ -28,8 +28,7 @@
 </script>
 
 <div class="modify-private-form-box con">
-	<form action="doModifyPrivate" method="POST" class="form1"
-		onsubmit="ModifyPrivateForm__submit(this); return false;">
+	<form action="doModifyPrivate" method="POST" class="form1" onsubmit="ModifyPrivateForm__submit(this); return false;">
 		<input type="hidden" name="authCode" value="${param.authCode}" />
 		<input type="hidden"
 			name="loginPwReal" />

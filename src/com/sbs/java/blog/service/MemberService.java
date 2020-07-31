@@ -1,27 +1,29 @@
 package com.sbs.java.blog.service;
 
 import java.sql.Connection;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.UUID;
+
+import org.apache.tomcat.util.buf.UDecoder;
 
 import com.sbs.java.blog.dao.MemberDao;
 import com.sbs.java.blog.dto.Member;
 import com.sbs.java.blog.util.Util;
 
 public class MemberService extends Service {
-	private MailService mailService;
+//	private MailService mailService;
 	private MemberDao memberDao;
 	private AttrService attrService;
 
-	public MemberService(Connection dbConn, MailService mailService, AttrService attrService) {
+	public MemberService(Connection dbConn, AttrService attrService) {//MailService mailService,
 		memberDao = new MemberDao(dbConn);
-		this.mailService = mailService;
+//		this.mailService = mailService;
 		this.attrService = attrService;
 	}
 
 	public int join(String loginId, String loginPw, String name, String nickname, String email) {
 		int id = memberDao.join(loginId, loginPw, name, nickname, email);
-
-		mailService.send(email, "가입을 환영합니다.", "<a href=\"https://meloporn.my.iu.gy/\" target=\"_blank\">사이트로 이동</a>");
 
 		return id;
 	}
@@ -57,44 +59,34 @@ public class MemberService extends Service {
 	public void updateImshiPw(String loginId, String name, String email, String imshiPw) {
 		memberDao.updateImshiPw(loginId, name, email, imshiPw);
 	}
-
-	public int getTrueAuthCode(int id) {
-		return memberDao.getTrueAuthCode(id);
-	}
-
-	public int getTrueMailAuthCode(int id) {
-		return memberDao.getTrueMailAuthCode(id);
-	}
 	
 	public String genEmailAuthCode(int actorId) {
-		String authCode = Util.getRandomPassword(5);
-		System.out.println(authCode);
+		String authCode = UUID.randomUUID().toString();
+//		String authCode = Util.getRandomPassword(5);
 		attrService.setValue("member__" + actorId + "__extra__emailAuthCode", authCode);
-
 		return authCode;
-	}//가입시 혹은 이메일 인증코드 다시보내기 버튼 누를 때 마다 갱신
+	}// 가입시 혹은 이메일 인증코드 다시보내기 버튼 누를 때 마다 갱신 Code
 	
-	public String genEmailAuthed(int actorId) {
-		String authCode = Util.getRandomPassword(5);
-		System.out.println(authCode);
-		attrService.setValue("member__" + actorId + "__extra__emailAuthed", authCode);
-
-		return authCode;
-	}// 고객이 이메일의 링크를 클릭시 이 데이터가 생성
+	public String genEmailAuthed(int actorId, String email) {
+		attrService.setValue("member__" + actorId + "__extra__emailAuthed", email);
+		return email;
+	}// 이메일인증__고객이 이메일의 링크를 클릭시 이 데이터가 생성 Code
+	
 	public String genUseTempPassword(int actorId) {
 		String authCode = Util.getRandomPassword(5);
-		System.out.println(authCode);
 		attrService.setValue("member__" + actorId + "__extra__useTempPassword", authCode);
 
 		return authCode;
-	}//회원이 패스워드 변경하면 삭제되어야 함
+	}// 임시패스워드 & 회원이 패스워드 변경하면 삭제되어야 함 Code
+	
 	public String genLastPasswordChangeDate(int actorId) {
-		String authCode = Util.getRandomPassword(5);
-		System.out.println(authCode);
-		attrService.setValue("member__" + actorId + "__extra__lastPasswordChangeDate", authCode);
+		long systemTime = System.currentTimeMillis();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
+		String currentTime = formatter.format(systemTime);
+		attrService.setValue("member__" + actorId + "__extra__lastPasswordChangeDate", currentTime);
 
-		return authCode;
-	}//가입 혹은 패스워드 변경시 갱신
+		return currentTime;
+	}// 가입 혹은 패스워드 변경시 갱신 Code
 	
 	public String genModifyPrivateAuthCode(int actorId) {
 		String authCode = UUID.randomUUID().toString();
@@ -102,15 +94,23 @@ public class MemberService extends Service {
 		attrService.setValue("member__" + actorId + "__extra__modifyPrivateAuthCode", authCode);
 
 		return authCode;
-	}
-
+	}// 회원정보 수정시 Code
+	
 	public boolean isValidModifyPrivateAuthCode(int actorId, String authCode) {
 		String authCodeOnDB = attrService.getValue("member__" + actorId + "__extra__modifyPrivateAuthCode");
 
 		return authCodeOnDB.equals(authCode);
-	}
-
+	}// 회원정보 수정 AuthCode Fact
+	
+	public boolean isValidEmailAuthCode(String actorId, String authCode) {
+		String authCodeOnDB = attrService.getValue("member__" + actorId + "__extra__emailAuthCode");
+		System.out.println("authCodeOnDB : " + authCodeOnDB);
+		System.out.println("authCode : " + authCode);
+		return authCodeOnDB.equals(authCode);
+	}// 이메일 인증 AuthCode Fact
+	
 	public void modify(int actorId, String loginPw) {
 		memberDao.modify(actorId, loginPw);
 	}
+
 }

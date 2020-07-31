@@ -51,7 +51,6 @@
 	var loginedMemberId = parseInt("${loginedMemberId}");
 	var isLogined = "${isLogined}" == "true";
 	var loginedMember = null;
-	var trueMailAuthCode = parseInt("${trueMailAuthCode}");
 </script>
 
 
@@ -135,7 +134,6 @@ script
 			<ul>
 				<c:if test="${isLogined}">
 					<li><a href="${pageContext.request.contextPath}/s/member/doLogout" class="block">Logout</a></li>
-					<li><a href="${pageContext.request.contextPath}/s/member/passwordForPrivate" class="block">My Private</a></li>
 				</c:if>
 				<c:if test="${isLogined == false}">
 					<li><a
@@ -190,9 +188,6 @@ script
 						<li><a
 							href="${pageContext.request.contextPath}/s/member/doLogout"
 							class="flex height-100p flex-ai-c">Logout</a></li>
-						<li><a
-							href="${pageContext.request.contextPath}/s/member/passwordForPrivate"
-							class="flex height-100p flex-ai-c">My Private</a></li>
 						<li><a
 							href="${pageContext.request.contextPath}/s/member/doChat"
 							class="flex height-100p flex-ai-c">Chatting</a></li>

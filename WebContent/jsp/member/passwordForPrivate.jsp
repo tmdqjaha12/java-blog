@@ -28,8 +28,7 @@
 </script>
 
 <div class="password-form-box con">
-	<form action="doPasswordForPrivate" method="POST" class="password-form form1"
-		onsubmit="submitLoginForm(this); return false;">
+	<form action="doPasswordForPrivate" method="POST" class="password-form form1" onsubmit="submitLoginForm(this); return false;">
 		<input type="hidden" name="loginPwReal" />
 		<div class="form-row">
 			<div class="label">로그인 비번</div>

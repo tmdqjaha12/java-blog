@@ -37,7 +37,7 @@ public abstract class Controller {
 		articleService = new ArticleService(dbConn);
 		mailService = new MailService(Config.gmailId, Config.gmailPw, Config.mailFrom, Config.mailFromName);
 		attrService = new AttrService(dbConn);
-		memberService = new MemberService(dbConn, mailService, attrService);
+		memberService = new MemberService(dbConn, attrService);//mailService,
 	}
 
 	public abstract String getControllerName();
@@ -50,7 +50,6 @@ public abstract class Controller {
 		req.setAttribute("cateItems", cateItems);
 
 		// 사용자 관련 정보를 리퀘스트 객체에 정리해서 넣기
-		int trueMailAuthCode = -1;
 		int loginedMemberId = -1;
 		boolean isLogined = false;
 		Member loginedMember = null;
@@ -59,13 +58,11 @@ public abstract class Controller {
 			loginedMemberId = (int) session.getAttribute("loginedMemberId");
 			isLogined = true;
 			loginedMember = memberService.getMemberById(loginedMemberId);
-			trueMailAuthCode = memberService.getTrueMailAuthCode(loginedMemberId);
 		}
 
 		req.setAttribute("loginedMemberId", loginedMemberId);
 		req.setAttribute("loginedMember", loginedMember);
 		req.setAttribute("isLogined", isLogined);
-		req.setAttribute("trueMailAuthCode", trueMailAuthCode);
 		req.setAttribute("noBaseCurrentUri", req.getRequestURI().replace(req.getContextPath(), ""));
 		// 현재 URL
 
@@ -115,7 +112,6 @@ public abstract class Controller {
 
 	private String doGuard() {
 		boolean isLogined = (boolean) req.getAttribute("isLogined");
-		int trueMailAuthCode = (int) req.getAttribute("trueMailAuthCode");
 
 		// 로그인에 관련된 가드 시작
 		boolean needToLogin = false;
@@ -171,44 +167,6 @@ public abstract class Controller {
 			return "html:<script> location.href = '../home/main'; </script>";
 		}
 		// 로그아웃에 관련된 가드 끝
-
-//		
-		if (trueMailAuthCode == 0) {
-			switch (controllerName) {
-//			case "member":
-//				switch (actionMethodName) {
-//					return "html:<script> alert('인증 후 이용해주세요.'); location.href = '../home/main'; </script>";
-//				}
-//				break;
-			case "article":
-				switch (actionMethodName) {
-				case "write":
-				case "doWrite":
-				case "modify":
-				case "doModify":
-				case "doDelete":
-					return "html:<script> alert('인증 후 이용해주세요.'); location.href = '../home/main'; </script>";
-				}
-				break;
-			}
-		}
-		
-		if (trueMailAuthCode == 1) {
-			switch (controllerName) {
-			case "member":
-				switch (actionMethodName) {
-				case "authMail":
-					return "html:<script> alert('이미 인증되었습니다.'); location.href = '../home/main'; </script>";
-				}
-				break;
-//			case "article":
-//				switch (actionMethodName) {
-//				case "write":
-//					return "html:<script> alert('인증 후 이용해주세요.'); location.href = '../home/main'; </script>";
-//				}
-//				break;
-			}
-		}
 
 		return null;
 	}
