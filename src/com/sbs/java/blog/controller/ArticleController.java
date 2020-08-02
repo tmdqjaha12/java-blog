@@ -49,12 +49,18 @@ public class ArticleController extends Controller {
 			return doActionModifyReply();
 		case "doDeleteReply":
 			return doActionDoDeleteReply();
+		case "message":
+			return doActionMessage();
 		}
 		return "";
 	}
 	
 	
 
+
+	private String doActionMessage() {
+		return "article/message.jsp";
+	}
 
 	private String doActionDoDeleteReply() {
 		if (Util.empty(req, "id")) {

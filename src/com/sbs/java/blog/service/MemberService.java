@@ -43,6 +43,10 @@ public class MemberService extends Service {
 	public int getMemberIdByLoginIdAndLoginPw(String loginId, String loginPw) {
 		return memberDao.getMemberIdByLoginIdAndLoginPw(loginId, loginPw);
 	}
+	
+	public int getMemberIdByLoginIdAndNameAndEmail(String loginId, String name, String email) {
+		return memberDao.getMemberIdByLoginIdAndNameAndEmail(loginId, name, email);
+	}
 
 	public Member getMemberById(int id) {
 		return memberDao.getMemberById(id);
@@ -72,17 +76,12 @@ public class MemberService extends Service {
 		return email;
 	}// 이메일인증__고객이 이메일의 링크를 클릭시 이 데이터가 생성 Code
 	
-	public String genUseTempPassword(int actorId) {
-		String authCode = Util.getRandomPassword(5);
-		attrService.setValue("member__" + actorId + "__extra__useTempPassword", authCode);
-
-		return authCode;
-	}// 임시패스워드 & 회원이 패스워드 변경하면 삭제되어야 함 Code
+	public void genUseTempPassword(String loginId, String useTemp) {
+		attrService.setValue("member__" + loginId + "__extra__useTempPassword", useTemp);
+	}// 임시패스워드 & 회원이 패스워드 변경하면 삭제되어야 함 Code 1 0
 	
 	public String genLastPasswordChangeDate(int actorId) {
-		long systemTime = System.currentTimeMillis();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
-		String currentTime = formatter.format(systemTime);
+		String currentTime = Util.getRegeDateNow();
 		attrService.setValue("member__" + actorId + "__extra__lastPasswordChangeDate", currentTime);
 
 		return currentTime;
@@ -90,12 +89,12 @@ public class MemberService extends Service {
 	
 	public String genModifyPrivateAuthCode(int actorId) {
 		String authCode = UUID.randomUUID().toString();
-		System.out.println(authCode);
 		attrService.setValue("member__" + actorId + "__extra__modifyPrivateAuthCode", authCode);
-
+		
 		return authCode;
 	}// 회원정보 수정시 Code
 	
+	//get▼
 	public boolean isValidModifyPrivateAuthCode(int actorId, String authCode) {
 		String authCodeOnDB = attrService.getValue("member__" + actorId + "__extra__modifyPrivateAuthCode");
 
@@ -104,13 +103,44 @@ public class MemberService extends Service {
 	
 	public boolean isValidEmailAuthCode(String actorId, String authCode) {
 		String authCodeOnDB = attrService.getValue("member__" + actorId + "__extra__emailAuthCode");
-		System.out.println("authCodeOnDB : " + authCodeOnDB);
-		System.out.println("authCode : " + authCode);
 		return authCodeOnDB.equals(authCode);
 	}// 이메일 인증 AuthCode Fact
 	
+	public boolean isValidEmailAuthed(int actorId) {
+		String authCodeOnDB = attrService.getValue("member__" + actorId + "__extra__emailAuthed");
+		return authCodeOnDB.length() > 0;
+	}// 이메일 인증 가져오기
+	
+	public String getEmailAuthed(int actorId) {
+		String authCodeOnDB = attrService.getValue("member__" + actorId + "__extra__emailAuthed");
+		return authCodeOnDB;
+	}// 이메일 가져오기
+	
+	public boolean isValidUseTempPassword(int actorId) {
+		String authCodeOnDB = attrService.getValue("member__" + actorId + "__extra__useTempPassword");
+		if(authCodeOnDB.equals("1")) {
+			return true;
+		}
+		return false;
+	}// 임시패스워드 여부 가져오기
+	
+	public String isValidLastPasswordChangeDate(int actorId) {
+		String authCodeOnDB = attrService.getValue("member__" + actorId + "__extra__lastPasswordChangeDate");
+		return authCodeOnDB;
+	}// 패스워드 마지막 변경 날짜 가져오기
+	
+	//remove▼
+	public int removeUseTempPassword(int actorId) {
+		int authCodeOnDB = attrService.remove("member__" + actorId + "__extra__useTempPassword");
+		return 0;
+	}// 임시패스워드 삭제
+	
 	public void modify(int actorId, String loginPw) {
 		memberDao.modify(actorId, loginPw);
+	}
+
+	public void memberModify(int actorId, String nickname, String email) {
+		memberDao.memberModify(actorId, nickname, email);
 	}
 
 }

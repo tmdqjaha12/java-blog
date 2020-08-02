@@ -188,9 +188,13 @@ script
 						<li><a
 							href="${pageContext.request.contextPath}/s/member/doLogout"
 							class="flex height-100p flex-ai-c">Logout</a></li>
-						<li><a
+							<li><a
+							href="${pageContext.request.contextPath}/s/article/message" 
+							class="flex height-100p flex-ai-c">Message</a></li>
+<!-- 						<li><a
 							href="${pageContext.request.contextPath}/s/member/doChat"
 							class="flex height-100p flex-ai-c">Chatting</a></li>
+ -->
 					</c:if>
 					<c:if test="${isLogined == false}">
 						<li><a

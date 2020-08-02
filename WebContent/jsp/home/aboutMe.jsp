@@ -49,6 +49,16 @@ td {
 					<td>---</td>
 				</tr>
 				
+				<c:if test="${!isMailAuthed}">
+				<tr>
+					<th>비고</th>
+					<td>
+						<a
+							href="${pageContext.request.contextPath}/s/member/doSendAuthMail?id=${loginedMemberId}&email=${loginedMember.email}"
+							class="block mmd" style="border:0.5px solid black; background-color:#efefef;">이메일 인증</a>
+				</tr>
+				</c:if>
+				
 				<tr>
 					<th>비고</th>
 					<td>

@@ -37,7 +37,7 @@ public abstract class Controller {
 		articleService = new ArticleService(dbConn);
 		mailService = new MailService(Config.gmailId, Config.gmailPw, Config.mailFrom, Config.mailFromName);
 		attrService = new AttrService(dbConn);
-		memberService = new MemberService(dbConn, attrService);//mailService,
+		memberService = new MemberService(dbConn, attrService);// mailService,
 	}
 
 	public abstract String getControllerName();
@@ -53,16 +53,22 @@ public abstract class Controller {
 		int loginedMemberId = -1;
 		boolean isLogined = false;
 		Member loginedMember = null;
+		boolean isMailAuthed = false;
+		boolean isUsedTempPassword = false;
 
 		if (session.getAttribute("loginedMemberId") != null) {
 			loginedMemberId = (int) session.getAttribute("loginedMemberId");
 			isLogined = true;
 			loginedMember = memberService.getMemberById(loginedMemberId);
+			isMailAuthed = memberService.isValidEmailAuthed(loginedMemberId);
+			isUsedTempPassword = memberService.isValidUseTempPassword(loginedMemberId);
 		}
 
 		req.setAttribute("loginedMemberId", loginedMemberId);
 		req.setAttribute("loginedMember", loginedMember);
 		req.setAttribute("isLogined", isLogined);
+		req.setAttribute("isMailAuthed", isMailAuthed);
+		req.setAttribute("isUsedTempPassword", isUsedTempPassword);
 		req.setAttribute("noBaseCurrentUri", req.getRequestURI().replace(req.getContextPath(), ""));
 		// 현재 URL
 
@@ -112,6 +118,8 @@ public abstract class Controller {
 
 	private String doGuard() {
 		boolean isLogined = (boolean) req.getAttribute("isLogined");
+		boolean isMailAuthed = (boolean) req.getAttribute("isMailAuthed");
+		boolean isUsedTempPassword = (boolean) req.getAttribute("isUsedTempPassword");
 
 		// 로그인에 관련된 가드 시작
 		boolean needToLogin = false;
@@ -122,7 +130,7 @@ public abstract class Controller {
 		case "member":
 			switch (actionMethodName) {
 			case "doLogout":
-			case "authMail":
+			case "authEmail":
 				needToLogin = true;
 				break;
 			}
@@ -163,10 +171,75 @@ public abstract class Controller {
 		}
 
 		if (needToLogout && isLogined) {
-//			return "html:<script> alert('로그아웃 후 이용해주세요.'); location.href = '../home/main'; </script>";
 			return "html:<script> location.href = '../home/main'; </script>";
 		}
 		// 로그아웃에 관련된 가드 끝
+
+		// 임시 비밀번호 변경 권장 가드 시작
+		boolean needToModifyPassword = false;
+
+		switch (controllerName) {
+		case "home":
+			switch (actionMethodName) {
+			case "main":
+				needToModifyPassword = true;
+				break;
+			}
+			break;
+		}
+
+		if (needToModifyPassword) {
+			if (isUsedTempPassword) {
+				return "html:<script> alert('현재 임시패스워드를 사용중 입니다.'); location.href = '../member/passwordForPrivate'; </script>";
+			}
+		}
+
+		// 임시 비밀번호 변경 권장 가드 끝
+
+		// 이메일 필요 인증 가드 시작
+		boolean needToAuthMail = false;
+
+		switch (controllerName) {
+		case "member":
+			switch (actionMethodName) {
+			case "doChat":
+				needToAuthMail = true;
+				break;
+			}
+			break;
+		case "article":
+			switch (actionMethodName) {
+			case "write":
+			case "doWrite":
+			case "modify":
+			case "doModify":
+			case "doDelete":
+				needToAuthMail = true;
+				break;
+			}
+			break;
+		}
+
+		if (needToAuthMail && isMailAuthed == false) {
+			return "html:<script> alert('인증 후 이용해주세요.'); location.href = '../home/main'; </script>";
+		}
+
+		// 이메일 필요 인증 가드 끝
+
+		// 이메일 불필요 가드 시작
+		boolean notNeedToAuthMail = false;
+		
+		if (isMailAuthed && needToAuthMail) {
+			switch (controllerName) {
+			case "member":
+				switch (actionMethodName) {
+				case "authEmail":
+					return "html:<script> alert('이미 인증되었습니다.'); location.href = '../home/main'; </script>";
+				}
+			}
+
+		}
+		// 이메일 불필요 가드 끝
 
 		return null;
 	}

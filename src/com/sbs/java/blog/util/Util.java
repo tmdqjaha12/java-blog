@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Map;
@@ -266,5 +269,43 @@ public class Util {
 
 	public static String getNewUrlAndEncoded(String url, String paramName, String pramValue) {
 		return getUrlEncoded(getNewUrl(url, paramName, pramValue));
+	}
+	
+	public static String getRegeDateNow() {
+		long systemTime = System.currentTimeMillis();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
+		String currentTime = formatter.format(systemTime);
+		return currentTime;
+	}
+
+	public static long getCalRegDate(String regDate, String nowRegDate) {
+		String date1 = regDate;
+	    String date2 = nowRegDate;
+	    long calDateDays = 0;
+	 
+	    try{ // String Type을 Date Type으로 캐스팅하면서 생기는 예외로 인해 여기서 예외처리 해주지 않으면 컴파일러에서 에러가 발생해서 컴파일을 할 수 없다.
+	        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+	        // date1, date2 두 날짜를 parse()를 통해 Date형으로 변환.
+	        Date FirstDate = format.parse(date1);
+	        Date SecondDate = format.parse(date2);
+	        
+	        // Date로 변환된 두 날짜를 계산한 뒤 그 리턴값으로 long type 변수를 초기화 하고 있다.
+	        // 연산결과 -950400000. long type 으로 return 된다.
+	        long calDate = FirstDate.getTime() - SecondDate.getTime(); 
+	        
+	        // Date.getTime() 은 해당날짜를 기준으로1970년 00:00:00 부터 몇 초가 흘렀는지를 반환해준다. 
+	        // 이제 24*60*60*1000(각 시간값에 따른 차이점) 을 나눠주면 일수가 나온다.
+	        calDateDays = calDate / ( 24*60*60*1000); 
+	 
+	        calDateDays = Math.abs(calDateDays);
+	        
+//	        System.out.println("두 날짜의 날짜 차이: "+calDateDays);
+	        }
+	        catch(ParseException e)
+	        {
+	            // 예외 처리
+	        }
+
+		return calDateDays;
 	}
 }

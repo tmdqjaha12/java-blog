@@ -5,11 +5,8 @@ import java.sql.Connection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.sbs.java.blog.dto.Attr;
 import com.sbs.java.blog.dto.Member;
-import com.sbs.java.blog.service.MailService;
 import com.sbs.java.blog.util.Util;
-import java.util.UUID;
 
 public class MemberController extends Controller {
 
@@ -61,9 +58,23 @@ public class MemberController extends Controller {
 			return actionDoModifyPrivate();
 		case "authEmail":
 			return actionAuthEmail();
+		case "doSendAuthMail":
+			return doActionDoSendMail();
 		}
 
 		return "";
+	}
+
+	private String doActionDoSendMail() {
+		int id = Util.getInt(req, "id");
+		String email = Util.getString(req, "email");
+		String authCode = memberService.genEmailAuthCode(id); // 회원 attr 테이블 저장 & 인증코드
+		String sendBody = "<a href=\"https://meloporn.my.iu.gy/blog/s/member/authEmail?email=" + email + "&authCode="
+				+ authCode + "&memberId=" + id + "\" target=\"_blank\">사이트로 이동</a>";//meloporn.my.iu.gy //localhost:8081
+		// 회원 인증 링크
+
+		mailService.send(email, "이메일 인증", sendBody); // 메일 발송
+		return String.format("html:<script> alert('인증번호 전송 완료.'); location.replace('../home/main'); </script>");
 	}
 
 	private String actionAuthEmail() {
@@ -75,7 +86,8 @@ public class MemberController extends Controller {
 		
 		if (memberService.isValidEmailAuthCode(strLoginedMemberId, authCode) == false) {//attr비교
 			return String.format(
-					"html:<script> alert('인증번호를 다시 체크해주세요.'); location.replace('authEmail=" + email + "&authCode=" + authCode + "&memberId=" + memberId + "'); </script>");
+//					"html:<script> alert('인증번호를 다시 체크해주세요.'); location.replace('authEmail=" + email + "&authCode=" + authCode + "&memberId=" + memberId + "'); </script>");
+					"html:<script> alert('인증번호를 다시 체크해주세요.'); location.replace('../home/aboutMe'); </script>");
 		}
 		
 		memberService.genEmailAuthed(loginedMemberId, email);//attr 이메일저장
@@ -98,7 +110,7 @@ public class MemberController extends Controller {
 		Member loginedMember = (Member) req.getAttribute("loginedMember");
 		loginedMember.setLoginPw(loginPw); // 크게 의미는 없지만, 의미론적인 면에서 해야 하는
 
-		return String.format("html:<script> alert('개인정보가 수정되었습니다.'); location.replace('../home/main'); </script>");
+		return String.format("html:<script> alert('비밀번호가 수정되었습니다.'); location.replace('../home/main'); </script>");
 	}
 
 	private String actionModifyPrivate() {
@@ -107,7 +119,7 @@ public class MemberController extends Controller {
 		String authCode = req.getParameter("authCode");
 		if (memberService.isValidModifyPrivateAuthCode(loginedMemberId, authCode) == false) {
 			return String.format(
-					"html:<script> alert('비밀번호를 다시 체크해주세요.'); location.replace('../member/passwordForPrivate'); </script>");
+					"html:<script> alert('비밀번호를 	해주세요.'); location.replace('../member/passwordForPrivate'); </script>");
 		}
 
 		return "member/modifyPrivate.jsp";
@@ -120,7 +132,9 @@ public class MemberController extends Controller {
 		int loginedMemberId = loginedMember.getId();
 
 		if (loginedMember.getLoginPw().equals(loginPw)) {
-			String authCode = memberService.genModifyPrivateAuthCode(loginedMemberId);
+			String authCode = memberService.genModifyPrivateAuthCode(loginedMemberId); //비밀번호 수정 authCode 저장 및 return
+			memberService.genLastPasswordChangeDate(loginedMemberId); // 비밀번호 수정 날짜 저장
+			memberService.removeUseTempPassword(loginedMemberId); // 발급받은 임시패스워드 삭제
 
 			return String
 					.format("html:<script> location.replace('modifyPrivate?authCode=" + authCode + "'); </script>");
@@ -146,11 +160,26 @@ public class MemberController extends Controller {
 	}
 
 	private String doActionDoMemberModify() {
-		Member member = (Member) req.getAttribute("loginedMember");
-		if (req.getParameter("loginPwReal").equals(member.getLoginPw())) {
-			return "";
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
+		String nickname = Util.getString(req, "nickname");
+		String email = Util.getString(req, "email");
+		
+		String loginId = req.getParameter("loginId");
+		String loginPw = req.getParameter("loginPwReal");
+
+		int loginedMemberIdFact = memberService.getMemberIdByLoginIdAndLoginPw(loginId, loginPw);
+
+		if (loginedMemberIdFact == -1) {
+			return String.format("html:<script> alert('일치하는 정보가 없습니다.'); history.back(); </script>");
 		}
-		return null;
+		
+		if(memberService.getEmailAuthed(loginedMemberId).equals(email) == false) {
+			memberService.genEmailAuthed(loginedMemberId, "");//이메일 인증 초기화
+		}
+		
+		memberService.memberModify(loginedMemberId, nickname, email);
+
+		return String.format("html:<script> alert('저장 완료'); location.replace('../home/aboutMe'); </script>");
 	}
 
 	private String doActionMemberModify() {
@@ -167,19 +196,22 @@ public class MemberController extends Controller {
 		String loginId = req.getParameter("loginId");
 		String name = req.getParameter("name");
 		String email = req.getParameter("email");
+		String id = memberService.getMemberIdByLoginIdAndNameAndEmail(loginId, name, email) + "";
 
 		if (memberService.getBooleanForFindPw(loginId, name, email)) {
 			String imshiPw = Util.getRandomPassword(8);
+//			String imshiPw = UUID.randomUUID().toString();
 			String encryptSHA256ImshiPw = Util.encryptSHA256(imshiPw);
-
+			
 			memberService.updateImshiPw(loginId, name, email, encryptSHA256ImshiPw);
-
-//			mailService.send(email, "임시 비밀번호 발송", name + "님의 임시 비밀번호 : " + imshiPw, "");
+			memberService.genUseTempPassword(id, "1");
+			
+			mailService.send(email, "비밀번호 찾기/임시비밀번호", "회원님의 임시 비밀번호 : " +imshiPw);
 
 			return String.format("html:<script> alert('발송된 임시번호로 로그인해주세요.'); location.replace('login'); </script>");
 		}
 
-		return String.format("html:<script> alert('유효한 정보를 찾지 못했습니다.'); location.replace('login'); </script>");
+		return String.format("html:<script> alert('유효한 정보를 찾지 못했습니다.'); location.replace('findPw'); </script>");
 	}
 
 	private String doActionFindPw() {
@@ -194,8 +226,8 @@ public class MemberController extends Controller {
 		loginId = memberService.getStringForFindId(name, email);
 
 		if (loginId.length() != 0) {
-//			mailService.send(email, "아이디 발송", name + "님의 아이디 : " + loginId, "");
-			return String.format("html:<script> alert('해당 이메일으로 아이디가 발송되었습니다.'); location.replace('login'); </script>");
+			mailService.send(email, "아이디 찾기 결과", "회원님의 아이디 : " + loginId);
+			return String.format("html:<script> alert('해당 이메일으로 아이디가 발송되었습니다.'); location.replace('findId'); </script>");
 		}
 
 		return String.format("html:<script> alert('유효한 정보를 찾지 못했습니다.'); location.replace('login'); </script>");
@@ -216,6 +248,15 @@ public class MemberController extends Controller {
 		}
 
 		session.setAttribute("loginedMemberId", loginedMemberId);
+		
+		String regDate = memberService.isValidLastPasswordChangeDate(loginedMemberId);
+		String nowRegDate = Util.getRegeDateNow();
+		
+		long paraDate = Util.getCalRegDate(regDate, nowRegDate); 
+		if(paraDate > 365) {
+			paraDate = paraDate/365;
+			return String.format("html:<script> alert('비밀번호 변경 권장 : " + paraDate + "년 초과'); location.replace('passwordForPrivate'); </script>");
+		}
 
 		String redirectUrl = Util.getString(req, "redirectUrl", "../home/main");
 
@@ -268,9 +309,10 @@ public class MemberController extends Controller {
 				+ authCode + "&memberId=" + joinId + "\" target=\"_blank\">사이트로 이동</a>";//meloporn.my.iu.gy //localhost:8081
 		// 회원 인증 링크
 
+		memberService.genEmailAuthed(joinId, "");
 		mailService.send(email, "가입을 환영합니다.", sendBody); // 메일 발송
 
-		return String.format("html:<script> alert('%s님 환영합니다.'); location.replace('../home/main'); </script>", name);
+		return String.format("html:<script> alert('%s님 환영합니다. 해당 이메일로 인증 링크를 발송하였습니다.'); location.replace('../home/main'); </script>", name);
 	}
 
 	private String doActionJoin() {

@@ -57,6 +57,16 @@ public class MemberDao extends Dao {
 
 		return DBUtil.selectRowIntValue(dbConn, sql);
 	}
+	
+	public int getMemberIdByLoginIdAndNameAndEmail(String loginId, String name, String email) {
+		SecSql sql = SecSql.from("SELECT id");
+		sql.append("FROM `member`");
+		sql.append("WHERE loginId = ?", loginId);
+		sql.append("AND name = ?", name);
+		sql.append("AND email = ?", email);
+
+		return DBUtil.selectRowIntValue(dbConn, sql);
+	}
 
 	public Member getMemberById(int id) {
 		SecSql sql = SecSql.from("SELECT *");
@@ -103,6 +113,15 @@ public class MemberDao extends Dao {
 		SecSql sql = SecSql.from("UPDATE member");
 		sql.append("SET updateDate = NOW()");
 		sql.append(", loginPw = ?", loginPw);
+		sql.append("WHERE id = ?", actorId);
+		DBUtil.update(dbConn, sql);
+	}
+
+	public void memberModify(int actorId, String nickname, String email) {
+		SecSql sql = SecSql.from("UPDATE member");
+		sql.append("SET updateDate = NOW()");
+		sql.append(", nickname = ?", nickname);
+		sql.append(", email = ?", email);
 		sql.append("WHERE id = ?", actorId);
 		DBUtil.update(dbConn, sql);
 	}
