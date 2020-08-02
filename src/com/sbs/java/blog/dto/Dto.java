@@ -3,6 +3,9 @@ package com.sbs.java.blog.dto;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.Data;
+
+@Data
 public class Dto {
 	private int id;
 	private String regDate;
@@ -22,37 +25,5 @@ public class Dto {
 				this.extra.put(extraKey, value);
 			}
 		}
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getRegDate() {
-		return regDate;
-	}
-
-	public void setRegDate(String regDate) {
-		this.regDate = regDate;
-	}
-
-	public String getUpdateDate() {
-		return updateDate;
-	}
-
-	public void setUpdateDate(String updateDate) {
-		this.updateDate = updateDate;
-	}
-
-	public Map<String, Object> getExtra() {
-		return extra;
-	}
-
-	public void setExtra(Map<String, Object> extra) {
-		this.extra = extra;
 	}
 }

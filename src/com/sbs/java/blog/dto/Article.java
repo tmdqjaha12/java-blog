@@ -2,6 +2,9 @@ package com.sbs.java.blog.dto;
 
 import java.util.Map;
 
+import lombok.Data;
+
+@Data
 public class Article extends Dto {
 	private int cateItemId;
 	private int memberId;
@@ -19,55 +22,9 @@ public class Article extends Dto {
 		this.hit = (int) row.get("hit");
 	}
 
-	public int getCateItemId() {
-		return cateItemId;
-	}
-
-	public void setCateItemId(int cateItemId) {
-		this.cateItemId = cateItemId;
-	}
-
-	public int getMemberId() {
-		return memberId;
-	}
-
-	public void setMemberId(int memberId) {
-		this.memberId = memberId;
-	}
-
-	public int getHit() {
-		return hit;
-	}
-
-	public void setHit(int hit) {
-		this.hit = hit;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getBody() {
-		return body;
-	}
-
-	public void setBody(String body) {
-		this.body = body;
-	}
-
 	public String getBodyForXTemplate() {
 		return body.replaceAll("(?i)script", "<!--REPLACE:script-->");
 	}
 
-	@Override
-	public String toString() {
-		return "Article [cateItemId=" + cateItemId + ", memberId=" + memberId + ", hit=" + hit + ", title=" + title
-				+ ", body=" + body + ", getId()=" + getId() + ", getRegDate()=" + getRegDate() + ", getUpdateDate()="
-				+ getUpdateDate() + ", getExtra()=" + getExtra() + "]";
-	}
 
 }
