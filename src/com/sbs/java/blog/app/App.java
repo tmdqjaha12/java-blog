@@ -16,16 +16,22 @@ import com.sbs.java.blog.controller.HomeController;
 import com.sbs.java.blog.controller.MemberController;
 import com.sbs.java.blog.controller.TestController;
 import com.sbs.java.blog.exception.SQLErrorException;
-import com.sbs.java.blog.service.MailService;
 import com.sbs.java.blog.util.Util;
 
 public class App {
 	private HttpServletRequest req;
 	private HttpServletResponse resp;
+	private boolean isDevelServer = true;
 
 	public App(HttpServletRequest req, HttpServletResponse resp) {
 		this.req = req;
 		this.resp = resp;
+		
+		String profilesActive = System.getProperty("spring.profiles.active");//시스템설정
+		
+		if(profilesActive != null && profilesActive.equals("production")) {
+			isDevelServer = false;
+		}
 	}
 	
 //	public App(HttpServletRequest req, HttpServletResponse resp) {
@@ -48,7 +54,13 @@ public class App {
 	}
 
 	private String getDbUrl() {
-		return "jdbc:mysql://site36.iu.gy:3306/site36?serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeBehavior=convertToNull";
+
+		
+		if( isDevelServer ) {
+			return "jdbc:mysql://localhost:3306/blog_n1_service?serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeBehavior=convertToNull";
+		}
+		
+		return "jdbc:mysql://localhost:3306/blog_n1_service?serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeBehavior=convertToNull";
 	}
 
 	public void start() throws ServletException, IOException {
@@ -152,10 +164,18 @@ public class App {
 	}
 
 	private String getDbId() {
-		return "site36";
+		if( isDevelServer ) {
+			return "sbsst";
+		}
+		
+		return "ex1Local";
 	}
 
 	private String getDbPassword() {
+		if( isDevelServer ) {
+			return "sbs123414";
+		}
+		
 		return "sbs123414";
 	}
 
