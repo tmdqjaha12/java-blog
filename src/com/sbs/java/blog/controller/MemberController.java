@@ -69,7 +69,7 @@ public class MemberController extends Controller {
 		int id = Util.getInt(req, "id");
 		String email = Util.getString(req, "email");
 		String authCode = memberService.genEmailAuthCode(id); // 회원 attr 테이블 저장 & 인증코드
-		String sendBody = "<a href=\"https://meloporn.my.iu.gy/blog/s/member/authEmail?email=" + email + "&authCode="
+		String sendBody = "<a href=\"https://blog.ourducks.com/blog/s/member/authEmail?email=" + email + "&authCode="
 				+ authCode + "&memberId=" + id + "\" target=\"_blank\">사이트로 이동</a>";//meloporn.my.iu.gy //localhost:8081
 		// 회원 인증 링크
 
@@ -305,7 +305,7 @@ public class MemberController extends Controller {
 		memberService.genLastPasswordChangeDate(joinId); // 회원 업데이트 attr 테이블 저장
 		memberService.genEmailAuthed(joinId, email); // 회원 이메일 attr 테이블 저장
 		
-		String sendBody = "<a href=\"https://meloporn.my.iu.gy/blog/s/member/authEmail?email=" + email + "&authCode="
+		String sendBody = "<a href=\"https://blog.ourducks.com/blog/s/member/authEmail?email=" + email + "&authCode="
 				+ authCode + "&memberId=" + joinId + "\" target=\"_blank\">사이트로 이동</a>";//meloporn.my.iu.gy //localhost:8081
 		// 회원 인증 링크
 

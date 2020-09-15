@@ -44,10 +44,6 @@ td {
 					<th>이메일</th>
 					<td>${loginedMember.email}</td>
 				</tr>
-				<tr>
-					<th>경력</th>
-					<td>---</td>
-				</tr>
 				
 				<c:if test="${!isMailAuthed}">
 				<tr>

@@ -21,7 +21,7 @@ import com.sbs.java.blog.util.Util;
 public class App {
 	private HttpServletRequest req;
 	private HttpServletResponse resp;
-	private boolean isDevelServer = true;
+	private boolean isDevelServer = false;
 
 	public App(HttpServletRequest req, HttpServletResponse resp) {
 		this.req = req;

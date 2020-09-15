@@ -124,15 +124,6 @@ td {
 							</td>
 						</tr>
 						<tr>
-							<th>경력</th>
-							<td id="cureer">
-								<input id="cureer" name="curbody1" type="text" style="margin-left: 34px;" placeholder="미구현" />
-								<span id="a" class="span"
-								onclick='plusFun();'
-								style="margin-left: 20px; background-color: #efefef; cursor: pointer; vertical-align: middle; padding: 2px; border: solid 1px black;">+</span></td>
-						</tr>
-
-						<tr>
 							<th>비밀번호</th>
 							<td><input name="loginPw" type="password"
 								placeholder="비밀번호 입력" />

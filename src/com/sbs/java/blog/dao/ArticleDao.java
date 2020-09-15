@@ -184,6 +184,7 @@ public class ArticleDao extends Dao {
 		sql.append("ON AR.memberId = M.id");
 		sql.append("WHERE AR.displayStatus = 1");
 		sql.append("AND AR.articleId = ?", articleId);
+		sql.append("AND AR.deleteStatus = 0");
 		sql.append("ORDER BY AR.id DESC ");
 
 		List<Map<String, Object>> rows = DBUtil.selectRows(dbConn, sql);
